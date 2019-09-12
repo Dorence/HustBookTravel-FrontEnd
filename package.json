@@ -10,7 +10,11 @@
     },
     "dependencies": {
         "echarts": "^4.2.1",
+<<<<<<< HEAD
         "element-ui": "^2.10.1",
+=======
+        "element-ui": "^2.12.0",
+>>>>>>> bd8a41d085f10689423c3cb6109824baa5e6aacc
         "jquery": "^3.4.1",
         "qiniu-js": "^2.5.4",
         "vue": "^2.5.2",
