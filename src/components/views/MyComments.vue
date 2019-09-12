@@ -5,6 +5,12 @@
     <!--el-divider></el-divider-->
     <el-aside width="200px">Aside</el-aside>
     <el-container>
+      <el-header>
+          <el-row :gutter="20">
+              <el-col :span="12" :offset="11
+              ">我的帖子</el-col>
+          </el-row>
+      </el-header>
       <el-main>
         <el-row>
           <el-col id="outside" :span="22" :offset="2">
@@ -12,7 +18,6 @@
             <div id="kernel">
               <template>
                 <el-table
-                  border
                   :span-method="arraySpanMethod"
                   ref="filterTable"
                   :data="tableData"
@@ -41,16 +46,7 @@
                   >
                     <template slot-scope="scope">
                       <el-row>
-                        <el-col :span="6" :offset="1">
-                          <div>
-                            <el-button type="text">点赞:{{scope.row.like}}</el-button>
-                          </div>
-                        </el-col>
-                        <el-col :span="6" :offset="4">
-                          <div>
-                            <el-button type="text" @click="open">回复</el-button>
-                          </div>
-                        </el-col>
+                        <el-col :span="10" :offset="1">点赞数: {{scope.row.like}}</el-col>
                       </el-row>
                       <el-row>
                         <el-col :span="10" :offset="1">
@@ -62,7 +58,7 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column align="right">
+                  <el-table-column align="left">
                     <template slot="header">
                       <el-button @click="drawer = true" type="primary">发帖</el-button>
                     </template>
@@ -143,78 +139,11 @@
   </el-container>
 </template>
 
-<style>
-.el-header {
-  background-color: #ffffff;
-  color: #333;
-  text-align: left;
-  line-height: 60px;
-}
 
-.el-footer {
-  background-color: #ffffff;
-  color: #333;
-  text-align: center;
-  line-height: 60px;
-}
-
-.el-main {
-  background-color: #ffffff;
-  color: #333;
-  text-align: center;
-  line-height: 10px;
-}
-
-.el-aside {
-  background-color: #d3dce6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-
-body > .el-container {
-  margin-bottom: 40px;
-}
-
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.el-col {
-  border-radius: 4px;
-}
-
-#outside {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-#kernel {
-  margin-top: 25px;
-  margin-right: 40px;
-  margin-bottom: 75px;
-  margin-left: 75px;
-}
-
-.demo-table-expand {
-  font-size: 0;
-}
-.demo-table-expand label {
-  width: 90px;
-  color: #99a9bf;
-}
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
-}
-</style>
 
 <script>
 export default {
-  name: "AllComments",
+  name: "MyComments",
   data() {
     return {
       drawer: false,
@@ -245,7 +174,6 @@ export default {
         }
       ],
       value: "",
-
       tableData: [
         {
           title: "帖子1",
@@ -288,26 +216,6 @@ export default {
       if (columnIndex === 1) {
         return [1, 2];
       }
-    },
-    open() {
-      this.$prompt("请输入回复内容", "提示", {
-        confirmButtonText: "发送",
-        cancelButtonText: "取消",
-        inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-        inputErrorMessage: "回复内容不能为空"
-      })
-        .then(({ value }) => {
-          this.$message({
-            type: "success",
-            message: "发送成功"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消输入"
-          });
-        });
     }
   },
 
