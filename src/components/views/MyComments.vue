@@ -6,10 +6,10 @@
     <el-aside width="200px">Aside</el-aside>
     <el-container>
       <el-header>
-          <el-row :gutter="20">
-              <el-col :span="12" :offset="11
+        <el-row :gutter="20">
+          <el-col :span="12" :offset="11
               ">我的帖子</el-col>
-          </el-row>
+        </el-row>
       </el-header>
       <el-main>
         <el-row>
@@ -77,56 +77,33 @@
         :before-close="handleClose"
         size="70%"
       >
-        <el-row :gutter="20">
-          <el-col :span="6" :offset="6">
-            <!-- title -->
-            <template>
-              <el-select v-model="value" placeholder="请选择类别">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </template>
-            <!--div style="margin: 10px 0;"></div-->
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="10" :offset="6">
-            <el-input type="text" placeholder="书名" v-model="text"></el-input>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="10" :offset="6">
-            <el-input type="text" placeholder="出版社" v-model="text"></el-input>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="10" :offset="6">
-            <el-input type="text" placeholder="作者" v-model="text"></el-input>
-          </el-col>
-        </el-row>
-
-        <!--发帖内容 -->
-        <el-row :gutter="20">
-          <el-col :span="10" :offset="6">
-            <el-input
-              type="textarea"
-              rows="4"
-              placeholder="推荐理由"
-              v-model="textarea"
-              maxlength="500"
-              show-word-limit
-            ></el-input>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2" :offset="15">
-            <el-button type="primary">发表</el-button>
-          </el-col>
-        </el-row>
+        <div class="my-submit-form">
+          <el-form ref="form" :model="form" label-width="80px" class="my-right-form-inner">
+            <el-form-item prop="name" :rules="rules.name" label="书名">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item prop="press" :rules="rules.press" label="出版社">
+              <el-input v-model="form.press" />
+            </el-form-item>
+            <el-form-item prop="author" :rules="rules.author" label="作者">
+              <el-input v-model="form.author"></el-input>
+            </el-form-item>
+            <el-form-item prop="reason" :rules="rules.reason" label="发帖理由">
+              <el-input
+                type="textarea"
+                rows="4"
+                placeholder="推荐理由"
+                v-model="textarea"
+                maxlength="500"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit('form')">立即提交</el-button>
+              <!-- <el-button>取消</el-button> -->
+            </el-form-item>
+          </el-form>
+        </div>
       </el-drawer>
 
       <el-footer height="90px">
@@ -150,6 +127,18 @@ export default {
       direction: "btt",
       text: "",
       textarea: "",
+      form: {
+        name: "",
+        press: "",
+        author: "",
+        reason: ""
+      },
+      rules: {
+        name: [{ required: true, message: "书名不能为空" }],
+        press: [{ required: true, message: "出版社不能为空" }],
+        author: [{ required: true, message: "作者不能为空" }],
+        reason: [{ required: true, message: "推荐理由不能为空" }]
+      },
 
       options: [
         {
