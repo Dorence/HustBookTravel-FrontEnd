@@ -8,6 +8,10 @@ import AllComments from '@/components/views/AllComments'
 import ComContent from '@/components/views/ComContent'
 import MyComments from '@/components/views/MyComments'
 import IndexRL from '@/components/views/IndexRL'
+import bookManager from "@/components/views/bookManager"
+import bookList from "@/components/views/bookManager/bookList"
+import bookDetail from "@/components/views/bookManager/bookDetail"
+import myAppointment from "@/components/views/bookManager/myAppointment"
 
 export default new Router({
     routes: [{
@@ -34,6 +38,26 @@ export default new Router({
             path: "/IndexRL",
             name: 'IndexRL',
             component: IndexRL
+        },
+        {
+            path: "/book",
+            name: "bookManager",
+            component: bookManager,
+            children: [{
+                    path: "/book/bookList",
+                    name: "bookList",
+                    component: bookList
+                }, {
+                    path: "/book/bookDetail",
+                    name: "bookDetail",
+                    component: bookDetail
+                },
+                {
+                    path: "/book/myAppointment",
+                    name: "myAppointment",
+                    component: myAppointment
+                }
+            ]
         }
     ]
-})
+});

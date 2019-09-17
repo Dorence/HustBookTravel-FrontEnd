@@ -1,21 +1,23 @@
 <template>
   <el-menu mode="horizontal" :default-active="activeIndex">
     <el-menu-item index="1" @click="redirect('HomePage')">
-      <img src="../../assets/hust-minilogo.png"/>
+      <img src="../../assets/hust-minilogo.png" />
       {{ title }}
     </el-menu-item>
-    <el-menu-item index="2" @click="open">最新活动</el-menu-item>
-    <el-submenu index="3">
+    <el-menu-item index="2" @click="redirect('bookList')">书单</el-menu-item>
+    <el-menu-item index="3" @click="redirect('AllComments')">评论区</el-menu-item>
+    <el-submenu index="4">
       <template slot="title">EIC论坛</template>
       <a href="http://47.106.111.48:4567">
-        <el-menu-item index="3-1">访问论坛</el-menu-item>
+        <el-menu-item index="4-1">访问论坛</el-menu-item>
       </a>
       <a
         href="https://raw.githubusercontent.com/568xiaoma/EIC_App_image/master/EIC%E8%AE%BA%E5%9D%9B%20.apk"
       >
-        <el-menu-item index="3-2">下载APP</el-menu-item>
+        <el-menu-item index="4-2">下载APP</el-menu-item>
       </a>
     </el-submenu>
+    <el-menu-item index="5" @click="redirect('IndexRL')">登录/注册</el-menu-item>
   </el-menu>
 </template>
 <script>
@@ -29,32 +31,9 @@ export default {
     };
   },
   methods: {
-    open() {
-      var that = this;
-      jQuery.get("https://husteicstu.cn:3000/PopupView", function(res) {
-        console.log(res);
-        var msgHTMLhead = '<img class="my-home-alert-img" src="';
-        var msgHTMLtail = '">';
-        that.$alert(
-          msgHTMLhead + JSON.parse(res.data.img)[0] + msgHTMLtail,
-          "HTML 片段",
-          {
-            dangerouslyUseHTMLString: true,
-            title: res.data.name,
-            confirmButtonText: "了解详情",
-            showCancelButton: true,
-            callback: function(action, instance) {
-              if (action == "confirm") {
-                console.log(res.data.url);
-                window.open(res.data.url);
-              }
-            }
-          }
-        );
-      });
-    },
-    redirect(pathname) {
-      this.$router.push({ name: pathname });
+    redirect(path) {
+      this.$router.push({ name: path });
+      this.title = this.$route.path === "/" ? "图书漂流" : "主页";
     }
   }
 };

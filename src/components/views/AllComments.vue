@@ -1,8 +1,6 @@
 <template>
   <el-container>
     <!--el-header>评论区</el-header-->
-
-    <!--el-divider></el-divider-->
     <el-aside width="200px">Aside</el-aside>
     <el-container>
       <el-main>
@@ -80,33 +78,33 @@
         :before-close="handleClose"
         size="70%"
       >
-      <div class="my-submit-form">
-        <el-form ref="form" :model="form" label-width="80px" class="my-right-form-inner">
-          <el-form-item prop="name" :rules="rules.name" label="书名">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
-          <el-form-item prop="press" :rules="rules.press" label="出版社">
-            <el-input v-model="form.press" />
-          </el-form-item>
-          <el-form-item prop="author" :rules="rules.author" label="作者">
-            <el-input v-model="form.author"></el-input>
-          </el-form-item>
-          <el-form-item prop="reason" :rules="rules.reason" label="发帖理由">
-            <el-input
-              type="textarea"
-              rows="4"
-              placeholder="推荐理由"
-              v-model="textarea"
-              maxlength="500"
-              show-word-limit
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')">立即提交</el-button>
-            <!-- <el-button>取消</el-button> -->
-          </el-form-item>
-        </el-form>
-      </div>
+        <div class="my-submit-form">
+          <el-form ref="form" :model="form" label-width="80px" class="my-right-form-inner">
+            <el-form-item prop="name" :rules="rules.name" label="书名">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item prop="press" :rules="rules.press" label="出版社">
+              <el-input v-model="form.press" />
+            </el-form-item>
+            <el-form-item prop="author" :rules="rules.author" label="作者">
+              <el-input v-model="form.author"></el-input>
+            </el-form-item>
+            <el-form-item prop="reason" :rules="rules.reason" label="发帖理由">
+              <el-input
+                type="textarea"
+                rows="4"
+                placeholder="推荐理由"
+                v-model="textarea"
+                maxlength="500"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit('form')">立即提交</el-button>
+              <!-- <el-button>取消</el-button> -->
+            </el-form-item>
+          </el-form>
+        </div>
       </el-drawer>
 
       <el-footer height="90px">
@@ -119,7 +117,7 @@
   </el-container>
 </template>
 
-<style>
+<style scoped>
 .el-header {
   background-color: #ffffff;
   color: #333;
@@ -154,11 +152,10 @@ body > .el-container {
 
 .el-row {
   margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
-
+.el-row:last-child {
+  margin-bottom: 0;
+}
 .el-col {
   border-radius: 4px;
 }
@@ -187,7 +184,7 @@ body > .el-container {
   width: 50%;
 }
 
-.my-submit-form{
+.my-submit-form {
   padding-top: 2rem;
   width: 90rem;
   display: flex;
@@ -196,7 +193,7 @@ body > .el-container {
   align-items: center;
 }
 
-.my-right-form-inner{
+.my-right-form-inner {
   width: 40rem;
 }
 </style>
@@ -211,11 +208,11 @@ export default {
       text: "",
       textarea: "",
       form: {
-          name: '',
-          press: '',
-          author: '',
-          reason: ''
-        },
+        name: "",
+        press: "",
+        author: "",
+        reason: ""
+      },
 
       options: [
         {
@@ -263,25 +260,25 @@ export default {
           title: "帖子3"
           //tag: "个人主题"
         },
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"},
-        {title: "帖子4",tag: "其他主题"}
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" },
+        { title: "帖子4", tag: "其他主题" }
       ]
     };
   },
