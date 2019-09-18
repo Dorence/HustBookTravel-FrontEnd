@@ -3,7 +3,7 @@
     <div class="my-FastMenu-bar">
       <transition name="el-zoom-in-bottom">
         <div v-show="show">
-          <div v-for="item in menus" class="my-FastMenu-bar-item" :style="{backgroundColor: item.color}">
+          <div v-for="item in menus" :key="item.id" class="my-FastMenu-bar-item" :style="{backgroundColor: item.color}">
             <div class="my-FastMenu-bar-item-row">
               <i :class="item.icon" :style="{color: '#ffffff'}" @click="redirect(item.pagename)"/>
             </div>
