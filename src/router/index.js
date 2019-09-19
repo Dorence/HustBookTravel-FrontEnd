@@ -12,9 +12,18 @@ import bookManager from "@/components/views/bookManager"
 import bookList from "@/components/views/bookManager/bookList"
 import bookDetail from "@/components/views/bookManager/bookDetail"
 import myAppointment from "@/components/views/bookManager/myAppointment"
+// import FeedBack from '@/components/views/FeedBack'
+//import message from '@/components/views/message'
+import VentPanel from '@/components/views/VentPanel'
+import VentWall from '@/components/components/VentPage/RouteView/VentWall'
+import SubmitVent from '@/components/components/VentPage/RouteView/SubmitVent'
+
+
+
 
 export default new Router({
-    routes: [{
+    routes: [
+        {
             path: '/',
             name: 'HomePage',
             component: HomePage
@@ -44,20 +53,38 @@ export default new Router({
             name: "bookManager",
             component: bookManager,
             children: [{
-                    path: "/book/bookList",
-                    name: "bookList",
-                    component: bookList
-                }, {
-                    path: "/book/bookDetail",
-                    name: "bookDetail",
-                    component: bookDetail
-                },
-                {
-                    path: "/book/myAppointment",
-                    name: "myAppointment",
-                    component: myAppointment
-                }
+                path: "/book/bookList",
+                name: "bookList",
+                component: bookList
+            }, {
+                path: "/book/bookDetail",
+                name: "bookDetail",
+                component: bookDetail
+            },
+            {
+                path: "/book/myAppointment",
+                name: "myAppointment",
+                component: myAppointment
+            }
             ]
-        }
+        },
+        {
+            path: '/VentPanel',
+            name: 'VentPanel',
+            component: VentPanel,
+            children:[
+              {
+                path: '/VentPanel',
+                name: 'VentWall',
+                component: VentWall,
+              },
+              {
+                path: '/SubmitVent',
+                name: 'SubmitVent',
+                component: SubmitVent,
+              },
+            ]
+          },
+
     ]
 });

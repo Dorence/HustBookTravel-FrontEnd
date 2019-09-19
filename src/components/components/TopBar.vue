@@ -18,6 +18,7 @@
       </a>
     </el-submenu>
     <el-menu-item index="5" @click="redirect('IndexRL')">登录/注册</el-menu-item>
+    <el-menu-item index="6" @click="redirect('VentWall')">意见反馈</el-menu-item>
   </el-menu>
 </template>
 <script>

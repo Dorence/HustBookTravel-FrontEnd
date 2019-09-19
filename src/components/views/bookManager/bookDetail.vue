@@ -44,7 +44,7 @@
         <div class="item">
           <span class="my-lable-red">#</span>
           <span style="font-weight:bold;">分类：</span>
-          <el-tag style="margin-right: 0.2rem;" type="success" v-for="it in bookDetail.tag">{{it}}</el-tag>
+          <el-tag style="margin-right: 0.2rem;" type="success" v-for="it in bookDetail.tag" :key="it.id">{{it}}</el-tag>
         </div>
       </el-card>
     </div>
@@ -52,7 +52,7 @@
       <div class="my-bookdetail-subtitle">
         评论
       </div>
-      <div v-for="ele in bookDetail.comment" style="margin-bottom: 0.5rem;margin-left: 1rem;">
+      <div v-for="ele in bookDetail.comment" :key="ele.id" style="margin-bottom: 0.5rem;margin-left: 1rem;">
         <div class='my-bookdetail-comment-row'>
           <el-image :src="ele.headImg" class="my-bookdetail-comment-headImg"/>
           <div class='my-bookdetail-comment-col'>
