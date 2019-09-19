@@ -11,12 +11,12 @@
   </div>
 </template>
 <script>
-import LeftBar from '@/components/components/VentPage/LeftBar'
+import LeftBar from '@/components/components/ventPanel/LeftBar'
 
 export default {
-  name: 'VentPage',
+  name: 'ventPanel',
   components:{
-    LeftBar:LeftBar,
+    LeftBar
   },
   data() {
       return {
@@ -61,10 +61,7 @@ export default {
 </script>
 
 <style>
-body{
-  margin:0px;
-  height: 1rem;
-}
+
 .my-ventpanel-main-contain-col{
   display: flex;
   /* margin-left: 3rem; */

@@ -1,35 +1,30 @@
 <template>
-  <div class="my-bottom">
-    <div class="my-copy">Copyright &copy;2019 HUST Wuhan, China. All Right Reserved.</div>
-  </div>
+  <el-footer class="booktravel-footer" height="unset">
+    <p class="booktravel-footer-info">
+      <span>&copy; Copyright 2019, HUST Wuhan, China.</span>
+      <span>All Right Reserved. 鄂ICP备19023214号</span>
+    </p>
+  </el-footer>
 </template>
 <script>
 export default {
-  name: "BottomBar",
+  name: "bottomBar",
   data() {
     return {};
   }
 };
 </script>
 
-<style>
-body {
-  height: 1rem;
-  margin: 0;
-}
-.my-bottom {
-  align-items: center;
+<style scoped>
+.booktravel-footer {
   color: #525252;
-  bottom: 0;
+  font-size: 0.75rem;
+  padding-top: 1.5rem!important;
   width: 100%;
-  padding-top: 2rem;
 }
-.my-copy {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  font-size: 0.72rem;
-  padding: 10px 12px;
-  width: 100%;
+
+.booktravel-footer .booktravel-footer-info {
+ text-align: center;
+  padding: 3px 14px;
 }
 </style>

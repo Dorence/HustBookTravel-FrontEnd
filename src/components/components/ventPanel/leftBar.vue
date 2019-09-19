@@ -39,10 +39,7 @@ export default {
 </script>
 
 <style>
-body{
-  margin:0px;
-  height: 1rem;
-}
+
 .my-left-bar-title{
   margin: 2rem;
   font-weight: bold;

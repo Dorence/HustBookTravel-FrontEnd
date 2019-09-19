@@ -186,10 +186,7 @@ export default {
 </script>
 
 <style>
-body{
-  margin:0px;
-  height: 1rem;
-}
+
 div::-webkit-scrollbar {
   width: 0;
 }
