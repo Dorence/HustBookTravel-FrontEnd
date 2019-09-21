@@ -192,6 +192,20 @@
 </template>
 
 <style scoped>
+.el-collapse-item__header {
+  background-color: none;
+  border: none;
+}
+
+.el-collapse-item__wrap {
+  background-color: transparent;
+}
+
+.el-collapse {
+  border-top: none;
+  border-bottom: none;
+}
+
 .el-header {
   background-color: #ffffff;
   color: #333;
