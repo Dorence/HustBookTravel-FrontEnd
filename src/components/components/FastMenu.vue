@@ -2,6 +2,9 @@
   <div class="booktravel-fastmenu">
     <transition name="el-zoom-in-bottom">
       <div v-show="show">
+        <div class="booktravel-fastmenu-item" style="background-color: gray;">
+          <i class="el-icon-caret-top" @click="scrTop"></i>
+        </div>
         <div
           v-for="i in menus"
           class="booktravel-fastmenu-item"
@@ -29,16 +32,6 @@ export default {
           pagename: "homePage",
           icon: "el-icon-s-home",
           color: "rgb(38, 201, 106)"
-        },
-        {
-          pagename: "HomePageSlide",
-          icon: "el-icon-s-custom",
-          color: "rgb(17, 135, 238)"
-        },
-        {
-          pagename: "RightPage",
-          icon: "el-icon-s-opportunity",
-          color: "rgb(38, 201, 201)"
         }
       ]
     };
@@ -49,6 +42,10 @@ export default {
     },
     toggleShow() {
       this.show = !this.show;
+    },
+    scrTop() {
+      document.documentElement.scrollTop = document.body.scrollTop = 0;
+      return false;
     }
   }
 };

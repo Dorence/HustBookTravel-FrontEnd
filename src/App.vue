@@ -1,11 +1,11 @@
 <template>
   <el-container class="booktravel-main" direction="vertical">
-    <navBar />
+    <navBar id="booktravel-nav" />
     <el-main>
       <router-view class="main-router-view" />
       <fastMenu />
     </el-main>
-    <bottomBar />
+    <bottomBar />    
   </el-container>
 </template>
 
@@ -50,6 +50,7 @@ export default {
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-y:scroll;
 }
 
 .booktravel-main > .el-header,

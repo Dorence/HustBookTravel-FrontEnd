@@ -19,7 +19,7 @@
         </a>
       </el-submenu>
       <el-menu-item index="5" @click="redirect('VentWall')">意见反馈</el-menu-item>
-      <el-menu-item index="6" @click="redirect('IndexRL')" style="float: right">登录/注册</el-menu-item>
+      <el-menu-item index="6" @click="redirect('Auth')" style="float: right">登录/注册</el-menu-item>
     </el-menu>
   </el-header>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <el-container class="booktravel-booklist">
-    <el-row :gutter="4">
+    <el-row :gutter="4" style="margin: 0;">
       <el-col
         v-for="item in bookList"
         v-bind:key="item.id"
