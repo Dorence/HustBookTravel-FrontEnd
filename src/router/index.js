@@ -5,7 +5,7 @@ Vue.use(Router)
 
 import HomePage from '@/components/views/HomePage'
 import Auth from '@/components/views/Auth'
-import FindCode from '@/components/views/FindCode'
+import PasswordReset from '@/components/views/PasswordReset'
 
 
 export default new Router({
@@ -20,9 +20,9 @@ export default new Router({
         component:Auth
     },
     {
-        path:"/FindCode",
-        name:'FindCode',
-        component:FindCode
+        path:"/PasswordReset",
+        name:'PasswordReset',
+        component:PasswordReset
     }
     ]
 })

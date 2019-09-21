@@ -1,13 +1,13 @@
 <template>
   <div class="findCode">
-    <span class="find-name">找回密码</span>
-    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+    <span class="find-name">重置密码</span>
+    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm" label-position="left">
       <el-form-item label="手机号">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
       <el-form-item label="验证码">
         <el-input v-model="ruleForm.idcode"></el-input>
-        <a href="javascript:" class="code-btn">获取短信验证码</a>
+        <a href="javascript:" class="org-btn">获取短信验证码</a>
       </el-form-item>
 
       <el-form-item label="新密码" prop="pass">
@@ -27,11 +27,11 @@
 
 <script>
 export default {
-  name: "Register",
+  name: "PasswordReset",
   data() {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      if (value === ""||value.length < 8 || value.length >20||value.length == '') {
+        callback(new Error("密码位数应在8~20位之间"));
       } else {
         if (this.ruleForm.checkPass !== "") {
           this.$refs.ruleForm.validateField("checkPass");
@@ -40,6 +40,7 @@ export default {
       }
     };
     var validatePass2 = (rule, value, callback) => {
+      //if (pass == null || pass.length < 8 || pass.length > 20 || pass.length == '') 
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value !== this.ruleForm.pass) {
