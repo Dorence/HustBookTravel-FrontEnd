@@ -5,15 +5,12 @@ Vue.use(Router)
 
 import homePage from '@/components/views/homePage'
 import AllComments from '@/components/views/AllComments'
-import ComContent from '@/components/views/ComContent'
 import MyComments from '@/components/views/MyComments'
 import IndexRL from '@/components/views/IndexRL'
 import bookManager from "@/components/views/bookManager"
 import bookList from "@/components/views/bookManager/bookList"
 import bookDetail from "@/components/views/bookManager/bookDetail"
 import myAppointment from "@/components/views/bookManager/myAppointment"
-// import FeedBack from '@/components/views/FeedBack'
-//import message from '@/components/views/message'
 import VentPanel from '@/components/views/ventPanel'
 import VentWall from '@/components/views/ventPanel/VentWall'
 import SubmitVent from '@/components/views/ventPanel/SubmitVent'
@@ -29,11 +26,6 @@ export default new Router({
             path: '/AllComments',
             name: 'AllComments',
             component: AllComments
-        },
-        {
-            path: '/Comcontent',
-            name: 'ComContent',
-            component: ComContent
         },
         {
             path: '/MyComments',

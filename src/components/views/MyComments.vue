@@ -7,60 +7,94 @@
     <el-container>
       <el-header>
         <el-row :gutter="20">
-          <el-col :span="12" :offset="11
-              ">我的帖子</el-col>
+          <el-col :span="12" :offset="11">我的帖子</el-col>
         </el-row>
       </el-header>
       <el-main>
         <el-row>
-          <el-col id="outside" :span="22" :offset="2">
+          <el-col id="outside" :span="23" :offset="1">
             <!--评论区-->
             <div id="kernel">
               <template>
                 <el-table
-                  :span-method="arraySpanMethod"
                   ref="filterTable"
-                  :data="tableData"
+                  :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                   header-row-style="height:40px"
                   row-style="height:80px"
                 >
-                  <el-table-column prop="title" label="最新" sortable width="200" column-key="time">
+                  <el-table-column label="最新" sortable width="auto" column-key="time">
                     <template slot-scope="scope">
                       <div>
-                        <el-link type="success">{{scope.row.title}}</el-link>
+                        <el-image
+                          style="width: 100px; height: 100px"
+                          :src="scope.row.picture"
+                          :fit="fill"
+                        ></el-image>
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="content" label="最热" width="150" sortable column-key="hot">
-                    <template slot-scope="scope">
-                      <span>{{scope.row.content | ellipsis}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="category"
-                    label="分类"
-                    width="500"
-                    :filters="[{ text: '我的帖子', value: '家' }, { text: '其他帖子', value: '公司' }]"
-                    :filter-method="filterTag"
-                    filter-placement="bottom-end"
-                  >
+
+                  <el-table-column label="最热" width="auto" sortable column-key="hot">
                     <template slot-scope="scope">
                       <el-row>
-                        <el-col :span="10" :offset="1">点赞数: {{scope.row.like}}</el-col>
+                        <el-col>书名：{{scope.row.bookName}}</el-col>
                       </el-row>
                       <el-row>
-                        <el-col :span="10" :offset="1">
-                          <div>
-                            <el-link type="success">全部评论</el-link>
-                          </div>
-                        </el-col>
+                        <el-col>出版社：{{scope.row.press}}</el-col>
+                      </el-row>
+                      <el-row>
+                        <el-col>作者：{{scope.row.author}}</el-col>
+                      </el-row>
+                      <el-row>
+                        <el-col>推荐人：{{scope.row.commentor}}</el-col>
                       </el-row>
                     </template>
                   </el-table-column>
 
-                  <el-table-column align="left">
+                  <el-table-column
+                    prop="category"
+                    label="分类"
+                    width="auto"
+                    :filters="[{ text: '我的帖子', value: 'my' }, { text: '其他帖子', value: 'others' }]"
+                    :filter-method="filterTag"
+                    filter-placement="bottom-end"
+                  >
+                    <template slot-scope="scope">
+                      <el-collapse v-model="activeNames" @change="handleChange">
+                        <el-collapse-item title="推荐理由" name="1">
+                          <div>{{scope.row.content}}</div>
+                        </el-collapse-item>
+                      </el-collapse>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column align="right">
                     <template slot="header">
                       <el-button @click="drawer = true" type="primary">发帖</el-button>
+                    </template>
+                    <template slot-scope="scope">
+                      <el-row>
+                        <el-col :span="6" :offset="1">
+                          <div>
+                            <el-button type="text">点赞数:{{scope.row.like}}</el-button>
+                          </div>
+                        </el-col>
+                        <el-col :span="6" :offset="4">
+                          <div>
+                            <el-button type="text" @click="open">回复</el-button>
+                          </div>
+                        </el-col>
+                      </el-row>
+                      <el-row>
+                        <el-col :span="20" :offset="1">
+                          <el-collapse v-model="activeNames" @change="handleChange">
+                            <el-collapse-item title="全部评论" name="1">
+                              <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+                              <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+                            </el-collapse-item>
+                          </el-collapse>
+                        </el-col>
+                      </el-row>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -79,6 +113,9 @@
       >
         <div class="my-submit-form">
           <el-form ref="form" :model="form" label-width="80px" class="my-right-form-inner">
+            <el-form-item prop="commentor" :rules="rules.commentor" label="推荐人">
+              <el-input v-model="form.commentor"></el-input>
+            </el-form-item>
             <el-form-item prop="name" :rules="rules.name" label="书名">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
@@ -88,19 +125,19 @@
             <el-form-item prop="author" :rules="rules.author" label="作者">
               <el-input v-model="form.author"></el-input>
             </el-form-item>
-            <el-form-item prop="reason" :rules="rules.reason" label="发帖理由">
+            <el-form-item prop="reason" :rules="rules.reason" label="推荐理由">
               <el-input
                 type="textarea"
                 rows="4"
-                placeholder="推荐理由"
                 v-model="textarea"
                 maxlength="500"
                 show-word-limit
               ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit('form')">立即提交</el-button>
-              <!-- <el-button>取消</el-button> -->
+              <el-col :offset="20">
+                <el-button type="primary" @click="onSubmit('form')">立即提交</el-button>
+              </el-col>
             </el-form-item>
           </el-form>
         </div>
@@ -109,7 +146,15 @@
       <el-footer height="90px">
         <el-divider></el-divider>
         <div class="block">
-          <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
+           <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-size="pagesize"
+            :page-sizes="[5, 10, 20]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tableData.length"
+          ></el-pagination>
         </div>
       </el-footer>
     </el-container>
@@ -128,12 +173,16 @@ export default {
       text: "",
       textarea: "",
       form: {
+        commentor: "",
         name: "",
         press: "",
         author: "",
         reason: ""
       },
+      currentPage: 1, //初始页
+      pagesize: 10, //每页条目数
       rules: {
+        commentor: [{ required: true, message: "推荐人名不能为空"}],
         name: [{ required: true, message: "书名不能为空" }],
         press: [{ required: true, message: "出版社不能为空" }],
         author: [{ required: true, message: "作者不能为空" }],
@@ -166,23 +215,84 @@ export default {
       tableData: [
         {
           title: "帖子1",
+          bookName: "矩阵的次",
+          press: "华中科技大学出版社",
+          author: "李开丁",
+          commentor: "李丹",
+          content:
+            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\
+            aaaaaaaaaaaaaaaaaa",
+          like: "10",
+          comments: "20",
+          picture:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+        },
+        {
+          title: "帖子2",
+          bookName: "曲面的侧",
+          press: "华中科技大学出版社",
+          author: "李开丁",
+          commentor: "李丹",
+          content: "个人主题",
+          like: "10",
+          comments: "20",
+          picture:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+        },
+        {
+          title: "帖子3",
+          bookName: "矩阵的次and曲面的侧",
+          press: "华中科技大学出版社",
+          author: "李开丁",
+          commentor: "李丹",
           content:
             "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           like: "10",
-          comments: "20"
+          comments: "20",
+          picture:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
         },
         {
-          title: "帖子2"
-          //tag: "其他主题"
+          title: "帖子3",
+          bookName: "矩阵的次and曲面的侧",
+          press: "华中科技大学出版社",
+          author: "李开丁",
+          commentor: "李丹",
+          content:
+            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          like: "10",
+          comments: "20",
+          picture:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
         },
         {
-          title: "帖子3"
-          //tag: "个人主题"
+          title: "帖子3",
+          bookName: "矩阵的次and曲面的侧",
+          press: "华中科技大学出版社",
+          author: "李开丁",
+          commentor: "李丹",
+          content:
+            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          like: "10",
+          comments: "20",
+          picture:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
         },
         {
-          title: "帖子4"
-          //tag: "其他主题"
-        }
+          title: "帖子3",
+          bookName: "矩阵的次and曲面的侧",
+          press: "华中科技大学出版社",
+          author: "李开丁",
+          commentor: "李丹",
+          content:
+            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          like: "10",
+          comments: "20",
+          picture:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+        },
       ]
     };
   },
@@ -205,6 +315,34 @@ export default {
       if (columnIndex === 1) {
         return [1, 2];
       }
+    },
+    open() {
+      this.$prompt("请输入回复内容", "提示", {
+        confirmButtonText: "发送",
+        cancelButtonText: "取消",
+        inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+        inputErrorMessage: "回复内容不能为空"
+      })
+        .then(({ value }) => {
+          this.$message({
+            type: "success",
+            message: "发送成功"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入"
+          });
+        });
+    },
+     handleSizeChange: function(size) {
+      this.pagesize = size;
+      console.log(this.pagesize); //每页下拉显示数据
+    },
+    handleCurrentChange: function(currentPage) {
+      this.currentPage = currentPage;
+      console.log(this.currentPage); //点击第几页
     }
   },
 
