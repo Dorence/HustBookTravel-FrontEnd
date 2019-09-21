@@ -16,7 +16,6 @@
       </blockquote>
     </el-row>
     <el-divider></el-divider>
-    <h2 class="booktravel-home-margin">注意事项</h2>
     <el-row class="booktravel-notice booktravel-home-margin" :gutter="8">
       <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6">
         <el-card shadow="hover">
