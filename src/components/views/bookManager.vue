@@ -12,9 +12,7 @@ import leftBar from "@/components/components/bookManager/leftBar";
 
 export default {
   name: "bookManager",
-  components: {
-    leftBar
-  },
+  components: { leftBar },
   data() {
     return {};
   }

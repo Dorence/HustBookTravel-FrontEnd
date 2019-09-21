@@ -2,7 +2,7 @@
   <div class="booktravel-fastmenu">
     <transition name="el-zoom-in-bottom">
       <div v-show="show">
-        <div class="booktravel-fastmenu-item" style="background-color: gray;">
+        <div class="booktravel-fastmenu-item" style="background-color: rgb(17, 135, 238);">
           <i class="el-icon-caret-top" @click="scrTop"></i>
         </div>
         <div
@@ -53,8 +53,8 @@ export default {
 
 <style>
 .booktravel-fastmenu {
-  position: fixed;
   bottom: 2rem;
+  position: fixed;
   right: 2rem;
 }
 

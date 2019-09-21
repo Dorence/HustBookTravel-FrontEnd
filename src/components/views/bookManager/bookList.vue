@@ -1,22 +1,14 @@
 <template>
   <el-container class="booktravel-booklist">
     <el-row :gutter="4" style="margin: 0;">
-      <el-col
-        v-for="item in bookList"
-        v-bind:key="item.id"
-        :xs="12"
-        :sm="8"
-        :md="6"
-        :lg="6"
-        :xl="4"
-      >
+      <el-col v-for="it in bookList" v-bind:key="it.id" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
         <bookCard
-          :author="item.author"
-          :desc="item.desc"
-          :img="item.img"
-          :press="item.public"
-          :process="item.process"
-          :bookid="item.id"
+          :author="it.author"
+          :desc="it.desc"
+          :img="it.img"
+          :press="it.public"
+          :process="it.process"
+          :bookid="it.id"
         />
       </el-col>
     </el-row>

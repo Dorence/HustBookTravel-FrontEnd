@@ -10,10 +10,11 @@ import MyComments from '@/components/views/MyComments'
 import bookManager from "@/components/views/bookManager"
 import bookList from "@/components/views/bookManager/bookList"
 import bookDetail from "@/components/views/bookManager/bookDetail"
-import myAppointment from "@/components/views/bookManager/myAppointment"
+
 import VentPanel from '@/components/views/ventPanel'
 import VentWall from '@/components/views/ventPanel/VentWall'
 import SubmitVent from '@/components/views/ventPanel/SubmitVent'
+
 import Auth from '@/components/views/Auth'
 import PasswordReset from '@/components/views/PasswordReset'
 
@@ -34,12 +35,12 @@ export default new Router({
             component: MyComments
         },
         {
-            path: "/Auth",
+            path: "/auth",
             name: 'Auth',
             component: Auth
         },
         {
-            path: "/PasswordReset",
+            path: "/auth/reset",
             name: 'PasswordReset',
             component: PasswordReset
         },
@@ -48,20 +49,14 @@ export default new Router({
             name: "bookManager",
             component: bookManager,
             children: [{
-                    path: "/book/bookList",
-                    name: "bookList",
-                    component: bookList
-                }, {
-                    path: "/book/bookDetail",
-                    name: "bookDetail",
-                    component: bookDetail
-                },
-                {
-                    path: "/book/myAppointment",
-                    name: "myAppointment",
-                    component: myAppointment
-                }
-            ]
+                path: "/book",
+                name: "bookList",
+                component: bookList
+            }, {
+                path: "/book/bookDetail",
+                name: "bookDetail",
+                component: bookDetail
+            }]
         },
         {
             path: '/vent',
