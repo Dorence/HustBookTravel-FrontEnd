@@ -4,15 +4,26 @@
       <h1>华中科技大学读书漂流</h1>
       <blockquote class="booktravel-intro-quote">
         <p>
-          当我年轻的时候，我梦想改变这个世界；
-          <br />当我成熟以后，我发现我不能够改变这个世界，我将目光缩短了些，决定只改变我的国家；
-          <br />当我进入暮年以后，我发现我不能够改变我们的国家，我的最后愿望仅仅是改变一下我的家庭，但是，这也不可能。
-          <br />当我现在躺在床上，行将就木时，我突然意识到：
-          <br />如果一开始我仅仅去改变我自己，然后，我可能改变我的家庭；
-          <br />在家人的帮助和鼓励下，我可能为国家做一些事情；
-          <br />然后，谁知道呢?我甚至可能改变这个世界。
+          清晨醒来，读几页书，是很好的醒脑。
+          <br />睡觉以前，读几页书，是很好的催眠。
+          <br />忙中偷闲，读几页书，是很好的调节。
+          <br />闲来无事，读几页书，是很好的消遣。
+          <br />
+          <br />在火车上读书，任窗外风景展现，非常浪漫。
+          <br />在飞机上读书，任窗下白云翻卷，恍若神仙。
+          <br />在山林中读书，听风吟蝉鸣，雅趣与野趣相融。
+          <br />在大海边读书，听惊涛拍岸，心情与诗情俱佳。
+          <br />
+          <br />一个人最大的不幸，是从未读过书。
+          <br />一个人最大的愚顽，是不喜读书。
+          <br />一个不读书的社会，是浮躁的病态社会。
+          <br />一个不喜读书的民族，是没有出息和未来的民族。
+          <br />
+          <br />个人要生存和发展，有赖于读书。
+          <br />国家要繁荣昌盛，要大兴读书之风。
+          <br />中国梦的实现，中华民族的崛起，与读书密切相关。
         </p>
-        <footer>————&emsp;活动举办方</footer>
+        <footer style="font-size: 16px">————&emsp;活动举办方</footer>
       </blockquote>
     </el-row>
     <el-divider></el-divider>
@@ -81,7 +92,7 @@ blockquote small {
 .booktravel-intro h1 {
   color: #fafafa;
   font-family: "PingFang SC", "Microsoft YaHei", Helvetica;
-  font-size: 32px;
+  font-size: 40px;
   letter-spacing: 4.6px;
   text-align: center;
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05), 2.2px 2.2px 0 rgba(0, 0, 0, 0.6);
@@ -89,9 +100,11 @@ blockquote small {
 
 .booktravel-intro blockquote {
   width: 420px;
+  font-family: 	SimSun;
+  font-size: 16px
 }
 
-.booktravel-notice .el-card{
+.booktravel-notice .el-card {
   margin-bottom: 1rem;
 }
 
@@ -101,7 +114,7 @@ blockquote small {
 }
 
 .booktravel-home-margin {
-  margin-left: 8px!important;
-  margin-right: 8px!important;
+  margin-left: 8px !important;
+  margin-right: 8px !important;
 }
 </style>
