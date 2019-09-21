@@ -25,7 +25,7 @@
               </div>
             </el-badge>
           </div>
-          <el-popover
+          <!-- <el-popover
             placement="bottom"
             width="15rem"
             transition="none"
@@ -51,7 +51,7 @@
               <div class="my-vent-comment-item" :style="'color:'+item.color" v-for="it in item.reply" :key="it.id">{{it.name+"："+it.content}}</div>
             </div>
             <i slot="reference" class="el-icon-arrow-down" style="color:white"></i>
-          </el-popover>
+          </el-popover> -->
         </div>
     </div>
   </div>
@@ -104,51 +104,51 @@ export default {
       }
       return '#'+r.toString(16)+g.toString(16)+b.toString(16);
     },
-    send(index){
-      var that = this
-      if(that.input.identity == ""){
+    // send(index){
+    //   var that = this
+    //   if(that.input.identity == ""){
         
-        this.$message({
-          message: '请输入身份内容',
-          type: 'warning'
-        });
-      }
-      else if( that.input.content == ""){
+    //     this.$message({
+    //       message: '请输入身份内容',
+    //       type: 'warning'
+    //     });
+    //   }
+    //   else if( that.input.content == ""){
 
-        this.$message({
-          message: '请输入内容',
-          type: 'warning'
-        });
-      }
-      else{
-        jQuery.post(
-          'https://husteicstu.cn:3000/PsychologyBoard/Reply',
-          {
-            content: that.input.content,
-            name: that.input.identity,
-            index: index
-          },
-          function (res) {
-            console.log(res)
-            that.tableData = res.data
-            jQuery.get(
-              'https://husteicstu.cn:3000/PsychologyBoard',
-              function (res) {
-                console.log(res)
-                that.propertys = res.data
-                that.$message({
-                  message: '发表成功',
-                  type: 'success'
-                });
-                that.input.identity = ""
-                that.input.content = ""
-              }
-            )
-          }
-        )
-      }
+    //     this.$message({
+    //       message: '请输入内容',
+    //       type: 'warning'
+    //     });
+    //   }
+    //   else{
+    //     jQuery.post(
+    //       'https://husteicstu.cn:3000/PsychologyBoard/Reply',
+    //       {
+    //         content: that.input.content,
+    //         name: that.input.identity,
+    //         index: index
+    //       },
+    //       function (res) {
+    //         console.log(res)
+    //         that.tableData = res.data
+    //         jQuery.get(
+    //           'https://husteicstu.cn:3000/PsychologyBoard',
+    //           function (res) {
+    //             console.log(res)
+    //             that.propertys = res.data
+    //             that.$message({
+    //               message: '发表成功',
+    //               type: 'success'
+    //             });
+    //             that.input.identity = ""
+    //             that.input.content = ""
+    //           }
+    //         )
+    //       }
+    //     )
+    //   }
       
-    },
+    // },
     findByTag(tag){
       var that = this
       jQuery.get(
@@ -186,10 +186,7 @@ export default {
 </script>
 
 <style>
-body{
-  margin:0px;
-  height: 1rem;
-}
+
 div::-webkit-scrollbar {
   width: 0;
 }
@@ -226,8 +223,8 @@ input::-webkit-input-placeholder {
   color: #000000;
 }
 .my-vent-wall-outer{
-  width: 80rem;
-  padding: 3rem;
+  /* width: 80rem;
+  padding: 3rem; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -240,8 +237,8 @@ input::-webkit-input-placeholder {
   margin-right: 5rem;
 }
 .my-vent-wall{
-  width: 80rem;
-  padding: 3rem;
+  /* width: 80rem;
+  padding: 3rem; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -316,6 +313,7 @@ input::-webkit-input-placeholder {
   text-overflow: ellipsis;
   overflow:hidden;/*超出隐藏*/
   display:-webkit-box;/*设置弹性盒模型*/
+  word-break: break-all;
 }
 @keyframes move
 {

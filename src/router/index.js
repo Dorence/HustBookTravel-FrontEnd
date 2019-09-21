@@ -3,30 +3,25 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-import HomePage from '@/components/views/HomePage'
+import homePage from '@/components/views/homePage'
 import AllComments from '@/components/views/AllComments'
-import ComContent from '@/components/views/ComContent'
 import MyComments from '@/components/views/MyComments'
-import IndexRL from '@/components/views/IndexRL'
+
 import bookManager from "@/components/views/bookManager"
 import bookList from "@/components/views/bookManager/bookList"
 import bookDetail from "@/components/views/bookManager/bookDetail"
 import myAppointment from "@/components/views/bookManager/myAppointment"
-// import FeedBack from '@/components/views/FeedBack'
-//import message from '@/components/views/message'
-import VentPanel from '@/components/views/VentPanel'
-import VentWall from '@/components/components/VentPage/RouteView/VentWall'
-import SubmitVent from '@/components/components/VentPage/RouteView/SubmitVent'
-
-
-
+import VentPanel from '@/components/views/ventPanel'
+import VentWall from '@/components/views/ventPanel/VentWall'
+import SubmitVent from '@/components/views/ventPanel/SubmitVent'
+import Auth from '@/components/views/Auth'
+import FindCode from '@/components/views/FindCode'
 
 export default new Router({
-    routes: [
-        {
-            path: '/',
-            name: 'HomePage',
-            component: HomePage
+    routes: [{
+            path: "/",
+            name: "homePage",
+            component: homePage
         },
         {
             path: '/AllComments',
@@ -34,57 +29,55 @@ export default new Router({
             component: AllComments
         },
         {
-            path: '/Comcontent',
-            name: 'ComContent',
-            component: ComContent
-        },
-        {
             path: '/MyComments',
             name: 'MyComments',
             component: MyComments
         },
         {
-            path: "/IndexRL",
-            name: 'IndexRL',
-            component: IndexRL
+            path: "/Auth",
+            name: 'Auth',
+            component: Auth
+        },
+        {
+            path: "/FindCode",
+            name: 'FindCode',
+            component: FindCode
         },
         {
             path: "/book",
             name: "bookManager",
             component: bookManager,
             children: [{
-                path: "/book/bookList",
-                name: "bookList",
-                component: bookList
-            }, {
-                path: "/book/bookDetail",
-                name: "bookDetail",
-                component: bookDetail
-            },
-            {
-                path: "/book/myAppointment",
-                name: "myAppointment",
-                component: myAppointment
-            }
+                    path: "/book/bookList",
+                    name: "bookList",
+                    component: bookList
+                }, {
+                    path: "/book/bookDetail",
+                    name: "bookDetail",
+                    component: bookDetail
+                },
+                {
+                    path: "/book/myAppointment",
+                    name: "myAppointment",
+                    component: myAppointment
+                }
             ]
         },
         {
-            path: '/VentPanel',
-            name: 'VentPanel',
+            path: '/vent',
+            name: 'ventPanel',
             component: VentPanel,
-            children:[
-              {
-                path: '/VentPanel',
-                name: 'VentWall',
-                component: VentWall,
-              },
-              {
-                path: '/SubmitVent',
-                name: 'SubmitVent',
-                component: SubmitVent,
-              },
+            children: [{
+                    path: '/VentPanel',
+                    name: 'VentWall',
+                    component: VentWall,
+                },
+                {
+                    path: '/SubmitVent',
+                    name: 'SubmitVent',
+                    component: SubmitVent,
+                }
             ]
-          },
-
+        }
     ]
 });

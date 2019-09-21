@@ -1,6 +1,4 @@
 <template>
-  <div>
-    <el-col class="my-left-bar">
       <el-menu
         default-active="2"
         class="el-menu-vertical-demo">
@@ -19,8 +17,7 @@
         </el-menu-item> -->
 
       </el-menu>
-    </el-col>
-  </div>
+
 </template>
 <script>
 export default {
@@ -39,10 +36,7 @@ export default {
 </script>
 
 <style>
-body{
-  margin:0px;
-  height: 1rem;
-}
+
 .my-left-bar-title{
   margin: 2rem;
   font-weight: bold;

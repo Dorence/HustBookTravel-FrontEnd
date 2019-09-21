@@ -1,24 +1,22 @@
 <template>
-  <div>
-    <TopBar />
-    <router-view class="main-router-view" />
-    <BottomBar />
-    <FastMenu />
-  </div>
+  <el-container class="booktravel-main" direction="vertical">
+    <navBar id="booktravel-nav" />
+    <el-main>
+      <router-view class="main-router-view" />
+      <fastMenu />
+    </el-main>
+    <bottomBar />    
+  </el-container>
 </template>
 
 <script>
-import BottomBar from "@/components/components/BottomBar";
-import TopBar from "@/components/components/TopBar";
-import FastMenu from "@/components/components/FastMenu";
+import bottomBar from "@/components/components/bottomBar";
+import fastMenu from "@/components/components/fastMenu";
+import navBar from "@/components/components/navBar";
 
 export default {
   name: "App",
-  components: {
-    TopBar: TopBar,
-    BottomBar: BottomBar,
-    FastMenu: FastMenu
-  },
+  components: { bottomBar, fastMenu, navBar },
   data() {
     return { direction: "" };
   },
@@ -49,8 +47,22 @@ export default {
   text-align: center;
 }
 
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-y:scroll;
+}
+
+.booktravel-main > .el-header,
+.booktravel-main > .el-main,
+.booktravel-main > .el-footer {
+  padding: 0;
+  margin: 0;
+  overflow: unset;
+}
+
 .main-router-view {
   position: relative;
-  width: 100vw;
+  width: 100%;
 }
 </style>

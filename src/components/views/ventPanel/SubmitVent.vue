@@ -128,8 +128,8 @@ export default {
   vertical-align: bottom;
 }
 .my-vent-submit{
-  width: 60rem;
-  padding: 3rem;
+  /* width: 60rem;
+  padding: 3rem; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -141,7 +141,7 @@ export default {
   width: 4rem;
 }
 .my-vent-submit-title{
-  width: 80rem;
+  /* width: 80rem; */
   display: flex;
   flex-direction: row;
   align-items: center;
