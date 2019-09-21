@@ -3,8 +3,28 @@
     <!--el-header>评论区</el-header-->
 
     <!--el-divider></el-divider-->
-    <el-aside width="200px">Aside</el-aside>
+    <el-aside width="200px">
+      <div>
+        <el-col class="my-left-bar">
+          <el-menu default-active="2" class="el-menu-vertical-demo">
+            <el-menu-item @click="redirect('AllComments')">
+              <i class="el-icon-menu"></i>
+              <span slot="title" class="name">全部帖子</span>
+            </el-menu-item>
+            <el-menu-item @click="redirect('MyComments')">
+              <i class="el-icon-menu"></i>
+              <span slot="title" class="name">我的帖子</span>
+            </el-menu-item>
+          </el-menu>
+        </el-col>
+      </div>
+    </el-aside>
     <el-container>
+      <el-header>
+        <el-row :gutter="20">
+          <el-col :span="12" :offset="2">全部帖子</el-col>
+        </el-row>
+      </el-header>
       <el-main>
         <el-row>
           <el-col id="outside" :span="23" :offset="1">
@@ -16,6 +36,8 @@
                   :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                   header-row-style="height:40px"
                   row-style="height:80px"
+                  stripe
+                  :cell-style="{'vertical-align':'top'}"
                 >
                   <el-table-column label="最新" sortable width="auto" column-key="time">
                     <template slot-scope="scope">
@@ -50,14 +72,17 @@
                     prop="category"
                     label="分类"
                     width="auto"
-                    :filters="[{ text: '我的帖子', value: 'my' }, { text: '其他帖子', value: 'others' }]"
+                    :filters="[{ text: '全部', value: 'all' }, { text: '人文类', value: 'humanity' },
+                    {text: '艺术类', value: 'art'}, {text: '自然科学类', value: 'science'},
+                    {text: '管理类', value: 'management'}]"
                     :filter-method="filterTag"
                     filter-placement="bottom-end"
                   >
                     <template slot-scope="scope">
                       <el-collapse v-model="activeNames" @change="handleChange">
                         <el-collapse-item title="推荐理由" name="1">
-                          <div>{{scope.row.content | ellipsis}}</div>
+                          <!--div>{{scope.row.content | ellipsis}}</div-->
+                          <div>{{scope.row.content}}</div>
                         </el-collapse-item>
                       </el-collapse>
                     </template>
@@ -69,25 +94,51 @@
                     </template>
                     <template slot-scope="scope">
                       <el-row>
-                        <el-col :span="6" :offset="1">
+                        <el-col :span="6" :offset="4">
                           <div>
-                            <el-button type="text">点赞:{{scope.row.like}}</el-button>
+                            <!--el-button type="text">点赞:{{scope.row.like}}</el-button-->
+                            <el-button type="text" icon="el-icon-thumb"></el-button>
                           </div>
                         </el-col>
                         <el-col :span="6" :offset="4">
                           <div>
-                            <el-button type="text" @click="open">回复</el-button>
+                            <el-button type="primary" @click="open">回复</el-button>
                           </div>
                         </el-col>
                       </el-row>
                       <el-row>
-                        <el-col :span="20" :offset="1">
-                          <el-collapse v-model="activeNames" @change="handleChange">
-                            <el-collapse-item title="全部评论" name="1">
-                              <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                              <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-                            </el-collapse-item>
-                          </el-collapse>
+                        <el-col :span="20" :offset="0">
+                          <template>
+                            <div>
+                              <el-button type="text" @click="dialogVisible = true">查看全部评论</el-button>
+                              <el-dialog :visible.sync="dialogVisible" width="50%">
+                                <el-table
+                                  ref="filterTable"
+                                  :data="commentData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                                  header-row-style="height:40px"
+                                  row-style="height:80px"
+                                >
+                                  <el-table-column label="全部评论" width="auto">
+                                    <template slot-scope="scope">
+                                      <div>{{scope.row.content}}</div>
+                                    </template>
+                                  </el-table-column>
+                                </el-table>
+                                <span slot="footer" class="dialog-footer">
+                                  <el-divider></el-divider>
+                                  <div class="block">
+                                    <el-pagination
+                                      @size-change="handleSizeChange"
+                                      @current-change="handleCurrentChange"
+                                      :current-page="currentPage"
+                                      layout="total, prev, pager, next, jumper"
+                                      :total="commentData.length"
+                                    ></el-pagination>
+                                  </div>
+                                </span>
+                              </el-dialog>
+                            </div>
+                          </template>
                         </el-col>
                       </el-row>
                     </template>
@@ -151,7 +202,7 @@
   </el-container>
 </template>
 
-<style>
+<style scoped>
 .el-header {
   background-color: #ffffff;
   color: #333;
@@ -174,7 +225,7 @@
 }
 
 .el-aside {
-  background-color: #d3dce6;
+  background-color: #ffffff;
   color: #333;
   text-align: center;
   line-height: 200px;
@@ -186,11 +237,11 @@ body > .el-container {
 
 .el-row {
   margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
 
+.el-row:last-child {
+  margin-bottom: 0;
+}
 .el-col {
   border-radius: 4px;
 }
@@ -238,6 +289,7 @@ export default {
   name: "AllComments",
   data() {
     return {
+      dialogVisible: false,
       drawer: false,
       direction: "btt",
       text: "",
@@ -282,7 +334,14 @@ export default {
         author: [{ required: true, message: "作者不能为空" }],
         reason: [{ required: true, message: "推荐理由不能为空" }]
       },
-
+      commentData: [
+        {
+          content: "hahahahahahah"
+        },
+        {
+          content: "hohohohohohoh"
+        }
+      ],
       tableData: [
         {
           title: "帖子1",
@@ -464,7 +523,7 @@ export default {
           comments: "20",
           picture:
             "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
+        }
       ]
     };
   },
@@ -488,6 +547,9 @@ export default {
         return [1, 2];
       }
     },
+    redirect(pathname){
+      this.$router.push({ name: pathname })
+    },
     open() {
       this.$prompt("请输入回复内容", "提示", {
         confirmButtonText: "发送",
@@ -508,6 +570,7 @@ export default {
           });
         });
     },
+
     handleChange(val) {
       console.log(val);
     },

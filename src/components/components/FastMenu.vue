@@ -1,85 +1,84 @@
 <template>
-  <div class="my-FastMenu">
-    <div class="my-FastMenu-bar">
-      <transition name="el-zoom-in-bottom">
-        <div v-show="show">
-          <div v-for="item in menus" class="my-FastMenu-bar-item" :style="{backgroundColor: item.color}">
-            <div class="my-FastMenu-bar-item-row">
-              <i :class="item.icon" :style="{color: '#ffffff'}" @click="redirect(item.pagename)"/>
-            </div>
-          </div>
-        </div>
-      </transition>
-      <div class="my-FastMenu-bar-item" :style="{backgroundColor: '#eeeeee'}">
-        <div class="my-FastMenu-bar-item-row">
-          <i class="el-icon-arrow-up" :style="{color: '#ffffff'}" @click="showChange()"/>
+  <div class="booktravel-fastmenu">
+    <transition name="el-zoom-in-bottom">
+      <div v-show="show">
+        <div
+          v-for="i in menus"
+          class="booktravel-fastmenu-item"
+          :key="i.id"
+          :style="{backgroundColor: i.color}"
+        >
+          <i :class="i.icon" @click="redirect(i.pagename)" />
         </div>
       </div>
+    </transition>
+    <div class="booktravel-fastmenu-item booktravel-fastmenu-menu" @click="toggleShow()">
+      <i :class="menuIcon[Number(show)]" />
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: 'FastMenu',
+  name: "FastMenu",
   data() {
-      return {
-        show: false,
-        menus:[
-          {
-            pagename: 'HomePage',
-            icon: 'el-icon-s-home',
-            color: 'rgb(38, 201, 106)',
-          },
-          {
-            pagename: 'HomePageSlide',
-            icon: 'el-icon-s-custom',
-            color: 'rgb(17, 135, 238)',
-          },
-          {
-            pagename: 'RightPage',
-            icon: 'el-icon-s-opportunity',
-            color: 'rgb(38, 201, 201)',
-          },
-        ],
-      };
-    },
+    return {
+      show: false,
+      menuIcon: ["el-icon-arrow-up", "el-icon-arrow-down"],
+      menus: [
+        {
+          pagename: "homePage",
+          icon: "el-icon-s-home",
+          color: "rgb(38, 201, 106)"
+        },
+        {
+          pagename: "HomePageSlide",
+          icon: "el-icon-s-custom",
+          color: "rgb(17, 135, 238)"
+        },
+        {
+          pagename: "RightPage",
+          icon: "el-icon-s-opportunity",
+          color: "rgb(38, 201, 201)"
+        }
+      ]
+    };
+  },
   methods: {
-    redirect(pathname){
-      this.$router.push({ name: pathname})
+    redirect(pathname) {
+      this.$router.push({ name: pathname });
     },
-    showChange(){
+    toggleShow() {
       this.show = !this.show;
     }
   }
-}
+};
 </script>
 
 <style>
-body{
-  margin:0px;
-  height: 1rem;
-}
-.my-FastMenu{
+.booktravel-fastmenu {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
 }
-.my-FastMenu-bar-item-row{
-  height: 4rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
-}
-.my-FastMenu-bar-item{
-  width: 4rem;
-  height: 4rem;
+
+.booktravel-fastmenu-item {
   background-color: black;
   border-radius: 10rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 2rem;
   margin: 0.5rem;
+  text-align: center;
+}
+
+.booktravel-fastmenu-item i {
+  height: 4rem;
+  line-height: 4rem;
+  width: 4rem;
+}
+
+.booktravel-fastmenu-item.booktravel-fastmenu-menu {
+  background-color: #eee;
+  color: #000;
 }
 </style>

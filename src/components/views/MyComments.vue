@@ -3,12 +3,27 @@
     <!--el-header>评论区</el-header-->
 
     <!--el-divider></el-divider-->
-    <el-aside width="200px">Aside</el-aside>
+    <el-aside width="200px">
+      <div>
+        <el-col class="my-left-bar">
+          <el-menu default-active="2" class="el-menu-vertical-demo">
+            <el-menu-item @click="redirect('AllComments')">
+              <i class="el-icon-menu"></i>
+              <span slot="title" class="name">全部帖子</span>
+            </el-menu-item>
+            <el-menu-item @click="redirect('MyComments')">
+              <i class="el-icon-menu"></i>
+              <span slot="title" class="name">我的帖子</span>
+            </el-menu-item>
+          </el-menu>
+        </el-col>
+      </div>
+       
+    </el-aside>
     <el-container>
       <el-header>
         <el-row :gutter="20">
-          <el-col :span="12" :offset="11
-              ">我的帖子</el-col>
+          <el-col :span="12" :offset="2">我的帖子</el-col>
         </el-row>
       </el-header>
       <el-main>
@@ -22,6 +37,8 @@
                   :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                   header-row-style="height:40px"
                   row-style="height:80px"
+                  stripe
+                  :cell-style="{'vertical-align':'top'}"
                 >
                   <el-table-column label="最新" sortable width="auto" column-key="time">
                     <template slot-scope="scope">
@@ -52,14 +69,7 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column
-                    prop="category"
-                    label="分类"
-                    width="auto"
-                    :filters="[{ text: '我的帖子', value: 'my' }, { text: '其他帖子', value: 'others' }]"
-                    :filter-method="filterTag"
-                    filter-placement="bottom-end"
-                  >
+                  <el-table-column prop="category" width="auto" align="left">
                     <template slot-scope="scope">
                       <el-collapse v-model="activeNames" @change="handleChange">
                         <el-collapse-item title="推荐理由" name="1">
@@ -80,20 +90,45 @@
                             <el-button type="text">点赞数:{{scope.row.like}}</el-button>
                           </div>
                         </el-col>
-                        <el-col :span="6" :offset="4">
+                        <el-col :span="6" :offset="6">
                           <div>
-                            <el-button type="text" @click="open">回复</el-button>
+                            <el-button type="primary" @click="open">回复</el-button>
                           </div>
                         </el-col>
                       </el-row>
                       <el-row>
-                        <el-col :span="20" :offset="1">
-                          <el-collapse v-model="activeNames" @change="handleChange">
-                            <el-collapse-item title="全部评论" name="1">
-                              <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                              <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-                            </el-collapse-item>
-                          </el-collapse>
+                        <el-col :span="20" :offset="0">
+                          <template>
+                            <div>
+                              <el-button type="text" @click="dialogVisible = true">查看全部评论</el-button>
+                              <el-dialog :visible.sync="dialogVisible" width="50%">
+                                <el-table
+                                  ref="filterTable"
+                                  :data="commentData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                                  header-row-style="height:40px"
+                                  row-style="height:80px"
+                                >
+                                  <el-table-column label="全部评论" width="auto">
+                                    <template slot-scope="scope">
+                                      <div>{{scope.row.content}}</div>
+                                    </template>
+                                  </el-table-column>
+                                </el-table>
+                                <span slot="footer" class="dialog-footer">
+                                  <el-divider></el-divider>
+                                  <div class="block">
+                                    <el-pagination
+                                      @size-change="handleSizeChange"
+                                      @current-change="handleCurrentChange"
+                                      :current-page="currentPage"
+                                      layout="total, prev, pager, next, jumper"
+                                      :total="commentData.length"
+                                    ></el-pagination>
+                                  </div>
+                                </span>
+                              </el-dialog>
+                            </div>
+                          </template>
                         </el-col>
                       </el-row>
                     </template>
@@ -127,13 +162,7 @@
               <el-input v-model="form.author"></el-input>
             </el-form-item>
             <el-form-item prop="reason" :rules="rules.reason" label="推荐理由">
-              <el-input
-                type="textarea"
-                rows="4"
-                v-model="textarea"
-                maxlength="500"
-                show-word-limit
-              ></el-input>
+              <el-input type="textarea" rows="4" v-model="textarea" maxlength="500" show-word-limit></el-input>
             </el-form-item>
             <el-form-item>
               <el-col :offset="20">
@@ -147,7 +176,7 @@
       <el-footer height="90px">
         <el-divider></el-divider>
         <div class="block">
-           <el-pagination
+          <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="currentPage"
@@ -162,13 +191,94 @@
   </el-container>
 </template>
 
+<style scoped>
+.el-header {
+  background-color: #ffffff;
+  color: #333;
+  text-align: left;
+  line-height: 60px;
+}
 
+.el-footer {
+  background-color: #ffffff;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+
+.el-main {
+  background-color: #ffffff;
+  color: #333;
+  text-align: center;
+  line-height: 10px;
+}
+
+.el-aside {
+  background-color: #ffffff;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}
+
+.el-row {
+  margin-bottom: 20px;
+}
+
+.el-row:last-child {
+  margin-bottom: 0;
+}
+.el-col {
+  border-radius: 4px;
+}
+
+#outside {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+#kernel {
+  margin-top: 25px;
+  margin-right: 40px;
+  margin-bottom: 75px;
+  margin-left: 50px;
+}
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 70%;
+}
+
+.my-submit-form {
+  padding-top: 2rem;
+  width: 90rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-right-form-inner {
+  width: 40rem;
+}
+</style>
 
 <script>
 export default {
   name: "MyComments",
   data() {
     return {
+      dialogVisible: false,
       drawer: false,
       direction: "btt",
       text: "",
@@ -183,7 +293,7 @@ export default {
       currentPage: 1, //初始页
       pagesize: 10, //每页条目数
       rules: {
-        commentor: [{ required: true, message: "推荐人名不能为空"}],
+        commentor: [{ required: true, message: "推荐人名不能为空" }],
         name: [{ required: true, message: "书名不能为空" }],
         press: [{ required: true, message: "出版社不能为空" }],
         author: [{ required: true, message: "作者不能为空" }],
@@ -213,6 +323,7 @@ export default {
         }
       ],
       value: "",
+      commentData: [],
       tableData: [
         {
           title: "帖子1",
@@ -293,7 +404,7 @@ export default {
           comments: "20",
           picture:
             "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
+        }
       ]
     };
   },
@@ -317,6 +428,9 @@ export default {
         return [1, 2];
       }
     },
+    redirect(pathname){
+      this.$router.push({ name: pathname })
+    },
     open() {
       this.$prompt("请输入回复内容", "提示", {
         confirmButtonText: "发送",
@@ -337,7 +451,7 @@ export default {
           });
         });
     },
-     handleSizeChange: function(size) {
+    handleSizeChange: function(size) {
       this.pagesize = size;
       console.log(this.pagesize); //每页下拉显示数据
     },
