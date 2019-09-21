@@ -1,80 +1,40 @@
 <template>
-    <div class="login">
-        <span class="hust-name">
-            华中科技大学
-        </span>
-        <div class="tip">读书漂流</div>
-        <form action="shubmit">
-            <div class="phone">
-                <input type="text" @blur="onBlurCheck('phone')" 
-                :class="{'phone-input':true,error:errorMessage.phone.indexOf('不能为空')>-1}" 
-                :placeholder="errorMessage['phone']"  v-model.trim="phone">
-            </div>
-            <div class="phone">
-                <input type="password" v-if="hidden" @blur="onBlurCheck('password')" 
-                :class="{'phone-input':true,error:errorMessage.password.indexOf('不能为空')>-1}" 
-                :placeholder="errorMessage['password']"  v-model.trim="password">
-                <input type="text" v-else @blur="onBlurCheck('password')"
-                :class="{'phone-input':true,error:errorMessage.password.indexOf('不能为空')>-1}" 
-                :placeholder="errorMessage['password']" v-model.trim="password">
-                <i v-if="hidden" @click="toggleHiddenPassword" class="iconfont icon-yanjing-xiexian"></i>
-                <i v-else @click="toggleHiddenPassword" class="iconfont icon-yanjing"></i>
-            </div>
-            <div class="code-login">
-                <a href="javascript:" class="toggle-code-login">手机验证码登陆</a>
-                <a href="javascript:" class="forget-password">忘记密码</a>
-            </div>
-            <a href="javascript:" class="login-btn">登陆</a>
-            <!--div class="register-org">
-                <a href="javascript:" class="other-login-btn">二维码登陆</a>
-                <span>·</span>
-                <a href="javascript:" class="other-login-btn">海外手机登陆</a>
-                <span>·</span>
-                <a href="javascript:" class="other-login-btn">社交账号登陆</a>
-            </div-->
-        </form>
-        <div class="bottom">
-            <span>没有账号？<a href="javascript:" @click="toggleComponent" class="toggle-register-btn">注册</a></span>
-        </div>
-    </div>
+  <div class="login">
+    <span class="hust-name">华中科技大学</span>
+    <div class="tip">读书漂流</div>
+    <component :toggleComponent="toggleComponent" :is="typeName"></component>
+  </div>
 </template>
-
 
 <script>
 export default {
-  name: "Login",
+  name: "Auth",
   data() {
     return {
-      msg: "hust",
-      phone: "",
-      //optionArray: ["中国 +86", "美国 +1", "日本 +81"],
-      //selected: "中国 +86",
-      password: "",
-      hidden: true,
-      errorMessage: {
-        phone: "账号",
-        password: "密码"
-      }
+      typeName: "Login"
     };
   },
   methods: {
-    onBlurCheck(name) {
-      console.log(name, "check name");
-      const value = this[name];
-      if (!value || value.length < 1)
-        return (this.errorMessage[name] = "不能为空");
-      else this.errorMessage[name] = "";
-    },
-    toggleHiddenPassword() {
-      this.hidden = !this.hidden;
+    toggleComponent: function() {
+      this.typeName = this.typeName === "Login" ? "Register" : "Login";
     }
   },
-  props: ["toggleComponent"]
+  components: {
+    Login,
+    Register
+  }
 };
+import Login from "@/components/components/Login";
+import Register from "@/components/components/Register";
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+element.style {
+    margin-top: 2rem;
+    margin-bottom: 20rem;
+    width: 100%;
+}
 input {
   box-sizing: border-box;
   border: 0;
@@ -101,6 +61,19 @@ a:active {
   color: black;
 }
 .login {
+      width: 432px;
+    background: #ffffff;
+    /* margin-top: 50px; */
+    /* position: absolute; */
+    /* left: 50%; */
+    /* top: 50%; */
+    /* transform: translate(-50%, -50%); */
+    box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: auto;
+}
+.register {
   width: 432px;
   background: #ffffff;
   position: absolute;
@@ -113,13 +86,13 @@ a:active {
 }
 .hust-name {
   font-size: 40px;
-  color: #472940;
+  color: rgb(19, 79, 143);
   text-align: center;
   display: block;
   margin-top: 30px;
 }
 .tip {
-  color: #472940;
+  color: rgb(19, 79, 143);
   text-align: center;
   font-size: 22px;
   margin-top: 15px;
@@ -183,7 +156,6 @@ form {
 }
 .code-btn {
   color: #175199;
-  width: 98px;
   line-height: 48px;
   margin-left: 5px;
   float: right;
@@ -221,6 +193,16 @@ a.login-btn {
   display: inline-block;
   text-align: center;
 }
+a.register-btn {
+  background-color: #0084ff;
+  color: #ffffff;
+  margin-top: 14px;
+  height: 36px;
+  line-height: 36px;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
 .register-org {
   width: 100%;
   margin-top: 18px;
@@ -232,6 +214,10 @@ a.login-btn {
 }
 a.other-login-btn {
   color: #175199;
+}
+a.org-btn {
+  color: #175199;
+  float: right;
 }
 a.toggle-register-btn {
   color: #175199;

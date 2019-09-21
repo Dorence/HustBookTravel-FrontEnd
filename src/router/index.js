@@ -4,7 +4,9 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 import HomePage from '@/components/views/HomePage'
-import IndexRL from '@/components/views/IndexRL'
+import Auth from '@/components/views/Auth'
+import FindCode from '@/components/views/FindCode'
+
 
 export default new Router({
     routes: [{
@@ -13,9 +15,14 @@ export default new Router({
         component: HomePage
     },
     {
-        path:"/IndexRL",
-        name:'IndexRL',
-        component: IndexRL
+        path:"/Auth",
+        name:'Auth',
+        component:Auth
+    },
+    {
+        path:"/FindCode",
+        name:'FindCode',
+        component:FindCode
     }
     ]
 })
