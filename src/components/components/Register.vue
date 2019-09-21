@@ -1,12 +1,21 @@
 <template>
   <div>
-    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm" label-position="left">
+    <!--el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"-->
+    <el-form
+      :model="ruleForm"
+      status-icon
+      :rules="rules"
+      ref="ruleForm"
+      label-width="105px"
+      class="demo-ruleForm"
+      label-position="left"
+    >
       <el-form-item label="手机号" prop="num">
         <el-input v-model.number="ruleForm.num"></el-input>
       </el-form-item>
       <el-form-item label="验证码">
         <el-input v-model="ruleForm.idcode"></el-input>
-        <a href="javascript:" class="org-btn">获取短信验证码</a>
+        <a href="javascript:" class="org-btn" @click="sendIDCode()">获取短信验证码</a>
       </el-form-item>
       <el-form-item label="用户名">
         <el-input v-model="ruleForm.username"></el-input>
@@ -26,7 +35,7 @@
       <el-form-item label="住址">
         <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
-    
+
       <el-button
         type="primary"
         @click="submitForm('ruleForm')"
@@ -59,7 +68,13 @@ export default {
       }, 1000);
     };
     var validatePass = (rule, value, callback) => {
-      if (value === ""||value.length < 8 || value.length >20||value.length == '') {
+      if (
+        value === "" ||
+        value.length < 8 ||
+        value.length > 20 ||
+        value.length == ""
+      ) {
+        console.log("ok");
         callback(new Error("密码位数应在8~20位之间"));
       } else {
         if (this.ruleForm.checkPass !== "") {
@@ -94,10 +109,10 @@ export default {
         pass: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
         num: [{ validator: checkNum, trigger: "blur" }]
-      },
+      }
     };
   },
- 
+
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -108,9 +123,20 @@ export default {
           return false;
         }
       });
+    },
+    
+    sendIDCode() {
+     console.log(this.ruleForm)
+      if (!this.ruleForm.num)
+      {
+        console.log("error!!");
+      }
+      else{
+        alert("已发送验证码到您手机!")
+      }
     }
   },
+
   props: ["toggleComponent"]
 };
-
 </script>

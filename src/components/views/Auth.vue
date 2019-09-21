@@ -28,7 +28,6 @@ import Login from "@/components/components/Login";
 import Register from "@/components/components/Register";
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 element.style {
     margin-top: 2rem;
