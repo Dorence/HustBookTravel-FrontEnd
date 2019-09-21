@@ -5,13 +5,13 @@
       model="form"
       rules="rules"
       ref="form"
-      label-width="120px"
+      label-width="105px"
       label-position="left"
     >
       <el-form-item label="用户名/手机号">
         <el-input v-model="form.phone"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="pass">
+      <el-form-item label="密码" :prop="pass">
         <el-input type="password" v-model="form.pass" autocomplete="off"></el-input>
       </el-form-item>
 
@@ -64,7 +64,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("login!");
+          this.$message('login');
         } else {
           console.log("error login!!");
           return false;

@@ -5,24 +5,24 @@
       status-icon
       :rules="rules"
       ref="ruleForm"
-      label-width="120px"
+      label-width="105px"
       class="demo-ruleForm"
       label-position="left"
     >
-      <el-form-item label="手机号" :prop="num">
+      <el-form-item label="手机号" prop="num">
         <el-input v-model.number="ruleForm.num"></el-input>
       </el-form-item>
       <el-form-item label="验证码">
         <el-input v-model="ruleForm.idcode"></el-input>
-        <a href="javascript:" class="org-btn">获取短信验证码</a>
+        <a href="javascript:" class="org-btn" @click="sendIDCode()">获取短信验证码</a>
       </el-form-item>
       <el-form-item label="用户名">
         <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
-      <el-form-item label="密码" :prop="pass">
+      <el-form-item label="密码" prop="pass">
         <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码" :prop="checkPass">
+      <el-form-item label="确认密码" prop="checkPass">
         <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="学号">
@@ -73,6 +73,7 @@ export default {
         value.length > 20 ||
         value.length == ""
       ) {
+        console.log("ok");
         callback(new Error("密码位数应在8~20位之间"));
       } else {
         if (this.ruleForm.checkPass !== "") {
@@ -115,14 +116,26 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("register!");
+          this.$message('register');;
         } else {
           console.log("error register!!");
           return false;
         }
       });
+    },
+    
+    sendIDCode() {
+     console.log(this.ruleForm)
+      if (!this.ruleForm.num)
+      {
+        console.log("error!!");
+      }
+      else{
+        this.$message("已发送验证码到您手机!")
+      }
     }
   },
+
   props: ["toggleComponent"]
 };
 </script>
