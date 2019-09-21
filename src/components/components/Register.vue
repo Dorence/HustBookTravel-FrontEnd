@@ -117,7 +117,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("register!");
+          this.$message('register');;
         } else {
           console.log("error register!!");
           return false;
@@ -132,7 +132,7 @@ export default {
         console.log("error!!");
       }
       else{
-        alert("已发送验证码到您手机!")
+        this.$message("已发送验证码到您手机!")
       }
     }
   },

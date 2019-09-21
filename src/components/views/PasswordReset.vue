@@ -81,7 +81,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("密码已重置");
+          this.$message("密码已重置");
         } else {
           console.log("error changeCode!!");
           return false;
@@ -95,7 +95,7 @@ export default {
         console.log("error!!");
       }
       else{
-        alert("已发送验证码到您手机!")
+        this.$message("已发送验证码到您手机!")
       }
     }
   },
