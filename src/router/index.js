@@ -6,7 +6,7 @@ Vue.use(Router)
 import homePage from '@/components/views/homePage'
 import AllComments from '@/components/views/AllComments'
 import MyComments from '@/components/views/MyComments'
-import IndexRL from '@/components/views/IndexRL'
+
 import bookManager from "@/components/views/bookManager"
 import bookList from "@/components/views/bookManager/bookList"
 import bookDetail from "@/components/views/bookManager/bookDetail"
@@ -14,7 +14,8 @@ import myAppointment from "@/components/views/bookManager/myAppointment"
 import VentPanel from '@/components/views/ventPanel'
 import VentWall from '@/components/views/ventPanel/VentWall'
 import SubmitVent from '@/components/views/ventPanel/SubmitVent'
-
+import Auth from '@/components/views/Auth'
+import FindCode from '@/components/views/FindCode'
 
 export default new Router({
     routes: [{
@@ -33,9 +34,14 @@ export default new Router({
             component: MyComments
         },
         {
-            path: "/IndexRL",
-            name: 'IndexRL',
-            component: IndexRL
+            path: "/Auth",
+            name: 'Auth',
+            component: Auth
+        },
+        {
+            path: "/FindCode",
+            name: 'FindCode',
+            component: FindCode
         },
         {
             path: "/book",
@@ -72,7 +78,6 @@ export default new Router({
                     component: SubmitVent,
                 }
             ]
-        },
-
+        }
     ]
 });
