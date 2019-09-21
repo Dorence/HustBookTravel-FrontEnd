@@ -15,7 +15,7 @@ import VentPanel from '@/components/views/ventPanel'
 import VentWall from '@/components/views/ventPanel/VentWall'
 import SubmitVent from '@/components/views/ventPanel/SubmitVent'
 import Auth from '@/components/views/Auth'
-import FindCode from '@/components/views/FindCode'
+import PasswordReset from '@/components/views/PasswordReset'
 
 export default new Router({
     routes: [{
@@ -39,9 +39,9 @@ export default new Router({
             component: Auth
         },
         {
-            path: "/FindCode",
-            name: 'FindCode',
-            component: FindCode
+            path: "/PasswordReset",
+            name: 'PasswordReset',
+            component: PasswordReset
         },
         {
             path: "/book",

@@ -5,10 +5,10 @@
       model="form"
       rules="rules"
       ref="form"
-      label-width="80px"
+      label-width="120px"
       label-position="left"
     >
-      <el-form-item label="手机号">
+      <el-form-item label="用户名/手机号">
         <el-input v-model="form.phone"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
@@ -16,8 +16,7 @@
       </el-form-item>
 
       <div class="code-login">
-        <!--a href="javascript:" class="toggle-code-login">手机验证码登陆</a-->
-        <a href="javascript:" @click="redirect('FindCode')" class="forget-password">忘记密码</a>
+        <a href="javascript:" @click="redirect('PasswordReset')" class="org-btn">忘记密码</a>
       </div>
       <el-button
         type="primary"
