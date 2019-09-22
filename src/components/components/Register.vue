@@ -116,12 +116,33 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
+        /*
         if (valid) {
-          this.$message('register');;
+          this.$message('register');
+        
         } else {
           console.log("error register!!");
           return false;
-        }
+        }*/
+          jQuery.post('http://www.husteic.cn:3000/register', this.form, 
+          function(res) {
+            console.log(res);
+            if (res.code != "-1") {
+              that.$message({
+                message: "登陆成功",
+                type: "success"
+              });
+              that.$router.push({ name: "Statistics" });
+
+              that.show = true;
+              // window.document.cookie = that.form.account
+            } else {
+              that.$message({
+                message: "登陆失败",
+                type: "warning"
+              });
+            }
+          });
       });
     },
     

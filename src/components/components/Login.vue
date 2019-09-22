@@ -20,7 +20,7 @@
       </div>
       <el-button
         type="primary"
-         @click="submitForm('form')"
+        @click="submitForm('form')"
         style="margin-top: 2rem;margin-bottom: 2rem;width:100%;"
       >登陆</el-button>
     </el-form>
@@ -60,15 +60,55 @@ export default {
       }
     };
   },
+
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
+        jQuery.post('http://www.husteic.cn:3000/login', this.form, 
+          function(res) {
+            console.log(res);
+            if (res.code != "-1") {
+              that.$message({
+                message: "登陆成功",
+                type: "success"
+              });
+              that.$router.push({ name: "Statistics" });
+
+              that.show = true;
+            } else {
+              that.$message({
+                message: "登陆失败",
+                type: "warning"
+              });
+            }
+          });
+        /*
         if (valid) {
-          this.$message('login');
+          //this.$message("注册成功");
+          jQuery.post('http://www.husteic.cn:3000/forum/post', this.form, 
+          function(res) {
+            console.log(res);
+            if (res.code != "-1") {
+              that.$message({
+                message: "登陆成功",
+                type: "success"
+              });
+              that.$router.push({ name: "Statistics" });
+
+              that.show = true;
+              // window.document.cookie = that.form.account
+            } else {
+              that.$message({
+                message: "登陆失败",
+                type: "warning"
+              });
+            }
+          });
         } else {
-          console.log("error login!!");
+          //console.log("error login!!");
+          this.$message("注册失败");
           return false;
-        }
+        }*/
       });
     },
     switchComponent: function() {
