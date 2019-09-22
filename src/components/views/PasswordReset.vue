@@ -124,6 +124,8 @@ export default {
       });
     },
     sendIDCode() {
+      //return callback(new Error("手机号不能为空"));
+      this.$message("手机号不能为空")
       console.log(this.ruleForm);
       if (!this.ruleForm.num) {
         console.log("error!!");

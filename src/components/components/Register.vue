@@ -124,7 +124,7 @@ export default {
           console.log("error register!!");
           return false;
         }*/
-          jQuery.post('http://www.husteic.cn:3000/register', this.form, 
+          jQuery.post('http://www.husteic.cn:3000/register', this.ruleForm, 
           function(res) {
             console.log(res);
             if (res.code != "-1") {
@@ -147,9 +147,12 @@ export default {
     },
     
     sendIDCode() {
-     console.log(this.ruleForm)
+    //this.$message("已发送验证码到您手机!")
+    // console.log(this.ruleForm)
       if (!this.ruleForm.num)
       {
+        this.$message("手机号不能为空")
+        //callback(new Error("手机号不能为空"))
         console.log("error!!");
       }
       else{
