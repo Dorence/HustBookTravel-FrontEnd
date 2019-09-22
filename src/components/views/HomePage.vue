@@ -2,7 +2,7 @@
   <div>
     <el-row class="booktravel-intro">
       <h1>华中科技大学读书漂流</h1>
-      <blockquote class="booktravel-intro-quote">
+      <!-- <blockquote class="booktravel-intro-quote" style="float:right">
         <p>
           清晨醒来，读几页书，是很好的醒脑。
           <br />睡觉以前，读几页书，是很好的催眠。
@@ -24,7 +24,7 @@
           <br />中国梦的实现，中华民族的崛起，与读书密切相关。
         </p>
         <footer style="font-size: 16px">————&emsp;活动举办方</footer>
-      </blockquote>
+      </blockquote> -->
     </el-row>
     <el-divider></el-divider>
     <el-row class="booktravel-notice booktravel-home-margin" :gutter="8">
