@@ -54,7 +54,7 @@
                   <el-table-column label="最热" width="auto" sortable column-key="hot">
                     <template slot-scope="scope">
                       <el-row>
-                        <el-col>书名：{{scope.row.bookName}}</el-col>
+                        <el-col>书名：{{scope.row.book}}</el-col>
                       </el-row>
                       <el-row>
                         <el-col>出版社：{{scope.row.press}}</el-col>
@@ -63,7 +63,7 @@
                         <el-col>作者：{{scope.row.author}}</el-col>
                       </el-row>
                       <el-row>
-                        <el-col>推荐人：{{scope.row.commentor}}</el-col>
+                        <el-col>推荐人：{{scope.row.creator}}</el-col>
                       </el-row>
                     </template>
                   </el-table-column>
@@ -90,8 +90,10 @@
 
                   <el-table-column align="right">
                     <template slot="header">
-                      <el-button @click="drawer = true" type="primary">发帖</el-button>
+                      <!--el-button @click="drawer = true" type="primary">发帖</el-button-->
+                      <el-button type="primary" @click="dialogVisible2 = true">发帖</el-button>
                     </template>
+
                     <template slot-scope="scope">
                       <el-row>
                         <el-col :span="6" :offset="4">
@@ -102,7 +104,7 @@
                         </el-col>
                         <el-col :span="6" :offset="4">
                           <div>
-                            <el-button type="primary" @click="open">回复</el-button>
+                            <el-button type="primary" @click="open">评论</el-button>
                           </div>
                         </el-col>
                       </el-row>
@@ -110,8 +112,8 @@
                         <el-col :span="20" :offset="0">
                           <template>
                             <div>
-                              <el-button type="text" @click="dialogVisible = true">查看全部评论</el-button>
-                              <el-dialog :visible.sync="dialogVisible" width="50%">
+                              <el-button type="text" @click="dialogVisible1 = true">查看全部评论</el-button>
+                              <el-dialog :visible.sync="dialogVisible1" width="70%">
                                 <el-table
                                   ref="filterTable"
                                   :data="commentData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -137,6 +139,49 @@
                                   </div>
                                 </span>
                               </el-dialog>
+                              <el-dialog :visible.sync="dialogVisible2" width="70%">
+                                <div class="my-submit-form">
+                                  <el-form
+                                    ref="form"
+                                    :model="form"
+                                    label-width="80px"
+                                    :rules="rules"
+                                    class="my-right-form-inner"
+                                  >
+                                    <el-form-item
+                                      prop="commentor"
+                                      :rules="rules.commentor"
+                                      label="推荐人"
+                                    >
+                                      <el-input v-model="form.commentor"></el-input>
+                                    </el-form-item>
+                                    <el-form-item prop="name" :rules="rules.name" label="书名">
+                                      <el-input v-model="form.name"></el-input>
+                                    </el-form-item>
+                                    <el-form-item prop="press" :rules="rules.press" label="出版社">
+                                      <el-input v-model="form.press" />
+                                    </el-form-item>
+                                    <el-form-item prop="author" :rules="rules.author" label="作者">
+                                      <el-input v-model="form.author"></el-input>
+                                    </el-form-item>
+                                    <el-form-item prop="content" :rules="rules.content" label="推荐理由">
+                                      <el-input
+                                        type="textarea"
+                                        rows="4"
+                                        v-model="form.content"
+                                        maxlength="500"
+                                        show-word-limit
+                                      ></el-input>
+                                    </el-form-item>
+                                    <el-form-item>
+                                      <el-button @click="dialogVisible2 = false">取 消</el-button>
+                                      <el-button type="primary" @click="onSubmit('form')">发 帖</el-button>
+
+                                      <!-- <el-button>取消</el-button> -->
+                                    </el-form-item>
+                                  </el-form>
+                                </div>
+                              </el-dialog>
                             </div>
                           </template>
                         </el-col>
@@ -149,40 +194,6 @@
           </el-col>
         </el-row>
       </el-main>
-
-      <el-drawer
-        title="发帖"
-        :visible.sync="drawer"
-        :direction="direction"
-        :before-close="handleClose"
-        size="70%"
-      >
-        <div class="my-submit-form">
-          <el-form ref="form" :model="form" label-width="80px" class="my-right-form-inner">
-            <el-form-item prop="commentor" :rules="rules.commentor" label="推荐人">
-              <el-input v-model="form.commentor"></el-input>
-            </el-form-item>
-            <el-form-item prop="name" :rules="rules.name" label="书名">
-              <el-input v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item prop="press" :rules="rules.press" label="出版社">
-              <el-input v-model="form.press" />
-            </el-form-item>
-            <el-form-item prop="author" :rules="rules.author" label="作者">
-              <el-input v-model="form.author"></el-input>
-            </el-form-item>
-            <el-form-item prop="reason" :rules="rules.reason" label="推荐理由">
-              <el-input type="textarea" rows="4" v-model="textarea" maxlength="500" show-word-limit></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-col :offset="20">
-                <el-button type="primary" @click="onSubmit('form')">立即提交</el-button>
-              </el-col>
-              <!-- <el-button>取消</el-button> -->
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-drawer>
 
       <el-footer height="90px">
         <el-divider></el-divider>
@@ -286,15 +297,14 @@ body > .el-container {
 
 .my-submit-form {
   padding-top: 2rem;
-  width: 90rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  width: 100%;
   align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .my-right-form-inner {
-  width: 40rem;
+  width: 60%;
 }
 </style>
 
@@ -303,7 +313,8 @@ export default {
   name: "AllComments",
   data() {
     return {
-      dialogVisible: false,
+      dialogVisible1: false,
+      dialogVisible2: false,
       drawer: false,
       direction: "btt",
       text: "",
@@ -313,40 +324,18 @@ export default {
         name: "",
         press: "",
         author: "",
-        reason: ""
+        content: ""
       },
       currentPage: 1, //初始页
       pagesize: 10, //每页条目数
 
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
       value: "",
       rules: {
         commentor: [{ required: true, message: "推荐人名不能为空" }],
         name: [{ required: true, message: "书名不能为空" }],
         press: [{ required: true, message: "出版社不能为空" }],
         author: [{ required: true, message: "作者不能为空" }],
-        reason: [{ required: true, message: "推荐理由不能为空" }]
+        content: [{ required: true, message: "推荐理由不能为空" }]
       },
       commentData: [
         {
@@ -356,189 +345,7 @@ export default {
           content: "hohohohohohoh"
         }
       ],
-      tableData: [
-        {
-          title: "帖子1",
-          bookName: "矩阵的次",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子2",
-          bookName: "曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content: "个人主题",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次and曲面的侧",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        },
-        {
-          title: "帖子3",
-          bookName: "矩阵的次",
-          press: "华中科技大学出版社",
-          author: "李开丁",
-          commentor: "李丹",
-          content:
-            "个人主题aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          like: "10",
-          comments: "20",
-          picture:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        }
-      ]
+      tableData: []
     };
   },
   methods: {
@@ -561,17 +368,18 @@ export default {
         return [1, 2];
       }
     },
-    redirect(pathname){
-      this.$router.push({ name: pathname })
+    redirect(pathname) {
+      this.$router.push({ name: pathname });
     },
     open() {
-      this.$prompt("请输入回复内容", "提示", {
+      this.$prompt("请输入评论内容", "提示", {
         confirmButtonText: "发送",
         cancelButtonText: "取消",
         inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
         inputErrorMessage: "回复内容不能为空"
       })
         .then(({ value }) => {
+          
           this.$message({
             type: "success",
             message: "发送成功"
@@ -595,7 +403,46 @@ export default {
     handleCurrentChange: function(currentPage) {
       this.currentPage = currentPage;
       console.log(this.currentPage); //点击第几页
+    },
+    onSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          jQuery.post(
+            "http://www.husteic.cn:3000/forum/post",
+            this.form,
+          )
+          this.$message({
+                  message: "发送成功",
+                  type: "success"
+                });
+                 this.dialogVisible2 = false;
+        } else {
+          this.$message({
+            message: "发送失败",
+            type: "error"
+          });
+          return false;
+        }
+      });
     }
+  },
+
+  mounted() {
+    jQuery
+      .ajax({
+        url: "http://www.husteic.cn:3000/forum/checkAllPost",
+        type: "get",
+        data: {},
+        dataType: "json"
+      })
+      .then(res => {
+        console.log(res);
+        if (res.code === 1) {
+          this.tableData = res.data;
+        } else {
+          this.$message.catch("网络开小差了");
+        }
+      });
   },
 
   filters: {
