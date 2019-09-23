@@ -86,7 +86,7 @@ export default {
         var myDate = new Date();
         console.log(that.dynamicTags)
         jQuery.post(
-          'https://husteicstu.cn:3000/PsychologyBoard/send',
+          'http://www.husteic.cn:3000/Opinion/send',
           {
             index: myDate.getTime(),
             size: Math.ceil(Math.random()*6)+6,

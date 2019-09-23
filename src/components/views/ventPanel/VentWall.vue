@@ -152,7 +152,7 @@ export default {
     findByTag(tag){
       var that = this
       jQuery.get(
-        'https://husteicstu.cn:3000/PsychologyBoard/getByTag',
+        'http://www.husteic.cn:3000/Opinion/getByTag',
         {
           tag: tag
         },
@@ -167,7 +167,7 @@ export default {
   mounted(){
     var that = this
     jQuery.get(
-      'https://husteicstu.cn:3000/PsychologyBoard',
+      'http://www.husteic.cn:3000/Opinion',
       function (res) {
         console.log(res)
         that.propertys = res.data
@@ -175,7 +175,7 @@ export default {
       }
     )
     jQuery.get(
-      'https://husteicstu.cn:3000/PsychologyBoard/getTags',
+      'http://www.husteic.cn:3000/Opinion/getTags',
       function (res) {
         console.log(res)
         that.tags = res.data
