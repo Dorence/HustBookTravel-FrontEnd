@@ -38,7 +38,6 @@
       </el-col>
     </el-row>
     <el-row class="notice">
-      <el-col :span="16">
         <h2>如果遇到紧急特殊情况怎么办？</h2>
         <p class="notice-body">
           大家可以在线下找到我们站点勤工岗的同学进行咨询，
@@ -50,7 +49,7 @@
             <img :src="ImgURL" slot="reference" class="my-scan-image" />
           </el-popover>
         </p>
-      </el-col>
+
       <!-- <el-col :span="8">
         <el-image :src="url" :fit="fit"></el-image>
       </el-col>-->
@@ -171,6 +170,7 @@ blockquote small {
 }
 .notice {
   background-color: #67c23a;
+  padding-left: 35px
 }
 .notice h2,
 .notice p {
