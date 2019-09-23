@@ -137,11 +137,14 @@ blockquote small {
 
 .booktravel-intro h1 {
   color: #fafafa;
-  font-family: "PingFang SC", "Microsoft YaHei", Helvetica;
-  font-size: 40px;
-  letter-spacing: 4.6px;
-  text-align: center;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05), 2.2px 2.2px 0 rgba(0, 0, 0, 0.6);
+    font-family: "PingFang SC", "Microsoft YaHei", Helvetica;
+    font-size: 70px;
+    letter-spacing: 4.6px;
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05), 2.2px 2.2px 0 rgba(0, 0, 0, 0.6);
+    background-color: rgba(0,0,0,0.2);
+    padding: 20px;
+    margin-top: 8px;
 }
 
 .booktravel-intro blockquote {
@@ -152,7 +155,7 @@ blockquote small {
 
 .booktravel-notice .el-card {
   margin-bottom: 1rem;
-  height: 350px;
+  height: 300px;
 }
 
 .booktravel-notice-header {
@@ -161,8 +164,8 @@ blockquote small {
 }
 
 .booktravel-home-margin {
-  margin-left: 8px !important;
-  margin-right: 8px !important;
+  margin-left: 6% !important;
+  margin-right: 6% !important;
 }
 
 .booktravel-notice-p {
