@@ -62,7 +62,24 @@ export default {
       ]
     };
   },
-  methods: {}
+  mounted() {
+    jQuery.ajax({
+      url: "http://www.husteic.cn:3000/library/checkAllBook",
+      type: "GET",
+      dataType: "json",
+      success: function(res) {
+        console.log("res", res);
+        if (res.code === 1) {
+          this.tableData = res.data;
+        } else {
+          this.$message.error("获取失败");
+        }
+      },
+      error: function(err) {
+        this.$message.error("网络开小差了");
+      }
+    });
+  }
 };
 </script>
 

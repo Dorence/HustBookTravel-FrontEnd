@@ -1,7 +1,7 @@
 <template>
   <el-card class="booktravel-bookcard" shadow="hover" :body-style="{ padding: '2px' }">
-    <el-image fit="scale-down" :src="img" :preview-src-list="[img]" />
-    <el-link :underline="false" class="booktravel-booklist-info" @click="routerTo()">
+    <el-link :underline="false" class="booktravel-booklist-info" @click="routerTo">
+      <el-image fit="scale-down" :src="img" />
       <div>
         <strong>作者：</strong>
         {{author}}
@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     routerTo() {
-      console.log("routerTo", this.bookid);
+      /* console.log("routerTo", this.bookid); */
       if (this.bookid || this.bookid === 0)
         this.$router.push({
           name: "bookDetail",

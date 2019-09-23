@@ -95,15 +95,20 @@
 
       <el-row>
         <div class="booktravel-comment-subtitle">评论</div>
-        <div class="booktravel-comment" v-for="it in bookDetail.comment" v-bind:key="it.index">
-          <div class="my-bookdetail-comment-row">
-            <el-image :src="it.headImg" class="my-bookdetail-comment-headImg" />
-            <div class="my-bookdetail-comment-col">
-              <div class="my-bookdetail-comment-name">{{it.name}}</div>
-              <div class="my-bookdetail-comment-time">{{it.time}}</div>
+        <div v-if="bookDetail.comment.length">
+          <div class="booktravel-comment" v-for="it in bookDetail.comment" v-bind:key="it.index">
+            <div class="my-bookdetail-comment-row">
+              <el-image :src="it.headImg" class="my-bookdetail-comment-headImg" />
+              <div class="my-bookdetail-comment-col">
+                <div class="my-bookdetail-comment-name">{{it.name}}</div>
+                <div class="my-bookdetail-comment-time">{{it.time}}</div>
+              </div>
             </div>
+            <div class="my-bookdetail-comment-content">{{it.content}}</div>
           </div>
-          <div class="my-bookdetail-comment-content">{{it.content}}</div>
+        </div>
+        <div v-else>
+          <h4>暂无</h4>
         </div>
       </el-row>
     </el-container>
@@ -132,13 +137,13 @@ export default {
         index: "46513548465146566",
         tag: ["文学", "搞笑", "漫画", "青春", "热血", "激情"],
         comment: [
-          {
+          /*{
             headImg: "http://cdn.husteicstu.cn/xueshubu.jpg",
             name: "小饺子",
             time: "2019年05月06日 20:56",
             content:
               "讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。"
-          }
+          }*/
         ]
       }
     };
