@@ -46,9 +46,9 @@ export default {
     } else {
       this.adjustWidth = "100%";
     }
-    jQuery.post("https://husteicstu.cn:3000/count", function(res) {
-      console.log(res);
-    });
+    // jQuery.post("https://husteicstu.cn:3000/count", function(res) {
+    //   console.log(res);
+    // });
   },
   watch: {
     $route(to, from) {

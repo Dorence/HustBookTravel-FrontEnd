@@ -14,7 +14,7 @@
       v-model="content"
       clearable>
     </el-input>
-    <div class="my-vent-submit-tags">
+    <!-- <div class="my-vent-submit-tags">
       <el-tag
         :key="tag"
         v-for="tag in dynamicTags"
@@ -34,7 +34,7 @@
       >
       </el-input>
       <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
-    </div>
+    </div> -->
     <el-button 
       type="primary" 
       @click="onSubmit"
@@ -42,7 +42,7 @@
   </div>
 </template>
 <script>
-var colors = ["#909399","#F56C6C","#67C23A","#409EFF"]
+var colors = ['#d87c7c','#919e8b', '#d7ab82',  '#6e7074','#61a0a8','#efa18d', '#787464', '#cc7e63', '#724e58', '#4b565b']
 export default {
   name: 'SubmitVent',
   data() {
@@ -78,7 +78,7 @@ export default {
       var that = this
       if(that.content == ""){
         this.$message({
-          message: '请输入意见感想内容',
+          message: '请输入反馈内容',
           type: 'warning'
         });
       }
@@ -86,7 +86,7 @@ export default {
         var myDate = new Date();
         console.log(that.dynamicTags)
         jQuery.post(
-          'http://www.husteic.cn:3000/Opinion/send',
+          'http://www.husteic.cn:3000/right/Opinion/send',
           {
             index: myDate.getTime(),
             size: Math.ceil(Math.random()*6)+6,
@@ -128,8 +128,8 @@ export default {
   vertical-align: bottom;
 }
 .my-vent-submit{
-  /* width: 60rem;
-  padding: 3rem; */
+  width: 60rem;
+  padding: 3rem;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -141,7 +141,7 @@ export default {
   width: 4rem;
 }
 .my-vent-submit-title{
-  /* width: 80rem; */
+  width: 80rem;
   display: flex;
   flex-direction: row;
   align-items: center;

@@ -8,14 +8,14 @@
   <div class="my-vent-wall-subtitle">
     这个活动大家觉得怎么样呢，有什么想说的和大家分享吧
   </div>
-  <div class="my-ventwall-tags">
-    <el-tag style="margin: 0.2rem;" type="warning" v-for="item in tags"  :key="item.id" @click="findByTag(item.tag)">{{item.tag}}</el-tag>
+  <!-- <div class="my-ventwall-tags">
+    <el-tag style="margin: 0.2rem;" type="warning" v-bind:key="item.id" v-for="item in tags" @click="findByTag(item.tag)">{{item.tag}}</el-tag>
   </div>
-  
+   -->
   <div class="my-vent-wall">
     <div class="my-vent-wall-item"
           :style="'background:'+item.color+';box-shadow: 2px 2px 2px '+item.color+';height:'+item.size+'rem'+';width:'+item.size+'rem'+';font-size:'+item.size/11+'rem'"
-          v-for="(item) in propertys" :key="(item).id">
+          v-for="(item) in propertys">
         <div class="my-vent-wall-item-col">
           <div class="my-vent-wall-item-row">
             <el-badge :value="item.reply.length">
@@ -25,7 +25,7 @@
               </div>
             </el-badge>
           </div>
-          <!-- <el-popover
+          <el-popover
             placement="bottom"
             width="15rem"
             transition="none"
@@ -48,10 +48,10 @@
               <i class="el-icon-s-promotion" :style="'color:'+item.color" @click="send(item.index)"></i>
             </div>
             <div class="my-vent-comment">
-              <div class="my-vent-comment-item" :style="'color:'+item.color" v-for="it in item.reply" :key="it.id">{{it.name+"："+it.content}}</div>
+              <div class="my-vent-comment-item" :style="'color:'+item.color" v-for="it in item.reply">{{it.name+"："+it.content}}</div>
             </div>
             <i slot="reference" class="el-icon-arrow-down" style="color:white"></i>
-          </el-popover> -->
+          </el-popover>
         </div>
     </div>
   </div>
@@ -67,7 +67,7 @@ export default {
           content:""
         },
         propertys:[],
-        tags:[],
+        // tags:[],
       };
     },
   methods: {
@@ -104,55 +104,55 @@ export default {
       }
       return '#'+r.toString(16)+g.toString(16)+b.toString(16);
     },
-    // send(index){
-    //   var that = this
-    //   if(that.input.identity == ""){
+    send(index){
+      var that = this
+      if(that.input.identity == ""){
         
-    //     this.$message({
-    //       message: '请输入身份内容',
-    //       type: 'warning'
-    //     });
-    //   }
-    //   else if( that.input.content == ""){
+        this.$message({
+          message: '请输入身份内容',
+          type: 'warning'
+        });
+      }
+      else if( that.input.content == ""){
 
-    //     this.$message({
-    //       message: '请输入内容',
-    //       type: 'warning'
-    //     });
-    //   }
-    //   else{
-    //     jQuery.post(
-    //       'https://husteicstu.cn:3000/PsychologyBoard/Reply',
-    //       {
-    //         content: that.input.content,
-    //         name: that.input.identity,
-    //         index: index
-    //       },
-    //       function (res) {
-    //         console.log(res)
-    //         that.tableData = res.data
-    //         jQuery.get(
-    //           'https://husteicstu.cn:3000/PsychologyBoard',
-    //           function (res) {
-    //             console.log(res)
-    //             that.propertys = res.data
-    //             that.$message({
-    //               message: '发表成功',
-    //               type: 'success'
-    //             });
-    //             that.input.identity = ""
-    //             that.input.content = ""
-    //           }
-    //         )
-    //       }
-    //     )
-    //   }
+        this.$message({
+          message: '请输入内容',
+          type: 'warning'
+        });
+      }
+      else{
+        jQuery.post(
+          'http://www.husteic.cn:3000/right/Opinion/Reply',
+          {
+            content: that.input.content,
+            name: that.input.identity,
+            index: index
+          },
+          function (res) {
+            console.log(res)
+            that.tableData = res.data
+            jQuery.get(
+              'http://www.husteic.cn:3000/right/Opinion',
+              function (res) {
+                console.log(res)
+                that.propertys = res.data
+                that.$message({
+                  message: '发表成功',
+                  type: 'success'
+                });
+                that.input.identity = ""
+                that.input.content = ""
+              }
+            )
+          }
+        )
+      }
       
-    // },
+    },
     findByTag(tag){
       var that = this
       jQuery.get(
-        'http://www.husteic.cn:3000/Opinion/getByTag',
+        'http://www.husteic.cn:3000/right/Opinion/getByTag',
         {
           tag: tag
         },
@@ -167,7 +167,7 @@ export default {
   mounted(){
     var that = this
     jQuery.get(
-      'http://www.husteic.cn:3000/Opinion',
+      'http://www.husteic.cn:3000/right/Opinion',
       function (res) {
         console.log(res)
         that.propertys = res.data
@@ -175,7 +175,7 @@ export default {
       }
     )
     jQuery.get(
-      'http://www.husteic.cn:3000/Opinion/getTags',
+      'http://www.husteic.cn:3000/right/Opinion/getTags',
       function (res) {
         console.log(res)
         that.tags = res.data
@@ -186,7 +186,10 @@ export default {
 </script>
 
 <style>
-
+body{
+  margin:0px;
+  height: 1rem;
+}
 div::-webkit-scrollbar {
   width: 0;
 }
@@ -313,7 +316,7 @@ input::-webkit-input-placeholder {
   text-overflow: ellipsis;
   overflow:hidden;/*超出隐藏*/
   display:-webkit-box;/*设置弹性盒模型*/
-  word-break: break-all;
+  white-space: pre-line; 
 }
 @keyframes move
 {
