@@ -14,6 +14,7 @@
                 type="text"
                 @click="dialogFormVisible = true"
               >立即借阅</el-button>
+              <el-button type="primary" @click="openReturn()">还书</el-button>
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
@@ -74,12 +75,48 @@
           </p>
           <el-upload
             list-type="picture-card"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
             :multiple="false"
             :limit="1"
             :show-file-list="false"
+            :auto-upload="false"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4M</div>
+          </el-upload>
+
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          </div>
+        </el-dialog>
+        <el-dialog title="归还确认" :visible.sync="dialogReturnVisible">
+          <p>
+            <strong>姓名</strong>:&nbsp;小萌新
+            <br />
+            <strong>所借书籍</strong>
+            :&nbsp;{{bookDetail.name}}
+          </p>
+          <el-form ref="formReturn" :model="formReturn" label-width="80px">
+            <el-form-item label="归还地点">
+              <el-select v-model="formReturn.location" placeholder="请选择归还地点">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <el-upload
+            list-type="picture-card"
+            action
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+            :multiple="false"
+            :limit="1"
+            :show-file-list="false"
+            :auto-upload="false"
           >
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -122,8 +159,12 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
+      dialogReturnVisible: false,
       imageUrl: "",
       fileList: [],
+      formReturn: {
+        location: ""
+      },
 
       comment: "",
       bookDetail: {
@@ -157,6 +198,43 @@ export default {
         this.$message.error("上传图片大小不能超过 4MB!");
       }
       return isJPG && isLt4M;
+    },
+    openReturn() {
+      this.$prompt("请输入评论内容", "提示", {
+        confirmButtonText: "发送",
+        cancelButtonText: "取消",
+        inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+        inputErrorMessage: "回复内容不能为空",
+        inputPlaceholder: "评论"
+      })
+        .then(({ value }) => {
+          console.log("reply", value);
+          if (value.length) {
+            let tm = new Date();
+            jQuery.post(
+              remoteAddr + "book/return",
+              {
+                bookId: this.bookId,
+                user: "user" /** @todo */,
+                place: "western",
+                time: {
+                  year: tm.getFullYear(),
+                  month: tm.getMonth() + 1,
+                  day: tm.getDate(),
+                  clock: tm.getHours()
+                }
+              },
+              response => {
+                if (response && response.code === 1) {
+                  this.$message.success("评论成功！");
+                } else {
+                  this.$message.error("发送失败");
+                }
+              }
+            );
+          }
+        })
+        .catch(console.error);
     }
   },
   mounted() {
