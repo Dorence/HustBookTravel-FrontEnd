@@ -1,18 +1,11 @@
 <template>
   <div>
-    <el-form
-      action="shubmit"
-      model="form"
-      rules="rules"
-      ref="form"
-      label-width="105px"
-      label-position="left"
-    >
-      <el-form-item label="用户名/手机号">
-        <el-input v-model="form.phone"></el-input>
+    <el-form :model="form" :rules="rules" ref="form" label-width="auto" label-position="left">
+      <el-form-item label="账号">
+        <el-input v-model="form.phone" placeholder="手机号/用户名"></el-input>
       </el-form-item>
-      <el-form-item label="密码" :prop="pass">
-        <el-input type="password" v-model="form.pass" autocomplete="off"></el-input>
+      <el-form-item label="密码">
+        <el-input type="password" v-model="form.password" autocomplete="off" show-password></el-input>
       </el-form-item>
 
       <div class="code-login">
@@ -20,7 +13,7 @@
       </div>
       <el-button
         type="primary"
-         @click="submitForm('form')"
+        @click="submitForm('form')"
         style="margin-top: 2rem;margin-bottom: 2rem;width:100%;"
       >登陆</el-button>
     </el-form>
@@ -38,37 +31,34 @@
 export default {
   name: "Login",
   data() {
-    var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        if (this.form.checkPass !== "") {
-          this.$refs.form.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-
     return {
       form: {
         phone: "",
-        pass: ""
+        password: ""
       },
       input: "",
       rules: {
-        pass: [{ validator: validatePass, trigger: "blur" }]
+        password: [{ required: true, trigger: "blur" }],
+        phone: [{ min: 4, max: 256, trigger: "blur" }]
       }
     };
   },
+
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.$message('login');
-        } else {
-          console.log("error login!!");
-          return false;
-        }
+        jQuery.post("http://www.husteic.cn:3000/login", this.form, res => {
+          console.log(res);
+          if (res.code != "-1") {
+            this.$message({
+              message: "登陆成功",
+              type: "success"
+            });
+            that.$router.push({ name: "homePage" });
+          } else {
+            this.$message.error("登陆失败");
+          }
+        });
       });
     },
     switchComponent: function() {
