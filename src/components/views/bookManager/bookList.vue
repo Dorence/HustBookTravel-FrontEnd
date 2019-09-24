@@ -1,14 +1,15 @@
 <template>
   <el-container class="booktravel-booklist">
-    <el-row :gutter="4" style="margin: 0;">
-      <el-col v-for="it in bookList" v-bind:key="it.id" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
+    <el-row :gutter="4" style="margin: 0;width: 100%;min-width: 700px;">
+      <el-col v-for="it in bookList" v-bind:key="it._id" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
         <bookCard
           :author="it.author"
+          :bookName="it.bookName"
           :desc="it.desc"
           :img="it.img"
           :press="it.public"
           :process="it.process"
-          :bookid="it.id"
+          :bookid="it._id"
         />
       </el-col>
     </el-row>
@@ -16,66 +17,28 @@
 </template>
 <script>
 import bookCard from "@/components/components/bookManager/bookCard";
+import { remoteAddr } from "@/config";
 
 export default {
   name: "bookList",
   components: { bookCard },
   data() {
-    return {
-      bookList: [
-        {
-          id: 0,
-          img: "../../../static/book-cover.jpg",
-          author: "刘羿",
-          public: "人民出版社",
-          desc:
-            "此处主要讲述了一段斗罗大陆上的爱情故事，一只十万年魂兽化身为人形。",
-          process: "4/8"
-        },
-        {
-          id: 1,
-          img: "../../../static/book-cover.jpg",
-          author: "刘羿1",
-          public: "人民出版社",
-          desc:
-            "此处主要讲述了一段斗罗大陆上的爱情故事，一只十万年魂兽化身为人形。",
-          process: "6/8"
-        },
-        {
-          id: 2,
-          img: "../../../static/book-cover.jpg",
-          author: "刘羿2",
-          public: "人民出版社",
-          desc:
-            "此处主要讲述了一段斗罗大陆上的爱情故事，一只十万年魂兽化身为人形。",
-          process: "7/8"
-        },
-        {
-          id: 3,
-          img: "../../../static/book-cover.jpg",
-          author: "刘羿3",
-          public: "人民出版社",
-          desc:
-            "此处主要讲述了一段斗罗大陆上的爱情故事，一只十万年魂兽化身为人形。",
-          process: "7/7"
-        }
-      ]
-    };
+    return { bookList: [] };
   },
   mounted() {
     jQuery.ajax({
-      url: "http://www.husteic.cn:3000/library/checkAllBook",
+      url: remoteAddr + "library/checkAllBook",
       type: "GET",
       dataType: "json",
-      success: function(res) {
+      success: res => {
         console.log("res", res);
-        if (res.code === 1) {
-          this.tableData = res.data;
+        if (res.data.length) {
+          this.bookList = res.data;
         } else {
           this.$message.error("获取失败");
         }
       },
-      error: function(err) {
+      error: err => {
         this.$message.error("网络开小差了");
       }
     });

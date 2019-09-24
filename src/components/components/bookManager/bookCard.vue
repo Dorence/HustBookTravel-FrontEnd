@@ -1,7 +1,10 @@
 <template>
   <el-card class="booktravel-bookcard" shadow="hover" :body-style="{ padding: '2px' }">
     <el-link :underline="false" class="booktravel-booklist-info" @click="routerTo">
-      <el-image fit="scale-down" :src="img" />
+      <el-image fit="scale-down" :src="img" lazy />
+      <div>
+        <strong>{{bookName}}</strong>
+      </div>
       <div>
         <strong>作者：</strong>
         {{author}}
@@ -29,7 +32,7 @@ export default {
   },
   methods: {
     routerTo() {
-      /* console.log("routerTo", this.bookid); */
+      console.log("routerTo", this.bookid);
       if (this.bookid || this.bookid === 0)
         this.$router.push({
           name: "bookDetail",
@@ -39,7 +42,7 @@ export default {
         });
     }
   },
-  props: ["author", "img", "press", "desc", "process", "bookid"]
+  props: ["author", "bookName", "img", "press", "desc", "process", "bookid"]
 };
 </script>
 
@@ -60,5 +63,10 @@ export default {
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.booktravel-booklist-info .el-image {
+  width: 100%;
+  min-height: 120px;
 }
 </style>

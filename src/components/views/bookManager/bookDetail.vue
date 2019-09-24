@@ -3,7 +3,7 @@
     <el-container direction="vertical">
       <el-row :gutter="8">
         <el-col :xs="24" :sm="10" :md="10" :lg="8" :xl="8" style="text-align: center;">
-          <el-image class="booktravel-detail-image" fit="scale-down" :src="bookDetail.img" />
+          <el-image fit="scale-down" :src="bookDetail.img" />
         </el-col>
         <el-col :xs="24" :sm="14" :md="14" :lg="16" :xl="16">
           <el-card class="booktravel-detail-card">
@@ -115,6 +115,8 @@
   </el-main>
 </template>
 <script>
+import { remoteAddr } from "@/config";
+
 export default {
   name: "",
   data() {
@@ -123,7 +125,6 @@ export default {
       imageUrl: "",
       fileList: [],
 
-      formLabelWidth: "120px",
       comment: "",
       bookDetail: {
         name: "大手笔是怎样的练成的",
@@ -136,16 +137,9 @@ export default {
         pages: 195,
         index: "46513548465146566",
         tag: ["文学", "搞笑", "漫画", "青春", "热血", "激情"],
-        comment: [
-          /*{
-            headImg: "http://cdn.husteicstu.cn/xueshubu.jpg",
-            name: "小饺子",
-            time: "2019年05月06日 20:56",
-            content:
-              "讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。讲述了我做想要看到的一些内容，十分值得一读。"
-          }*/
-        ]
-      }
+        comment: []
+      },
+      bookId: ""
     };
   },
   methods: {
@@ -164,13 +158,35 @@ export default {
       }
       return isJPG && isLt4M;
     }
+  },
+  mounted() {
+    console.log(this.$route.query);
+    this.bookId = this.$route.query.bookid;
+    jQuery.ajax({
+      url: remoteAddr + "right/checkSingleBook",
+      type: "GET",
+      data: { _id: this.bookId },
+      dataType: "json",
+      success: res => {
+        console.log("res", res);
+        if (res.data.length) {
+          this.bookList = res.data;
+        } else {
+          this.$message.error("获取失败");
+        }
+      },
+      error: err => {
+        this.$message.error("网络开小差了");
+      }
+    });
   }
 };
 </script>
 
-<style>
-.booktravel-detail-image {
-  height: 26rem;
+<style scoped>
+.booktravel-booklist-info .el-image {
+  width: 100%;
+  min-height: 120px;
 }
 
 .booktravel-detail-card {
