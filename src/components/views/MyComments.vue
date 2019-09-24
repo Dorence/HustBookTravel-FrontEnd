@@ -153,29 +153,18 @@ export default {
   data() {
     return {
       dialogVisible1: false,
-      dialogVisible2: false,
-      drawer: false,
-      direction: "btt",
-      text: "",
-      textarea: "",
       form: {
-        commentor: "",
-        name: "",
-        press: "",
-        author: "",
-        reason: ""
+        creator: "",
+        book: "",
+        content: ""
       },
       currentPage: 1, //初始页
       pagesize: 10, //每页条目数
       rules: {
-        commentor: [{ required: true, message: "推荐人名不能为空" }],
-        name: [{ required: true, message: "书名不能为空" }],
-        press: [{ required: true, message: "出版社不能为空" }],
-        author: [{ required: true, message: "作者不能为空" }],
-        reason: [{ required: true, message: "推荐理由不能为空" }]
+        book: [{ required: true, message: "书籍不能为空" }],
+        content: [{ required: true, message: "推荐理由不能为空" }],
+        creator: [{ required: true, message: "推荐人名不能为空" }]
       },
-      value: "",
-      commentData: [],
       tableData: []
     };
   },
@@ -199,29 +188,39 @@ export default {
         return [1, 2];
       }
     },
-    redirect(pathname) {
-      this.$router.push({ name: pathname });
-    },
-    open() {
-      this.$prompt("请输入回复内容", "提示", {
+
+
+    openReply(postId) {
+      this.$prompt("请输入评论内容", "提示", {
         confirmButtonText: "发送",
         cancelButtonText: "取消",
         inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-        inputErrorMessage: "回复内容不能为空"
+        inputErrorMessage: "回复内容不能为空",
+        inputPlaceholder: "评论"
       })
         .then(({ value }) => {
-          this.$message({
-            type: "success",
-            message: "发送成功"
-          });
+          console.log("reply", value);
+          if (value.length) {
+            jQuery.post(
+              remoteAddr + "forum/replyComment",
+              {
+                commentID: postId,
+                content: value,
+                replier: "user"
+              },
+              response => {
+                if (response && response.code === 1) {
+                  this.$message.success("评论成功！");
+                } else {
+                  this.$message.error("发送失败");
+                }
+              }
+            );
+          }
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消输入"
-          });
-        });
+        .catch(console.error);
     },
+
     handleSizeChange: function(size) {
       this.pagesize = size;
       console.log(this.pagesize); //每页下拉显示数据
@@ -229,24 +228,6 @@ export default {
     handleCurrentChange: function(currentPage) {
       this.currentPage = currentPage;
       console.log(this.currentPage); //点击第几页
-    },
-    onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          jQuery.post("http://www.husteic.cn:3000/forum/post", this.form);
-          this.$message({
-            message: "发送成功",
-            type: "success"
-          });
-          this.dialogVisible2 = false;
-        } else {
-          this.$message({
-            message: "发送失败",
-            type: "error"
-          });
-          return false;
-        }
-      });
     }
   },
   mounted() {
