@@ -312,9 +312,9 @@ export default {
     onSubmitLike(postid) {
       console.log("lise post", postid);
       jQuery.post(
-        remoteAddr + "forum/like",
+        remoteAddr + "forum/likePost",
         {
-          commentID: postid,
+          postID: postid,
           liker: "User" /** @todo */
         },
         res => {
