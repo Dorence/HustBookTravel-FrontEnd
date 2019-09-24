@@ -6,7 +6,6 @@ Vue.use(Router)
 import homePage from '@/components/views/homePage'
 import AllComments from '@/components/views/AllComments'
 import MyComments from '@/components/views/MyComments'
-
 import bookManager from "@/components/views/bookManager"
 import bookList from "@/components/views/bookManager/bookList"
 import bookDetail from "@/components/views/bookManager/bookDetail"
@@ -15,7 +14,7 @@ import VentPanel from '@/components/views/ventPanel'
 import VentWall from '@/components/views/ventPanel/VentWall'
 import SubmitVent from '@/components/views/ventPanel/SubmitVent'
 import Auth from '@/components/views/Auth'
-import FindCode from '@/components/views/FindCode'
+import PasswordReset from '@/components/views/PasswordReset'
 
 export default new Router({
     routes: [{
@@ -39,10 +38,20 @@ export default new Router({
             component: Auth
         },
         {
-            path: "/FindCode",
-            name: 'FindCode',
-            component: FindCode
+            path: "/PasswordReset",
+            name: 'PasswordReset',
+            component: PasswordReset
         },
+        // {
+        //     path: "/Register",
+        //     name: 'Register',
+        //     component: Register
+        // },
+        // {
+        //     path: "/Login",
+        //     name: 'Login',
+        //     component: Login
+        // },
         {
             path: "/book",
             name: "bookManager",

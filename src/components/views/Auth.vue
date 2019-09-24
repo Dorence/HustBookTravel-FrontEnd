@@ -28,7 +28,6 @@ import Login from "@/components/components/auth/Login";
 import Register from "@/components/components/auth/Register";
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 element.style {
     margin-top: 2rem;
@@ -61,13 +60,8 @@ a:active {
   color: black;
 }
 .login {
-      width: 432px;
+    width: 432px;
     background: #ffffff;
-    /* margin-top: 50px; */
-    /* position: absolute; */
-    /* left: 50%; */
-    /* top: 50%; */
-    /* transform: translate(-50%, -50%); */
     box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
     border-radius: 2px;
     box-sizing: border-box;
@@ -86,13 +80,13 @@ a:active {
 }
 .hust-name {
   font-size: 40px;
-  color: rgb(19, 79, 143);
+  color: rgb(0, 0, 0);
   text-align: center;
   display: block;
   margin-top: 30px;
 }
 .tip {
-  color: rgb(19, 79, 143);
+  color: rgb(0, 0, 0);
   text-align: center;
   font-size: 22px;
   margin-top: 15px;
