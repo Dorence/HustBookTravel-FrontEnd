@@ -21,13 +21,14 @@
                   :header-row-style="{height: '40px'}"
                   :row-style="{height: '80px'}"
                 >
-                  <el-table-column label="最新" sortable width="120" column-key="time">
+                  <el-table-column label="最新" sortable width="120" column-key="date">
                     <template slot-scope="scope">
                       <div>
                         <el-image
                           fit="fill"
                           style="width: 100px; height: 100px;"
                           :src="scope.row.picture"
+                          lazy
                         >
                           <div slot="error" class="image-slot">
                             <i class="el-icon-picture-outline"></i>
@@ -40,32 +41,21 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="最热" width="auto" sortable column-key="hot">
+                  <el-table-column label="最热" width="auto" sortable column-key="like.length">
                     <template slot-scope="scope">
-                      <el-row>
-                        <el-col>
-                          <strong>书名</strong>
-                          ：{{scope.row.book}}
-                        </el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col>
-                          <strong>出版社</strong>
-                          ：{{scope.row.press}}
-                        </el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col>
-                          <strong>作者</strong>
-                          ：{{scope.row.author}}
-                        </el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col>
-                          <strong>推荐人</strong>
-                          ：{{scope.row.creator}}
-                        </el-col>
-                      </el-row>
+                      <p style="line-height: 1.6rem;">
+                        <strong>书名</strong>
+                        ：{{scope.row.book}}
+                        <br />
+                        <strong>出版社</strong>
+                        ：{{scope.row.press}}
+                        <br />
+                        <strong>作者</strong>
+                        ：{{scope.row.author}}
+                        <br />
+                        <strong>推荐人</strong>
+                        ：{{scope.row.creator}}
+                      </p>
                     </template>
                   </el-table-column>
 
@@ -98,6 +88,7 @@
                             type="primary"
                             :icon="'el-icon-star-' + (scope.row.mylike ? 'on' : 'off')"
                             circle
+                            @click="onSubmitLike(scope.row._id)"
                           ></el-button>
                           <el-button type="primary" round @click="openReply(scope.row._id)">评论</el-button>
 
@@ -203,6 +194,7 @@
 
 <script>
 import leftBar from "@/components/components/comment/leftBar";
+import { remoteAddr } from "@/config";
 
 export default {
   name: "AllComments",
@@ -211,31 +203,20 @@ export default {
     return {
       dialogVisible1: false,
       commentDialogVisible: false,
-      drawer: false,
-      text: "",
-      textarea: "",
+      currentPage: 1, //初始页
+      pagesize: 10, //每页条目数
+
       form: {
         creator: "",
         book: "",
         content: ""
       },
-      currentPage: 1, //初始页
-      pagesize: 10, //每页条目数
-
-      value: "",
       rules: {
         book: [{ required: true, message: "书籍不能为空" }],
         content: [{ required: true, message: "推荐理由不能为空" }],
         creator: [{ required: true, message: "推荐人名不能为空" }]
       },
-      commentData: [
-        {
-          content: "hahahahahahah"
-        },
-        {
-          content: "hohohohohohoh"
-        }
-      ],
+
       tableData: [],
       bookList: []
     };
@@ -244,25 +225,12 @@ export default {
     filterTag(value, row) {
       return row.tag === value;
     },
+
     filterHandler(value, row, column) {
       const property = column["property"];
       return row[property] === value;
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(() => {
-          done();
-        })
-        .catch(console.error);
-    },
-    arraySpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 1) {
-        return [1, 2];
-      }
-    },
-    redirect(pathname) {
-      this.$router.push({ name: pathname });
-    },
+
     updateLike() {
       let t = this.tableData;
       let userid = "u";
@@ -280,6 +248,7 @@ export default {
       }
       return;
     },
+
     openReply(postId) {
       this.$prompt("请输入评论内容", "提示", {
         confirmButtonText: "发送",
@@ -290,21 +259,23 @@ export default {
       })
         .then(({ value }) => {
           console.log("reply", value);
-          jQuery.post(
-            "http://www.husteic.cn:3000/forum/replyComment",
-            {
-              commentID: postId,
-              content: value,
-              replier: "user"
-            },
-            function(response) {
-              if (response && response.code === 1) {
-                this.$message.success("评论成功！");
-              } else {
-                this.$message.error("发送失败");
+          if (value.length) {
+            jQuery.post(
+              remoteAddr + "forum/replyComment",
+              {
+                commentID: postId,
+                content: value,
+                replier: "user"
+              },
+              response => {
+                if (response && response.code === 1) {
+                  this.$message.success("评论成功！");
+                } else {
+                  this.$message.error("发送失败");
+                }
               }
-            }
-          );
+            );
+          }
         })
         .catch(console.error);
     },
@@ -323,30 +294,44 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           console.log("forum post", this.form);
-          jQuery.post(
-            "http://www.husteic.cn:3000/forum/post",
-            this.form,
-            function(response) {
-              if (response && response.code === 1) {
-                this.$message.success("发帖成功");
-              } else {
-                this.$message.error("发送失败");
-              }
+          jQuery.post(remoteAddr + "forum/post", this.form, res => {
+            if (res && res.code === 1) {
+              this.$message.success("发帖成功");
+            } else {
+              this.$message.error("发送失败");
             }
-          );
+          });
           this.commentDialogVisible = false;
         } else {
           this.$message.error("信息错误！");
           return false;
         }
       });
+    },
+
+    onSubmitLike(postid) {
+      console.log("lise post", postid);
+      jQuery.post(
+        remoteAddr + "forum/like",
+        {
+          commentID: postid,
+          liker: "User" /** @todo */
+        },
+        res => {
+          if (res && res.code === 1) {
+            this.$message.success("点赞成功");
+          } else {
+            this.$message.error("点赞失败");
+          }
+        }
+      );
     }
   },
 
   mounted() {
     jQuery
       .ajax({
-        url: "http://www.husteic.cn:3000/forum/checkAllPost",
+        url: remoteAddr + "forum/checkAllPost",
         type: "get",
         data: {},
         dataType: "json"
@@ -359,7 +344,7 @@ export default {
 
           /* get all books */
           jQuery.ajax({
-            url: "http://www.husteic.cn:3000/library/checkAllBook",
+            url: remoteAddr + "library/checkAllBook",
             type: "GET",
             dataType: "json",
             success: result => {
