@@ -1,7 +1,7 @@
 <template>
   <el-container class="booktravel-booklist">
-    <el-row :gutter="4" style="margin: 0;width: 100%;min-width: 700px;">
-      <el-col v-for="it in bookList" v-bind:key="it._id" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
+    <el-row :gutter="5" style="margin: 0; width: 100%; min-width: 700px;">
+      <el-col v-for="it in bookList" v-bind:key="it._id" :xs="12" :sm="8" :md="8" :lg="6" :xl="4">
         <bookCard
           :author="it.author"
           :bookName="it.bookName"

@@ -9,7 +9,7 @@
       </el-form-item>
 
       <div class="code-login">
-        <a href="javascript:" @click="redirect('PasswordReset')" class="org-btn">忘记密码</a>
+        <el-button type="text" @click="redirect('PasswordReset')">忘记密码</el-button>
       </div>
       <el-button
         type="primary"
@@ -20,7 +20,7 @@
     <div class="bottom">
       <span>
         没有账号？
-        <a href="javascript:" @click="toggleComponent" class="toggle-register-btn">注册</a>
+        <el-button type="text" @click="toggleComponent">注册</el-button>
       </span>
     </div>
   </div>
@@ -28,6 +28,8 @@
 
 
 <script>
+import { remoteAddr } from "@/config";
+
 export default {
   name: "Login",
   data() {
@@ -47,16 +49,13 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        jQuery.post("http://www.husteic.cn:3000/login", this.form, res => {
+        jQuery.post(remoteAddr + "login", this.form, res => {
           console.log(res);
           if (res.code != "-1") {
-            this.$message({
-              message: "登陆成功",
-              type: "success"
-            });
+            this.$message.success("登陆成功");
             that.$router.push({ name: "homePage" });
           } else {
-            this.$message.error("登陆失败");
+            this.$message.error("登陆失败:" + res.msg);
           }
         });
       });

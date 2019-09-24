@@ -10,18 +10,17 @@
       class="demo-ruleForm"
       label-position="left"
     >
-      <el-form-item label="手机号" prop="num">
-        <el-input v-model.number="ruleForm.num"></el-input>
+      <el-form-item label="手机号" prop="phone">
+        <el-input v-model.number="ruleForm.phone"></el-input>
       </el-form-item>
       <el-form-item label="验证码" prop="varcode">
         <el-input v-model="ruleForm.varcode"></el-input>
-        <el-button type="text" @click="sendIDCode()" style="float: right;">获取短信验证码</el-button>
+        <el-button type="text" @click="sendCaptcha" style="float: right;">获取短信验证码</el-button>
       </el-form-item>
-
-      <el-form-item label="新密码" prop="pass">
-        <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+      <el-form-item label="新密码" prop="password">
+        <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="确认新密码" prop="checkPass">
+      <el-form-item label="确认密码" prop="checkPass">
         <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
       </el-form-item>
       <el-button
@@ -34,41 +33,15 @@
 </template>
 
 <script>
+import { remoteAddr } from "@/config";
+
 export default {
   name: "PasswordReset",
-
   data() {
-    var checkNum = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("手机号不能为空"));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error("请输入数字值"));
-        } else {
-          callback();
-        }
-      }, 1000);
-    };
-    var validatePass = (rule, value, callback) => {
-      if (
-        value === "" ||
-        value.length < 8 ||
-        value.length > 20 ||
-        value.length == ""
-      ) {
-        callback(new Error("密码位数应在8~20位之间"));
-      } else {
-        if (this.ruleForm.checkPass !== "") {
-          this.$refs.ruleForm.validateField("checkPass");
-        }
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
+    let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.pass) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -77,70 +50,91 @@ export default {
     return {
       ruleForm: {
         phone: "",
-        code: "",
-        idcode: "",
-        pass: "",
-        checkPass: "",
-        num: ""
+        varcode: "",
+        password: "",
+        checkPass: ""
       },
       rules: {
-        pass: [{ validator: validatePass, trigger: "blur" }],
-        checkPass: [{ validator: validatePass2, trigger: "blur" }],
-        num: [{ validator: checkNum, trigger: "blur" }]
+        phone: [
+          {
+            pattern: /^1[0-9]{10}$/,
+            trigger: "blur",
+            required: true,
+            message: "请输入11位手机号"
+          }
+        ],
+        varcode: [
+          {
+            required: true,
+            pattern: /^[0-9]{4}$/,
+            trigger: "blur",
+            message: "请输入4位验证码"
+          }
+        ],
+        password: [
+          {
+            required: true,
+            pattern: /^[a-zA-z0-9,\.@_\-\*\+]{8,32}$/,
+            trigger: "blur",
+            message: "密码为8-32位"
+          }
+        ],
+        checkPass: [
+          { required: true, validator: validatePass, trigger: "blur" }
+        ]
       }
     };
   },
-  
+
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-         jQuery.post('http://www.husteic.cn:3000/passwordReset', this.ruleForm, function
-          (res) {
-            console.log(res);
-            if (res.code != "-1") {
-              that.$message({
-                message: "登陆成功",
+        jQuery.post(remoteAddr + "passwordReset", this.ruleForm, res => {
+          console.log(res);
+          if (res.code != "-1") {
+            this.$message({
+              message: "重置成功",
+              type: "success"
+            });
+            this.$router.push({ name: "homePage" });
+          } else {
+            this.$message.error("重置成功");
+          }
+        });
+      });
+    },
+    sendCaptcha() {
+      if (!this.ruleForm.phone || !/^1[0-9]{10}$/.test(this.ruleForm.phone)) {
+        this.$message("手机号错误");
+        console.log("error!!");
+      } else {
+        jQuery.post(
+          remoteAddr + "sendM",
+          { phone: this.ruleForm.phone },
+          res => {
+            // console.log(res);
+            if (res.code === 1) {
+              this.$message({
+                message: "已发送验证码到您手机!",
                 type: "success"
               });
-              that.$router.push({ name: "Statistics" });
-
-              that.show = true;
-              // window.document.cookie = that.form.account
+              this.rules.varcode.pattern = new RegExp(
+                "^" + res.confCode[0] + "$"
+              );
             } else {
-              that.$message({
-                message: "登陆失败",
+              this.$message({
+                message: "发送失败",
                 type: "warning"
               });
             }
-          });
-        /*
-        if (valid) {
-          this.$message("密码已重置");
-         
-        } else {
-          console.log("error changeCode!!");
-          return false;
-        }*/
-      });
-    },
-    sendIDCode() {
-      //return callback(new Error("手机号不能为空"));
-      this.$message("手机号不能为空")
-      console.log(this.ruleForm);
-      if (!this.ruleForm.num) {
-        console.log("error!!");
-      } else {
-        this.$message("已发送验证码到您手机!");
+          }
+        );
       }
     }
   },
 
   props: ["toggleComponent"]
 };
-
-/*
-{"code":1,"data":[{"_id":"5d73bd120bd2fe1c2c98e91b","title":"llll","book":"PaddlePaddle","content":"rggerg","creator":"书屋古惑仔","like":[],"comments":[],"date":{"month":9,"day":7}}]}
-*/
 </script>
 
 <style scoped>

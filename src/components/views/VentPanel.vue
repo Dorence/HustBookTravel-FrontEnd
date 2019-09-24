@@ -1,54 +1,23 @@
 <template>
-  <!-- <div>
-  <div class="my-ventpanel-main-contain-col" :style="{width:adjustWidth}">-->
-  <el-container>
-    <div class="my-ventpanel-main-contain-row">
-      <el-aside width="200px">
-        <LeftBar />
-      </el-aside>
-      <el-main>
-        <transition :name="direction">
-          <router-view />
-        </transition>
-      </el-main>
-    </div>
+  <el-container class="my-ventpanel-main-contain-row">
+    <el-aside width="200px">
+      <LeftBar />
+    </el-aside>
+    <el-main style="min-width: 500px">
+      <transition :name="direction">
+        <router-view />
+      </transition>
+    </el-main>
   </el-container>
-  <!-- </div>
-  </div>-->
 </template>
 <script>
 import LeftBar from "@/components/components/ventPanel/LeftBar";
 
 export default {
   name: "ventPanel",
-  components: {
-    LeftBar
-  },
+  components: { LeftBar },
   data() {
-    return {
-      adjustWidth: ""
-    };
-  },
-  methods: {},
-  mounted() {
-    var is_mobi =
-      navigator.userAgent
-        .toLowerCase()
-        .match(
-          /(ipod|ipad|iphone|android|coolpad|mmp|smartphone|midp|wap|xoom|symbian|j2me|blackberry|wince)/i
-        ) != null;
-    if (is_mobi) {
-      this.adjustWidth = "80rem";
-      // this.$message({
-      //   message:'手机',
-      //   type:'success'
-      // })
-    } else {
-      this.adjustWidth = "100%";
-    }
-    // jQuery.post("https://husteicstu.cn:3000/count", function(res) {
-    //   console.log(res);
-    // });
+    return { direction: "" };
   },
   watch: {
     $route(to, from) {

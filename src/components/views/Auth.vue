@@ -43,10 +43,7 @@ input {
 .error::-webkit-input-placeholder {
   color: red;
 }
-a {
-  text-decoration: none;
-  outline: none;
-}
+
 .icon-yanjing-xiexian,
 .icon-yanjing {
   font-size: 24px;
@@ -54,12 +51,7 @@ a {
   float: right;
   line-height: 48px;
 }
-a:hover,
-a:visited,
-a:link,
-a:active {
-  color: black;
-}
+
 .login {
     width: 432px;
     background: #ffffff;
@@ -115,18 +107,7 @@ form {
 .forget-password {
   float: right;
 }
-#Prefix {
-  width: 110px;
-  color: black;
-  height: 38px;
-  line-height: 38px;
-  font-size: 18px;
-  text-align: left;
-  box-sizing: border-box;
-  border: 0;
-  outline: none;
-  float: left;
-}
+
 .sot-line {
   height: 22px;
   width: 1px;

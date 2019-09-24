@@ -51,10 +51,12 @@
 </template>
 
 <script>
+import { remoteAddr } from "@/config";
+
 export default {
   name: "Register",
   data() {
-    var validatePass = (rule, value, callback) => {
+    let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value !== this.ruleForm.password) {
@@ -100,7 +102,9 @@ export default {
             message: "密码为8-32位"
           }
         ],
-        checkPass: [{ validator: validatePass, trigger: "blur" }],
+        checkPass: [
+          { required: true, validator: validatePass, trigger: "blur" }
+        ],
         uid: [
           {
             required: true,
@@ -119,25 +123,21 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          jQuery.post(
-            "http://www.husteic.cn:3000/register",
-            this.ruleForm,
-            function(res) {
-              console.log(res);
-              if (res.code != "-1") {
-                that.$message({
-                  message: "登陆成功",
-                  type: "success"
-                });
-                that.$router.push({ name: "Auth" });
-              } else {
-                that.$message({
-                  message: "登陆失败",
-                  type: "warning"
-                });
-              }
+          jQuery.post(remoteAddr + "register", this.ruleForm, function(res) {
+            console.log(res);
+            if (res.code != "-1") {
+              that.$message({
+                message: "登陆成功",
+                type: "success"
+              });
+              that.$router.push({ name: "Auth" });
+            } else {
+              that.$message({
+                message: "登陆失败",
+                type: "warning"
+              });
             }
-          );
+          });
         } else {
           this.$message.error("信息输入错误");
           return false;
