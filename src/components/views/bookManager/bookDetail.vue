@@ -3,97 +3,113 @@
     <el-container direction="vertical">
       <el-row :gutter="8">
         <el-col :xs="24" :sm="10" :md="10" :lg="8" :xl="8" style="text-align: center;">
-          <el-image fit="scale-down" :src="bookDetail.img" />
+          <el-image fit="scale-down" :src="book.img" lazy />
         </el-col>
         <el-col :xs="24" :sm="14" :md="14" :lg="16" :xl="16">
           <el-card class="booktravel-detail-card">
             <div class="clearfix" slot="header">
-              <span style="font-size: 1rem;font-weight: bold;">书籍信息</span>
-              <el-button
-                style="float: right; padding: 3px 0"
-                type="text"
-                @click="dialogFormVisible = true"
-              >立即借阅</el-button>
-              <el-button type="primary" @click="dialogReturnVisible = true">还书</el-button>
-            </div>
-            <div class="item">
-              <span class="my-lable-red">#</span>
-              <span style="font-weight:bold;">编号：</span>
-              {{bookDetail.index}}
+              <strong style="font-size: 1.6rem;">书籍信息</strong>
+              <span v-if="username && username.length">
+                <el-button
+                  v-if="bookstate === 0"
+                  type="primary"
+                  size="medium"
+                  @click="dialogBorrowVisible = true"
+                  style="float: right;"
+                >立即借阅</el-button>
+                <span v-else-if="bookstate === 1" style="color: #aaa;">已借出</span>
+                <el-button
+                  v-else-if="bookstate === 2"
+                  type="primary"
+                  size="medium"
+                  @click="dialogReturnVisible = true"
+                  style="float: right"
+                >还书</el-button>
+              </span>
+              <span v-else style="color: #aaa;">登录才能借书哦。</span>
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">书名：</span>
-              {{bookDetail.name}}
+              {{book.bookName}}
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">作者：</span>
-              {{bookDetail.author}}
+              {{book.author}}
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">出版社：</span>
-              {{bookDetail.public}}
+              {{book.publish}}
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">页数：</span>
-              {{bookDetail.pages}}
+              {{book.page}}
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">是否有剩余：</span>
-              {{bookDetail.process}}
+              {{book.status ? "是" : "否"}}
             </div>
-            <div class="item my-bookdetail-two-line">
+            <div class="item my-bookdetail-quad-line">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">描述：</span>
-              {{bookDetail.desc}}
+              {{book.desc}}
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">分类：</span>
-              <el-tag
-                style="margin-right: 0.2rem;"
-                type="success"
-                v-for="it in bookDetail.tag"
-                v-bind:key="it"
-              >{{it}}</el-tag>
+              <div v-if="book && book.tag && book.tag.length">
+                <el-tag
+                  style="margin-right: 0.2rem;"
+                  type="success"
+                  v-for="it in book.tag"
+                  v-bind:key="it"
+                >{{it}}</el-tag>
+              </div>
+              <span v-else style="color: #aaa;">暂无</span>
             </div>
           </el-card>
         </el-col>
 
         <!-- borrow book -->
-        <el-dialog title="借用确认" :visible.sync="dialogFormVisible">
+        <el-dialog title="借用确认" :visible.sync="dialogBorrowVisible">
           <p>
-            <strong>姓名</strong>:&nbsp;小萌新
-          </p>
-          <p>
-            <strong>所借书籍</strong>
-            :&nbsp;{{bookDetail.name}}
+            <strong>姓名</strong>
+            :&nbsp;{{username}}
             <br />
-            <strong>书籍地点</strong>:&nbsp;启明书屋
+            <strong>所借书籍</strong>
+            :&nbsp;{{book.bookName}}
+            <br />
+            <strong>书籍地点</strong>
+            :&nbsp;{{book.location}}
           </p>
           <el-upload
             list-type="picture-card"
             action="#"
-            :file-list="fileList"
-            :on-change="handleBorrowChange"
-            :on-preview="handlePictureCardPreview"
             :multiple="false"
             :limit="1"
             :show-file-list="true"
             :auto-upload="false"
+            :on-preview="handleBorrowPreview"
+            :on-remove="handleBorrowRemove"
+            :on-success="handleBorrowSuccess"
+            :on-error="handleBorrowError"
+            :on-progress="handleBorrowProgress"
+            :on-change="handleBorrowChange"
+            :before-upload="handleBorrowBeforeUpload"
+            :before-remove="handleBorrowBeforeRemove"
+            :on-exceed="handleBorrowExceed"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <i class="el-icon-plus avatar-uploader-icon"></i>
             <div slot="tip" class="el-upload__tip">{{borrowTips[borrowTipState]}}</div>
           </el-upload>
 
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button @click="dialogBorrowVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitBorrow">确 定</el-button>
           </div>
         </el-dialog>
 
@@ -103,7 +119,7 @@
             <strong>姓名</strong>:&nbsp;小萌新
             <br />
             <strong>所借书籍</strong>
-            :&nbsp;{{bookDetail.name}}
+            :&nbsp;{{book.name}}
           </p>
           <el-form ref="formReturn" :model="formReturn" label-width="80px">
             <el-form-item label="归还地点">
@@ -137,8 +153,8 @@
 
       <el-row>
         <div class="booktravel-comment-subtitle">评论</div>
-        <div v-if="bookDetail.comment.length">
-          <div class="booktravel-comment" v-for="it in bookDetail.comment" v-bind:key="it.index">
+        <div v-if="book && book.comment && book.comment.length">
+          <div class="booktravel-comment" v-for="it in book.comment" v-bind:key="it.index">
             <div class="my-bookdetail-comment-row">
               <el-image :src="it.headImg" class="my-bookdetail-comment-headImg" />
               <div class="my-bookdetail-comment-col">
@@ -158,145 +174,155 @@
 </template>
 <script>
 import { remoteAddr } from "@/config";
-import qrcode from "@/qrcode/vue-qrcode";
+import qrcode from "@/qrcode/vue-qrcode-small";
 
 export default {
   name: "",
   data() {
     return {
-      dialogFormVisible: false,
+      dialogBorrowVisible: false,
       dialogReturnVisible: false,
-      imageUrl: "",
-      fileList: [],
+      username: "",
+
       formReturn: {
         location: ""
       },
-      borrowTips: ["只能上传jpg/png文件，且不超过4M", "wrong", "ok"],
+      borrowTips: [
+        "只能上传jpg/png文件，且不超过4M",
+        "二维码错误",
+        "二维码正确"
+      ],
       borrowTipState: 0,
+      qrresult: "",
 
       comment: "",
-      bookDetail: {
-        name: "大手笔是怎样的练成的",
-        img: "../../../static/book-cover.jpg",
-        author: "刘羿",
-        public: "人民出版社",
-        desc:
-          "此处主要讲述了一段斗罗大陆上的爱情故事，一只十万年魂兽化身为人形。此处主要讲述了一段斗罗大陆上的爱情故事，一只十万年魂兽化身为人形。",
-        process: "是",
-        pages: 195,
-        index: "46513548465146566",
-        tag: ["文学", "搞笑", "漫画", "青春", "热血", "激情"],
-        comment: []
-      },
-      bookId: ""
+      book: {},
+      bookid: "",
+      bookstate: -1
     };
   },
   methods: {
-    handleAvatarSuccess(res, file) {
-      console.log("handleAvatarSuccess");
-      this.imageUrl = URL.createObjectURL(file.raw);
-      // return false;
-    },
-    handleBorrowChange(file, fileList) {
-      console.log("handleBorrowChange", file, fileList);
-    },
-
-    handlePictureCardPreview(file) {
+    /** borrow events */
+    handleBorrowPreview(file) {
       console.log("handlePictureCardPreview");
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
     },
-    beforeAvatarUpload(file) {
-      console.log("beforeAvatarUpload");
+    handleBorrowRemove(file, filelist) {
+      console.log("handleBorrowRemove", file, filelist);
+      this.borrowTipState = 0;
+    },
+    handleBorrowSuccess(res, file, filelist) {
+      console.log("handleBorrowSuccess", res, file, filelist);
+    },
+    handleBorrowError(err, file, filelist) {
+      console.log("handleBorrowError", err, file, filelist);
+      this.borrowTipState = 0;
+    },
+    handleBorrowProgress(e, file, filelist) {
+      console.log("handleBorrowProgress", e, file, filelist);
+    },
+    handleBorrowChange(file, filelist) {
+      console.log("handleBorrowChange", file, filelist);
+      let that = this;
+      qrcode.decode(file.url);
+      qrcode.callback = function(msg) {
+        console.log("qrcode decode:", msg);
+        that.qrresult = msg;
+        if (msg === that.bookid) {
+          that.borrowTipState = 2;
+        } else {
+          that.borrowTipState = 1;
+        }
+      };
+    },
+    handleBorrowBeforeUpload(file) {
+      console.log("beforeAvatarUpload", file);
       const isJPG = file.type === "image/jpeg" || "image/png";
       const isLt4M = file.size / 1024 / 1024 < 4;
-
       if (!isJPG) {
         this.$message.error("上传图片只能是 JPG/PNG 格式!");
       }
       if (!isLt4M) {
         this.$message.error("上传图片大小不能超过 4MB!");
       }
-
-      /*if (isJPG && isLt4M) {
-        let reads = new FileReader();
-        console.log("file", file);
-        reads.readAsDataURL(file);
-        console.log("ready", reads);
-
-        let that = this;
-
-        reads.onload = function(e) {
-          // console.log("done", this);
-          // document.getElementById("im").src = this.result;
-          qrcode.decode(this.result);
-          qrcode.callback = function(imgMsg) {
-            console.log("imgMsg:", imgMsg);
-            // alert(imgMsg);
-            that.borrowTips[3] = this.result;
-            that.borrowTipState = 3;
-          };
-        };
-      }*/
-
       return isJPG && isLt4M;
     },
-
-    openReturn() {
-      this.$prompt("请输入评论内容", "提示", {
-        confirmButtonText: "发送",
-        cancelButtonText: "取消",
-        inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-        inputErrorMessage: "回复内容不能为空",
-        inputPlaceholder: "评论"
-      })
-        .then(({ value }) => {
-          console.log("reply", value);
-          if (value.length) {
-            let tm = new Date();
-            jQuery.post(
-              remoteAddr + "book/return",
-              {
-                bookId: this.bookId,
-                user: "user" /** @todo */,
-                place: "western",
-                time: {
-                  year: tm.getFullYear(),
-                  month: tm.getMonth() + 1,
-                  day: tm.getDate(),
-                  clock: tm.getHours()
-                }
-              },
-              response => {
-                if (response && response.code === 1) {
-                  this.$message.success("评论成功！");
-                } else {
-                  this.$message.error("发送失败");
-                }
-              }
-            );
+    handleBorrowBeforeRemove(file, filelist) {
+      console.log("handleBorrowBeforeRemove", file, filelist);
+    },
+    handleBorrowExceed(files, filelist) {
+      console.log("handleBorrowExceed", files, filelist);
+      this.$message.warning("只能上传一张图片，请删除前一张！");
+    },
+    submitBorrow() {
+      if (this.borrowTipState === 2 && this.qrresult === this.bookid) {
+        jQuery.ajax({
+          url: remoteAddr + "library/book/borrow",
+          type: "POST",
+          data: {
+            userID: this.$cookies.get("BT_userid"),
+            bookID: this.bookid
+          },
+          dataType: "json",
+          success: res => {
+            console.log("res", res);
+            if (res.code === 1) {
+              this.$message.success("操作成功");
+              this.bookstate = 2;
+            } else {
+              this.$message.error("获取失败:" + res.msg);
+            }
+          },
+          error: err => {
+            this.$message.error("网络开小差了");
           }
-        })
-        .catch(console.error);
+        });
+      }
+      this.dialogBorrowVisible = false;
     }
   },
   mounted() {
-    console.log(this.$route.query);
-    this.bookId = this.$route.query.bookid;
-    if (!this.bookId) {
+    // console.log(this.$route.query);
+    this.bookid = this.$route.query.bookid;
+    if (!this.bookid) {
       this.$route.push({ name: "bookList" });
     }
+
+    this.username = this.$cookies.get("BT_username");
+
     jQuery.ajax({
-      url: remoteAddr + "right/checkSingleBook",
-      type: "GET",
-      data: { _id: this.bookId },
+      url: remoteAddr + "library/admin/checkSingleBook",
+      type: "POST",
+      data: { jry: this.bookid },
       dataType: "json",
       success: res => {
         console.log("res", res);
-        if (res.data.length) {
-          this.bookList = res.data;
+        if (res.code === 1) {
+          this.book = res.data;
+
+          if (this.username && this.username.length) {
+            jQuery.ajax({
+              url: remoteAddr + "library/book/checkCondition",
+              type: "POST",
+              data: {
+                _id: this.$cookies.get("BT_userid"),
+                bookID: this.bookid
+              },
+              dataType: "json",
+              success: res => {
+                console.log("res", res);
+                if (res.code >= 0) {
+                  this.bookstate = res.code;
+                } else {
+                  this.$message.error("获取失败:" + res.msg);
+                }
+              },
+              error: err => {
+                this.$message.error("网络开小差了");
+              }
+            });
+          }
         } else {
-          this.$message.error("获取失败");
+          this.$message.error("获取失败:" + res.msg);
         }
       },
       error: err => {
@@ -377,8 +403,8 @@ export default {
   width: 1rem;
 }
 
-.my-bookdetail-two-line {
-  -webkit-line-clamp: 3;
+.my-bookdetail-quad-line {
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   display: -webkit-box;
   overflow: hidden;

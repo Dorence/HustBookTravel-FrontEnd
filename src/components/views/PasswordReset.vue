@@ -104,6 +104,7 @@ export default {
       });
     },
     sendCaptcha() {
+      return;
       if (!this.ruleForm.phone || !/^1[0-9]{10}$/.test(this.ruleForm.phone)) {
         this.$message("手机号错误");
         console.log("error!!");

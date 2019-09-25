@@ -49,6 +49,9 @@ export default {
     logout() {
       this.$cookies.set("BT_username", "", 0).set("BT_userid", "", 0);
       this.userName = "";
+      if (this.$route.path !== "/") {
+        this.$router.push({ name: "homePage" });
+      }
     }
   },
   mounted() {

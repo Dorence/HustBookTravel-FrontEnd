@@ -9,7 +9,7 @@
           :img="it.img"
           :press="it.public"
           :process="it.process"
-          :bookid="it._id"
+          :bookid="it.bookID"
         />
       </el-col>
     </el-row>
