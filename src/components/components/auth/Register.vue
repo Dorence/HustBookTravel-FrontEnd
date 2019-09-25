@@ -12,8 +12,8 @@
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item label="验证码" prop="varcode">
-        <el-input v-model="ruleForm.varcode"></el-input>
+      <el-form-item label="验证码" prop="vercode">
+        <el-input v-model="ruleForm.vercode"></el-input>
         <el-button type="text" @click="sendIDCode()" style="float: right;">获取短信验证码</el-button>
       </el-form-item>
       <el-form-item label="用户名" prop="nickname">
@@ -66,9 +66,10 @@ export default {
       }
     };
     return {
+      stdvervode:"",
       ruleForm: {
         phone: "",
-        varcode: "",
+        vercode: "",
         nickname: "",
         password: "",
         checkPass: "",
@@ -85,12 +86,12 @@ export default {
             message: "请输入11位手机号"
           }
         ],
-        varcode: [
+        vercode: [
           {
             required: true,
             pattern: /^[0-9]{4}$/,
             trigger: "blur",
-            message: "请输入4位验证码"
+            message: "验证码错误"
           }
         ],
         nickname: [{ required: true, min: 4, max: 16, trigger: "blur" }],
@@ -123,17 +124,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          jQuery.post(remoteAddr + "register", this.ruleForm, function(res) {
+          jQuery.post(remoteAddr + "register", this.ruleForm, (res)=> {
             console.log(res);
-            if (res.code != "-1") {
-              that.$message({
-                message: "登陆成功",
+            if (res.code === 1) {
+              this.$message({
+                message: "注册成功",
                 type: "success"
               });
-              that.$router.push({ name: "Auth" });
+              this.$router.push({ name: "Auth" });
             } else {
-              that.$message({
-                message: "登陆失败",
+              this.$message({
+                message: "注册失败",
                 type: "warning"
               });
             }
@@ -151,7 +152,7 @@ export default {
         console.log("error!!");
       } else {
         jQuery.post(
-          "http://www.husteic.cn:3000/sendM",
+          remoteAddr + "sendM",
           { phone: this.ruleForm.phone },
           res => {
             // console.log(res);
@@ -160,8 +161,9 @@ export default {
                 message: "已发送验证码到您手机!",
                 type: "success"
               });
-              this.rules.varcode.pattern = new RegExp(
-                "^" + res.confCode[0] + "$"
+              this.stdvervode = res.confCode[0];
+              this.rules.vercode.pattern = new RegExp(
+                "^" + this.stdvervode + "$"
               );
             } else {
               this.$message({
@@ -171,6 +173,7 @@ export default {
             }
           }
         );
+
       }
     }
   },

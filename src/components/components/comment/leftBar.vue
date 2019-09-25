@@ -1,5 +1,5 @@
 <template>
-  <el-menu default-active="1">
+  <el-menu default-active="1" :router="true">
     <el-menu-item index="1" @click="redirect('AllComments')">
       <i class="el-icon-menu"></i>
       <span slot="title">全部帖子</span>

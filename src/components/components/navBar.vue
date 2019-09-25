@@ -19,7 +19,14 @@
         </a>
       </el-submenu>
       <el-menu-item index="5" @click="redirect('VentWall')">意见反馈</el-menu-item>
-      <el-menu-item index="6" @click="redirect('Auth')" style="float: right">登录/注册</el-menu-item>
+
+      <el-menu-item
+        v-if="userName && userName.length"
+        index="7"
+        @click="logout"
+        style="float: right"
+      >{{userName}}</el-menu-item>
+      <el-menu-item v-else index="6" @click="redirect('Auth')" style="float: right">登录/注册</el-menu-item>
     </el-menu>
   </el-header>
 </template>
@@ -30,6 +37,7 @@ export default {
     return {
       activeIndex: "1",
       activeIndex2: "1",
+      userName: "",
       title: this.$route.path === "/" ? "图书漂流" : "主页"
     };
   },
@@ -37,12 +45,24 @@ export default {
     redirect(path) {
       this.$router.push({ name: path });
       this.title = this.$route.path === "/" ? "图书漂流" : "主页";
+    },
+    logout() {
+      this.$cookies.set("BT_username", "", 0).set("BT_userid", "", 0);
+      this.userName = "";
+    }
+  },
+  mounted() {
+    this.userName = this.$cookies.get("BT_username");
+  },
+  watch: {
+    $route(to, from) {
+      this.userName = this.$cookies.get("BT_username");
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 a {
   text-decoration: none;
   color: rgb(156, 156, 156);
@@ -61,6 +81,7 @@ a {
   color: rgb(53, 53, 53);
   margin-right: 8rem;
 }
+
 .my-header-img {
   width: 100%;
   position: absolute;

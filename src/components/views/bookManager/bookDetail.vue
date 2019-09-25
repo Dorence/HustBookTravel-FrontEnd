@@ -14,7 +14,7 @@
                 type="text"
                 @click="dialogFormVisible = true"
               >立即借阅</el-button>
-              <el-button type="primary" @click="openReturn()">还书</el-button>
+              <el-button type="primary" @click="dialogReturnVisible = true">还书</el-button>
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
@@ -63,6 +63,8 @@
             </div>
           </el-card>
         </el-col>
+
+        <!-- borrow book -->
         <el-dialog title="借用确认" :visible.sync="dialogFormVisible">
           <p>
             <strong>姓名</strong>:&nbsp;小萌新
@@ -75,17 +77,18 @@
           </p>
           <el-upload
             list-type="picture-card"
-            action
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+            action="#"
+            :file-list="fileList"
+            :on-change="handleBorrowChange"
+            :on-preview="handlePictureCardPreview"
             :multiple="false"
             :limit="1"
-            :show-file-list="false"
+            :show-file-list="true"
             :auto-upload="false"
           >
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4M</div>
+            <div slot="tip" class="el-upload__tip">{{borrowTips[borrowTipState]}}</div>
           </el-upload>
 
           <div slot="footer" class="dialog-footer">
@@ -93,7 +96,9 @@
             <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
           </div>
         </el-dialog>
-        <el-dialog title="归还确认" :visible.sync="dialogReturnVisible">
+
+        <!-- return book -->
+        <!-- <el-dialog title="归还确认" :visible.sync="dialogReturnVisible">
           <p>
             <strong>姓名</strong>:&nbsp;小萌新
             <br />
@@ -116,7 +121,7 @@
             :multiple="false"
             :limit="1"
             :show-file-list="false"
-            :auto-upload="false"
+            
           >
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -124,10 +129,10 @@
           </el-upload>
 
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button @click="dialogReturnVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogReturnVisible = false">确 定</el-button>
           </div>
-        </el-dialog>
+        </el-dialog>-->
       </el-row>
 
       <el-row>
@@ -153,6 +158,7 @@
 </template>
 <script>
 import { remoteAddr } from "@/config";
+import qrcode from "@/qrcode/vue-qrcode";
 
 export default {
   name: "",
@@ -165,6 +171,8 @@ export default {
       formReturn: {
         location: ""
       },
+      borrowTips: ["只能上传jpg/png文件，且不超过4M", "wrong", "ok"],
+      borrowTipState: 0,
 
       comment: "",
       bookDetail: {
@@ -185,20 +193,55 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
+      console.log("handleAvatarSuccess");
       this.imageUrl = URL.createObjectURL(file.raw);
+      // return false;
+    },
+    handleBorrowChange(file, fileList) {
+      console.log("handleBorrowChange", file, fileList);
+    },
+
+    handlePictureCardPreview(file) {
+      console.log("handlePictureCardPreview");
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     },
     beforeAvatarUpload(file) {
+      console.log("beforeAvatarUpload");
       const isJPG = file.type === "image/jpeg" || "image/png";
       const isLt4M = file.size / 1024 / 1024 < 4;
 
       if (!isJPG) {
-        this.$message.error("上传图片只能是 JPG 格式!");
+        this.$message.error("上传图片只能是 JPG/PNG 格式!");
       }
       if (!isLt4M) {
         this.$message.error("上传图片大小不能超过 4MB!");
       }
+
+      /*if (isJPG && isLt4M) {
+        let reads = new FileReader();
+        console.log("file", file);
+        reads.readAsDataURL(file);
+        console.log("ready", reads);
+
+        let that = this;
+
+        reads.onload = function(e) {
+          // console.log("done", this);
+          // document.getElementById("im").src = this.result;
+          qrcode.decode(this.result);
+          qrcode.callback = function(imgMsg) {
+            console.log("imgMsg:", imgMsg);
+            // alert(imgMsg);
+            that.borrowTips[3] = this.result;
+            that.borrowTipState = 3;
+          };
+        };
+      }*/
+
       return isJPG && isLt4M;
     },
+
     openReturn() {
       this.$prompt("请输入评论内容", "提示", {
         confirmButtonText: "发送",
@@ -240,6 +283,9 @@ export default {
   mounted() {
     console.log(this.$route.query);
     this.bookId = this.$route.query.bookid;
+    if (!this.bookId) {
+      this.$route.push({ name: "bookList" });
+    }
     jQuery.ajax({
       url: remoteAddr + "right/checkSingleBook",
       type: "GET",

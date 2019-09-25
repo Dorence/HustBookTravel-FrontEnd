@@ -22,6 +22,12 @@ export default {
   components: {
     Login,
     Register
+  },
+  mounted() {
+    let name = this.$cookies.get("BT_username");
+    if (name && name.length) {
+      this.$router.push({ name: "homePage" });
+    }
   }
 };
 import Login from "@/components/components/auth/Login";
@@ -31,9 +37,9 @@ import Register from "@/components/components/auth/Register";
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 element.style {
-    margin-top: 2rem;
-    margin-bottom: 20rem;
-    width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 20rem;
+  width: 100%;
 }
 input {
   box-sizing: border-box;
@@ -53,13 +59,16 @@ input {
 }
 
 .login {
-    width: 432px;
-    background: #ffffff;
-    box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
-    border-radius: 2px;
-    box-sizing: border-box;
-    margin: auto;
+  width: 432px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin: auto;
+  margin-top: 1rem;
+  padding-top: 4px;
 }
+
 .register {
   width: 432px;
   background: #ffffff;
