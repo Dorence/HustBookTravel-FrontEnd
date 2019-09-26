@@ -54,6 +54,8 @@
   </div>
 </template>
 <script>
+import { remoteAddr } from "@/config";
+
 export default {
   name: "VentWall",
   data() {
@@ -112,7 +114,7 @@ export default {
         });
       } else {
         jQuery.post(
-          "http://www.husteic.cn:3000/right/Opinion/Reply",
+          remoteAddr + "right/Opinion/Reply",
           {
             content: this.input.content,
             name: this.input.identity,
@@ -121,7 +123,7 @@ export default {
           res => {
             //console.log(res);
             this.tableData = res.data;
-            jQuery.get("http://www.husteic.cn:3000/right/Opinion", res => {
+            jQuery.get(remoteAddr + "right/Opinion", res => {
               console.log(res);
               this.propertys = res.data;
               this.$message({
@@ -137,29 +139,23 @@ export default {
     },
     findByTag(tag) {
       var that = this;
-      jQuery.get(
-        "http://www.husteic.cn:3000/right/Opinion/getByTag",
-        {
-          tag: tag
-        },
-        function(res) {
-          console.log(res.data);
-          that.propertys = res.data[0].messages;
-          console.log(that.propertys);
-        }
-      );
+      jQuery.get(remoteAddr + "right/Opinion/getByTag", { tag: tag }, function(
+        res
+      ) {
+        console.log(res.data);
+        that.propertys = res.data[0].messages;
+        console.log(that.propertys);
+      });
     }
   },
   mounted() {
     var that = this;
-    jQuery.get("http://www.husteic.cn:3000/right/Opinion", function(res) {
+    jQuery.get(remoteAddr + "right/Opinion", function(res) {
       console.log(res);
       that.propertys = res.data;
       console.log(that.propertys);
     });
-    jQuery.get("http://www.husteic.cn:3000/right/Opinion/getTags", function(
-      res
-    ) {
+    jQuery.get(remoteAddr + "right/Opinion/getTags", function(res) {
       console.log(res);
       that.tags = res.data;
     });
@@ -168,37 +164,78 @@ export default {
 </script>
 
 <style>
-input {
-  outline: none;
-}
-.my-vent-wall-item:hover {
-  background: rgb(216, 55, 55);
-}
 .my-ventwall-tags {
   display: flex;
   flex-direction: row;
   margin: 1rem;
   width: 100%;
 }
+
+.my-vent-wall-item {
+  animation: move 1.3s infinite alternate;
+  border-radius: 30rem;
+  box-shadow: 1px 1px 5px rgba(0,0,0,.1);
+  height: 3rem;
+  margin: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  width: 3rem;
+  transition: All 0.2s ease-in-out;
+}
+
+.my-vent-wall-item:hover,
+.my-vent-wall-item:focus {
+  transform: scale(1.25);
+}
+
 .my-vent-wall-item-num {
   color: rgba(51, 51, 51, 0.274);
   margin: 0.2rem;
 }
+
+.my-vent-wall-item-col {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-vent-wall-item-row {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+}
+
+.my-vent-wall-item-row-inner {
+  font-weight: bold;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden; /*超出隐藏*/
+  display: -webkit-box; /*设置弹性盒模型*/
+  white-space: pre-line;
+}
+
 .my-vent-comment-title-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 1.2rem;
 }
+
 .my-vent-comment-title-input {
   color: rgb(117, 117, 117);
   width: 8.5rem;
   border: 0;
   margin-left: 0.5rem;
 }
-input::-webkit-input-placeholder {
-  color: rgb(209, 209, 209);
-}
+
 .my-vent-comment-title {
   color: #000000;
 }
@@ -209,6 +246,7 @@ input::-webkit-input-placeholder {
   align-items: center;
   justify-content: center;
 }
+
 .my-vent-wall-line {
   border-top: 1px rgb(182, 182, 182) solid;
   width: 4rem;
@@ -219,6 +257,7 @@ input::-webkit-input-placeholder {
   flex-wrap: wrap;
   flex-direction: row;
 }
+
 .my-vent-wall-title {
   display: flex;
   flex-direction: row;
@@ -228,12 +267,14 @@ input::-webkit-input-placeholder {
   font-size: 2rem;
   font-weight: bold;
 }
+
 .my-vent-wall-subtitle {
   padding-right: 5rem;
   font-size: 0.9rem;
   margin-top: 0.5rem;
   color: rgb(143, 143, 143);
 }
+
 .my-vent-comment {
   color: white;
   border-radius: 0.5rem;
@@ -241,6 +282,7 @@ input::-webkit-input-placeholder {
   width: 15rem;
   overflow-y: scroll;
 }
+
 .my-vent-comment-item {
   font-weight: bold;
   font-family: "YouYuan";
@@ -250,47 +292,7 @@ input::-webkit-input-placeholder {
   padding: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.411);
 }
-.my-vent-wall-item {
-  transition: All 0.2s ease-in-out;
-  position: relative;
-  animation: move 2s infinite alternate;
-  margin: 1rem;
-  margin-bottom: 1.5rem;
-  width: 10rem;
-  height: 10rem;
-  background-color: red;
-  border-radius: 100rem;
-  box-shadow: 1px 1px 5px rgb(216, 55, 55);
-}
-.my-vent-wall-item:hover {
-  transform: scale(1.8);
-}
-.my-vent-wall-item-col {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.my-vent-wall-item-row {
-  width: 70%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  color: #ffffff;
-}
-.my-vent-wall-item-row-inner {
-  font-weight: bold;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
-  overflow: hidden; /*超出隐藏*/
-  display: -webkit-box; /*设置弹性盒模型*/
-  white-space: pre-line;
-}
+
 @keyframes move {
   from {
     top: 0rem;

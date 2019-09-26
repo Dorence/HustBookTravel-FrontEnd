@@ -26,7 +26,7 @@
                   style="float: right"
                 >还书</el-button>
               </span>
-              <span v-else style="color: #aaa;">登录才能借书哦。</span>
+              <span v-else style="color: #aaa;float: right;">登录才能借书哦</span>
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>

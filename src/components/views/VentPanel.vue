@@ -3,7 +3,7 @@
     <el-aside width="200px">
       <LeftBar />
     </el-aside>
-    <el-main style="min-width: 500px">
+    <el-main style="min-width: 600px">
       <transition :name="direction">
         <router-view />
       </transition>

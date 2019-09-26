@@ -6,7 +6,7 @@
         <span slot="title">全部分类</span>
       </template>
       <el-menu-item-group>
-        <el-menu-item index="1-0">全部</el-menu-item>
+        <el-menu-item index="1-0" @click="redirect('bookList')">全部</el-menu-item>
         <el-menu-item index="1-1">人文类</el-menu-item>
         <el-menu-item index="1-2">艺术类</el-menu-item>
         <el-menu-item index="1-3">自然科学类</el-menu-item>
@@ -24,6 +24,11 @@ export default {
   name: "leftBar",
   data() {
     return {};
+  },
+  methods:{
+    redirect(pathname) {
+      this.$router.push({ name: pathname });
+    }
   }
 };
 </script>
