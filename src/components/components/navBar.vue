@@ -7,22 +7,22 @@
       </el-menu-item>
       <el-menu-item index="2" @click="redirect('bookList')">书单</el-menu-item>
       <el-menu-item index="3" @click="redirect('AllComments')">评论区</el-menu-item>
-      <el-submenu index="4">
+      <el-menu-item index="4" @click="redirect('VentWall')">意见反馈</el-menu-item>
+      <el-submenu index="5">
         <template slot="title">EIC论坛</template>
         <a href="http://47.106.111.48:4567">
-          <el-menu-item index="4-1">访问论坛</el-menu-item>
+          <el-menu-item index="5-1">访问论坛</el-menu-item>
         </a>
         <a
           href="https://raw.githubusercontent.com/568xiaoma/EIC_App_image/master/EIC%E8%AE%BA%E5%9D%9B%20.apk"
         >
-          <el-menu-item index="4-2">下载APP</el-menu-item>
+          <el-menu-item index="5-2">下载APP</el-menu-item>
         </a>
       </el-submenu>
-      <el-menu-item index="5" @click="redirect('VentWall')">意见反馈</el-menu-item>
-
+      
       <el-menu-item
         v-if="userName && userName.length"
-        index="7"
+        index="6"
         @click="logout"
         style="float: right"
       >{{userName}}</el-menu-item>
@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       activeIndex: "1",
-      activeIndex2: "1",
       userName: "",
       title: this.$route.path === "/" ? "图书漂流" : "主页"
     };
@@ -47,19 +46,37 @@ export default {
       this.title = this.$route.path === "/" ? "图书漂流" : "主页";
     },
     logout() {
-      this.$cookies.set("BT_username", "", 0).set("BT_userid", "", 0);
-      this.userName = "";
-      if (this.$route.path !== "/") {
-        this.$router.push({ name: "homePage" });
+      this.$confirm("退出登录？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$cookies.set("BT_username", "", 0).set("BT_userid", "", 0);
+          this.userName = "";
+          this.$message({
+            type: "success",
+            message: "退出成功！"
+          });
+          if (this.$route.path !== "/") {
+            this.$router.push({ name: "homePage" });
+          }
+        })
+        .catch(console.log);
+    },
+    processRoute() {
+      this.userName = this.$cookies.get("BT_username");
+      if (this.$route.path.indexOf("/book") >= 0) {
+        this.activeIndex = "2";
       }
     }
   },
   mounted() {
-    this.userName = this.$cookies.get("BT_username");
+    this.processRoute();
   },
   watch: {
     $route(to, from) {
-      this.userName = this.$cookies.get("BT_username");
+      this.processRoute();
     }
   }
 };

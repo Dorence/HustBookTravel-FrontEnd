@@ -1,3 +1,22 @@
+/*
+ * Ported to JavaScript by Lazar Laszlo 2011 
+ * lazarsoft@gmail.com, www.lazarsoft.info
+ *
+ * Copyright 2007 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 let qrcode = {};
 
 (() => {
@@ -108,23 +127,15 @@ let qrcode = {};
 
     function ECBlocks(ecCodewordsPerBlock, ecBlocks1, ecBlocks2) {
         this.ecCodewordsPerBlock = ecCodewordsPerBlock;
-        if (ecBlocks2)
-            this.ecBlocks = new Array(ecBlocks1, ecBlocks2);
-        else
-            this.ecBlocks = new Array(ecBlocks1);
+        this.ecBlocks = ecBlocks2 ? new Array(ecBlocks1, ecBlocks2) : new Array(ecBlocks1);
 
         this.__defineGetter__("ECCodewordsPerBlock", function() { return this.ecCodewordsPerBlock; });
-
-        this.__defineGetter__("TotalECCodewords", function() {
-            return this.ecCodewordsPerBlock * this.NumBlocks;
-        });
-
+        this.__defineGetter__("TotalECCodewords", function() { return this.ecCodewordsPerBlock * this.NumBlocks; });
         this.__defineGetter__("NumBlocks", function() {
             let total = 0;
-            for (let i of this.ecBlocks) { total += i.length; }
+            for (let it of this.ecBlocks) { total += it.length; }
             return total;
         });
-
         this.getECBlocks = function() { return this.ecBlocks; }
     }
 
@@ -143,7 +154,6 @@ let qrcode = {};
         this.totalCodewords = total;
 
         this.__defineGetter__("VersionNumber", function() { return this.versionNumber; });
-
         this.__defineGetter__("AlignmentPatternCenters", function() { return this.alignmentPatternCenters; });
         this.__defineGetter__("TotalCodewords", function() { return this.totalCodewords; });
         this.__defineGetter__("DimensionForVersion", function() { return 17 + 4 * this.versionNumber; });
@@ -191,7 +201,7 @@ let qrcode = {};
         }
     }
 
-    Version.VERSION_DECODE_INFO = new Array(0x07C94, 0x085BC, 0x09A99, 0x0A4D3, 0x0BBF6, 0x0C762, 0x0D847, 0x0E60D, 0x0F928, 0x10B78, 0x1145D, 0x12A17, 0x13532, 0x149A6, 0x15683, 0x168C9, 0x177EC, 0x18EC4, 0x191E1, 0x1AFAB, 0x1B08E, 0x1CC1A, 0x1D33F, 0x1ED75, 0x1F250, 0x209D5, 0x216F0, 0x228BA, 0x2379F, 0x24B0B, 0x2542E, 0x26A64, 0x27541, 0x28C69);
+    Version.VERSION_DECODE_INFO = [0x07C94, 0x085BC, 0x09A99, 0x0A4D3, 0x0BBF6, 0x0C762, 0x0D847, 0x0E60D, 0x0F928, 0x10B78, 0x1145D, 0x12A17, 0x13532, 0x149A6, 0x15683, 0x168C9, 0x177EC, 0x18EC4, 0x191E1, 0x1AFAB, 0x1B08E, 0x1CC1A, 0x1D33F, 0x1ED75, 0x1F250, 0x209D5, 0x216F0, 0x228BA, 0x2379F, 0x24B0B, 0x2542E, 0x26A64, 0x27541, 0x28C69];
 
     Version.VERSIONS = buildVersions();
 
@@ -283,7 +293,6 @@ let qrcode = {};
             new Version(40, new Array(6, 30, 58, 86, 114, 142, 170), new ECBlocks(30, new ECB(19, 118), new ECB(6, 119)), new ECBlocks(28, new ECB(18, 47), new ECB(31, 48)), new ECBlocks(30, new ECB(34, 24), new ECB(34, 25)), new ECBlocks(30, new ECB(20, 15), new ECB(61, 16))));
     }
 
-
     /** 3. detector.js */
 
     function PerspectiveTransform(a11, a21, a31, a12, a22, a32, a13, a23, a33) {
@@ -370,7 +379,6 @@ let qrcode = {};
         this.points = points;
     }
 
-
     function Detector(image) {
         this.image = image;
         this.resultPointCallback = null;
@@ -429,7 +437,6 @@ let qrcode = {};
             return Math.sqrt((diffX2 * diffX2 + diffY2 * diffY2));
         }
 
-
         this.sizeOfBlackWhiteBlackRunBothWays = function(fromX, fromY, toX, toY) {
 
             var result = this.sizeOfBlackWhiteBlackRun(fromX, fromY, toX, toY);
@@ -460,8 +467,6 @@ let qrcode = {};
             return result - 1.0; // -1 because we counted the middle pixel twice
         }
 
-
-
         this.calculateModuleSizeOneWay = function(pattern, otherPattern) {
             var moduleSizeEst1 = this.sizeOfBlackWhiteBlackRunBothWays(Math.floor(pattern.X), Math.floor(pattern.Y), Math.floor(otherPattern.X), Math.floor(otherPattern.Y));
             var moduleSizeEst2 = this.sizeOfBlackWhiteBlackRunBothWays(Math.floor(otherPattern.X), Math.floor(otherPattern.Y), Math.floor(pattern.X), Math.floor(pattern.Y));
@@ -476,7 +481,6 @@ let qrcode = {};
             return (moduleSizeEst1 + moduleSizeEst2) / 14.0;
         }
 
-
         this.calculateModuleSize = function(topLeft, topRight, bottomLeft) {
             // Take the average
             return (this.calculateModuleSizeOneWay(topLeft, topRight) + this.calculateModuleSizeOneWay(topLeft, bottomLeft)) / 2.0;
@@ -488,22 +492,18 @@ let qrcode = {};
             return Math.sqrt((xDiff * xDiff + yDiff * yDiff));
         }
         this.computeDimension = function(topLeft, topRight, bottomLeft, moduleSize) {
-
             var tltrCentersDimension = Math.round(this.distance(topLeft, topRight) / moduleSize);
             var tlblCentersDimension = Math.round(this.distance(topLeft, bottomLeft) / moduleSize);
             var dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
             switch (dimension & 0x03) {
-
                 // mod 4
                 case 0:
                     dimension++;
                     break;
                     // 1? do nothing
-
                 case 2:
                     dimension--;
                     break;
-
                 case 3:
                     throw "Error";
             }
@@ -550,7 +550,6 @@ let qrcode = {};
         }
 
         this.sampleGrid = function(image, transform, dimension) {
-
             var sampler = GridSampler;
             return sampler.sampleGrid3(image, dimension, transform);
         }
@@ -599,10 +598,9 @@ let qrcode = {};
             }
 
             var transform = this.createTransform(topLeft, topRight, bottomLeft, alignmentPattern, dimension);
-
             var bits = this.sampleGrid(this.image, transform, dimension);
-
             var points;
+
             if (alignmentPattern == null) {
                 points = new Array(bottomLeft, topLeft, topRight);
             } else {
@@ -611,39 +609,25 @@ let qrcode = {};
             return new DetectorResult(bits, points);
         }
 
-
-
         this.detect = function() {
             var info = new FinderPatternFinder().findFinderPattern(this.image);
-
             return this.processFinderPatternInfo(info);
         }
     }
 
-    /** formatinf.js */
+    /** 4. formatinf.js */
 
     var FORMAT_INFO_MASK_QR = 0x5412;
     var FORMAT_INFO_DECODE_LOOKUP = new Array(new Array(0x5412, 0x00), new Array(0x5125, 0x01), new Array(0x5E7C, 0x02), new Array(0x5B4B, 0x03), new Array(0x45F9, 0x04), new Array(0x40CE, 0x05), new Array(0x4F97, 0x06), new Array(0x4AA0, 0x07), new Array(0x77C4, 0x08), new Array(0x72F3, 0x09), new Array(0x7DAA, 0x0A), new Array(0x789D, 0x0B), new Array(0x662F, 0x0C), new Array(0x6318, 0x0D), new Array(0x6C41, 0x0E), new Array(0x6976, 0x0F), new Array(0x1689, 0x10), new Array(0x13BE, 0x11), new Array(0x1CE7, 0x12), new Array(0x19D0, 0x13), new Array(0x0762, 0x14), new Array(0x0255, 0x15), new Array(0x0D0C, 0x16), new Array(0x083B, 0x17), new Array(0x355F, 0x18), new Array(0x3068, 0x19), new Array(0x3F31, 0x1A), new Array(0x3A06, 0x1B), new Array(0x24B4, 0x1C), new Array(0x2183, 0x1D), new Array(0x2EDA, 0x1E), new Array(0x2BED, 0x1F));
-    var BITS_SET_IN_HALF_BYTE = new Array(0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
-
+    const BITS_SET_IN_HALF_BYTE = [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4];
 
     function FormatInformation(formatInfo) {
         this.errorCorrectionLevel = ErrorCorrectionLevel.forBits((formatInfo >> 3) & 0x03);
         this.dataMask = (formatInfo & 0x07);
-
-        this.__defineGetter__("ErrorCorrectionLevel", function() {
-            return this.errorCorrectionLevel;
-        });
-        this.__defineGetter__("DataMask", function() {
-            return this.dataMask;
-        });
-        this.GetHashCode = function() {
-            return (this.errorCorrectionLevel.ordinal() << 3) | this.dataMask;
-        }
-        this.Equals = function(o) {
-            var other = o;
-            return this.errorCorrectionLevel == other.errorCorrectionLevel && this.dataMask == other.dataMask;
-        }
+        this.__defineGetter__("ErrorCorrectionLevel", function() { return this.errorCorrectionLevel; });
+        this.__defineGetter__("DataMask", function() { return this.dataMask; });
+        this.GetHashCode = function() { return (this.errorCorrectionLevel.ordinal() << 3) | this.dataMask; }
+        this.Equals = function(o) { return this.errorCorrectionLevel == o.errorCorrectionLevel && this.dataMask == o.dataMask; }
     }
 
     FormatInformation.numBitsDiffering = function(a, b) {
@@ -657,11 +641,11 @@ let qrcode = {};
         if (formatInfo != null) {
             return formatInfo;
         }
-        // Should return null, but, some QR codes apparently
-        // do not mask this info. Try again by actually masking the pattern
-        // first
+        // Should return null, but, some QR codes apparently do not mask this info.
+        // Try again by actually masking the pattern first
         return FormatInformation.doDecodeFormatInformation(maskedFormatInfo ^ FORMAT_INFO_MASK_QR);
     }
+
     FormatInformation.doDecodeFormatInformation = function(maskedFormatInfo) {
         // Find the int in FORMAT_INFO_DECODE_LOOKUP with fewest bits differing
         var bestDifference = 0xffffffff;
@@ -687,87 +671,25 @@ let qrcode = {};
         return null;
     }
 
-
-    /** errorlevel.js */
-
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 5. errorlevel.js */
 
     function ErrorCorrectionLevel(ordinal, bits, name) {
         this.ordinal_Renamed_Field = ordinal;
         this.bits = bits;
         this.name = name;
-        this.__defineGetter__("Bits", function() {
-            return this.bits;
-        });
-        this.__defineGetter__("Name", function() {
-            return this.name;
-        });
-        this.ordinal = function() {
-            return this.ordinal_Renamed_Field;
-        }
+        this.__defineGetter__("Bits", function() { return this.bits; });
+        this.__defineGetter__("Name", function() { return this.name; });
+        this.ordinal = function() { return this.ordinal_Renamed_Field; }
     }
 
     ErrorCorrectionLevel.forBits = function(bits) {
-        if (bits < 0 || bits >= FOR_BITS.length) {
-            throw "ArgumentException";
-        }
+        if (bits < 0 || bits >= FOR_BITS.length) { throw "ArgumentException"; }
         return FOR_BITS[bits];
     }
 
-    var L = new ErrorCorrectionLevel(0, 0x01, "L");
-    var M = new ErrorCorrectionLevel(1, 0x00, "M");
-    var Q = new ErrorCorrectionLevel(2, 0x03, "Q");
-    var H = new ErrorCorrectionLevel(3, 0x02, "H");
-    var FOR_BITS = new Array(M, L, H, Q);
+    const FOR_BITS = [new ErrorCorrectionLevel(1, 0x00, "M"), new ErrorCorrectionLevel(0, 0x01, "L"), new ErrorCorrectionLevel(3, 0x02, "H"), new ErrorCorrectionLevel(2, 0x03, "Q")];
 
-    /** bitmat.js */
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 6. bitmat.js */
 
     function BitMatrix(width, height) {
         if (!height)
@@ -786,12 +708,8 @@ let qrcode = {};
         for (var i = 0; i < this.bits.length; i++)
             this.bits[i] = 0;
 
-        this.__defineGetter__("Width", function() {
-            return this.width;
-        });
-        this.__defineGetter__("Height", function() {
-            return this.height;
-        });
+        this.__defineGetter__("Width", function() { return this.width; });
+        this.__defineGetter__("Height", function() { return this.height; });
         this.__defineGetter__("Dimension", function() {
             if (this.width != this.height) {
                 throw "Can't call getDimension() on a non-square matrix";
@@ -811,12 +729,7 @@ let qrcode = {};
             var offset = y * this.rowSize + (x >> 5);
             this.bits[offset] ^= 1 << (x & 0x1f);
         }
-        this.clear = function() {
-            var max = this.bits.length;
-            for (var i = 0; i < max; i++) {
-                this.bits[i] = 0;
-            }
-        }
+        this.clear = function() { for (let i in this.bits) { this.bits[i] = 0; } return this; }
         this.setRegion = function(left, top, width, height) {
             if (top < 0 || left < 0) {
                 throw "Left and top must be nonnegative";
@@ -838,48 +751,16 @@ let qrcode = {};
         }
     }
 
-
-    /** datablock.js */
-
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 7. datablock.js */
 
     function DataBlock(numDataCodewords, codewords) {
         this.numDataCodewords = numDataCodewords;
         this.codewords = codewords;
-
-        this.__defineGetter__("NumDataCodewords", function() {
-            return this.numDataCodewords;
-        });
-        this.__defineGetter__("Codewords", function() {
-            return this.codewords;
-        });
+        this.__defineGetter__("NumDataCodewords", function() { return this.numDataCodewords; });
+        this.__defineGetter__("Codewords", function() { return this.codewords; });
     }
 
     DataBlock.getDataBlocks = function(rawCodewords, version, ecLevel) {
-
         if (rawCodewords.length != version.TotalCodewords) {
             throw "ArgumentException";
         }
@@ -944,32 +825,7 @@ let qrcode = {};
         return result;
     }
 
-    /** bmparser.js */
-
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 8. bmparser.js */
 
     function BitMatrixParser(bitMatrix) {
         var dimension = bitMatrix.Dimension;
@@ -980,9 +836,7 @@ let qrcode = {};
         this.parsedVersion = null;
         this.parsedFormatInfo = null;
 
-        this.copyBit = function(i, j, versionBits) {
-            return this.bitMatrix.get_Renamed(i, j) ? (versionBits << 1) | 0x1 : versionBits << 1;
-        }
+        this.copyBit = function(i, j, versionBits) { return this.bitMatrix.get_Renamed(i, j) ? (versionBits << 1) | 0x1 : versionBits << 1; }
 
         this.readFormatInformation = function() {
             if (this.parsedFormatInfo != null) {
@@ -1025,6 +879,7 @@ let qrcode = {};
             }
             throw "Error readFormatInformation";
         }
+
         this.readVersion = function() {
 
             if (this.parsedVersion != null) {
@@ -1066,6 +921,7 @@ let qrcode = {};
             }
             throw "Error readVersion";
         }
+
         this.readCodewords = function() {
 
             var formatInfo = this.readFormatInformation();
@@ -1120,34 +976,10 @@ let qrcode = {};
             return result;
         }
     }
-    /** datamask.js */
 
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
+    /** 9. datamask.js */
 
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
-
-    var DataMask = {};
+    let DataMask = {};
 
     DataMask.forReference = function(reference) {
         if (reference < 0 || reference > 7) {
@@ -1280,32 +1112,7 @@ let qrcode = {};
 
     DataMask.DATA_MASKS = new Array(new DataMask000(), new DataMask001(), new DataMask010(), new DataMask011(), new DataMask100(), new DataMask101(), new DataMask110(), new DataMask111());
 
-
-    /** rsdecoder.js */
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 10. rsdecoder.js */
 
     function ReedSolomonDecoder(field) {
         this.field = field;
@@ -1344,9 +1151,8 @@ let qrcode = {};
         this.runEuclideanAlgorithm = function(a, b, R) {
             // Assume a's degree is >= b's
             if (a.Degree < b.Degree) {
-                var temp = a;
-                a = b;
-                b = temp;
+                // var temp = a; a = b; b = temp;
+                [a, b] = [b, a];
             }
 
             var rLast = a;
@@ -1396,6 +1202,7 @@ let qrcode = {};
             var omega = r.multiply2(inverse);
             return new Array(sigma, omega);
         }
+
         this.findErrorLocations = function(errorLocator) {
             // This is a direct application of Chien's search
             var numErrors = errorLocator.Degree;
@@ -1416,6 +1223,7 @@ let qrcode = {};
             }
             return result;
         }
+
         this.findErrorMagnitudes = function(errorEvaluator, errorLocations, dataMatrix) {
             // This is directly applying Forney's Formula
             var s = errorLocations.length;
@@ -1438,32 +1246,7 @@ let qrcode = {};
         }
     }
 
-    /** gf256poly.js */
-
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 11. gf256poly.js */
 
     function GF256Poly(field, coefficients) {
         if (coefficients == null || coefficients.length == 0) {
@@ -1489,19 +1272,10 @@ let qrcode = {};
             this.coefficients = coefficients;
         }
 
-        this.__defineGetter__("Zero", function() {
-            return this.coefficients[0] == 0;
-        });
-        this.__defineGetter__("Degree", function() {
-            return this.coefficients.length - 1;
-        });
-        this.__defineGetter__("Coefficients", function() {
-            return this.coefficients;
-        });
-
-        this.getCoefficient = function(degree) {
-            return this.coefficients[this.coefficients.length - 1 - degree];
-        }
+        this.__defineGetter__("Zero", function() { return this.coefficients[0] == 0; });
+        this.__defineGetter__("Degree", function() { return this.coefficients.length - 1; });
+        this.__defineGetter__("Coefficients", function() { return this.coefficients; });
+        this.getCoefficient = function(degree) { return this.coefficients[this.coefficients.length - 1 - degree]; }
 
         this.evaluateAt = function(a) {
             if (a == 0) {
@@ -1554,6 +1328,7 @@ let qrcode = {};
 
             return new GF256Poly(field, sumDiff);
         }
+
         this.multiply1 = function(other) {
             if (this.field != other.field) {
                 throw "GF256Polys do not have same GF256 field";
@@ -1574,6 +1349,7 @@ let qrcode = {};
             }
             return new GF256Poly(this.field, product);
         }
+
         this.multiply2 = function(scalar) {
             if (scalar == 0) {
                 return this.field.Zero;
@@ -1588,6 +1364,7 @@ let qrcode = {};
             }
             return new GF256Poly(this.field, product);
         }
+
         this.multiplyByMonomial = function(degree, coefficient) {
             if (degree < 0) {
                 throw "System.ArgumentException";
@@ -1603,6 +1380,7 @@ let qrcode = {};
             }
             return new GF256Poly(this.field, product);
         }
+
         this.divide = function(other) {
             if (this.field != other.field) {
                 throw "GF256Polys do not have same GF256 field";
@@ -1629,32 +1407,8 @@ let qrcode = {};
             return new Array(quotient, remainder);
         }
     }
-    /** gf256.js */
 
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 12. gf256.js */
 
     function GF256(primitive) {
         this.expTable = new Array(256);
@@ -1678,12 +1432,8 @@ let qrcode = {};
         at1[0] = 1;
         this.one = new GF256Poly(this, new Array(at1));
 
-        this.__defineGetter__("Zero", function() {
-            return this.zero;
-        });
-        this.__defineGetter__("One", function() {
-            return this.one;
-        });
+        this.__defineGetter__("Zero", function() { return this.zero; });
+        this.__defineGetter__("One", function() { return this.one; });
         this.buildMonomial = function(degree, coefficient) {
             if (degree < 0) {
                 throw "System.ArgumentException";
@@ -1696,11 +1446,9 @@ let qrcode = {};
             coefficients[0] = coefficient;
             return new GF256Poly(this, coefficients);
         }
-        this.exp = function(a) {
-            return this.expTable[a];
-        }
+        this.exp = function(a) { return this.expTable[a]; }
         this.log = function(a) {
-            if (a == 0) {
+            if (a <= 0) {
                 throw "System.ArgumentException";
             }
             return this.logTable[a];
@@ -1727,39 +1475,12 @@ let qrcode = {};
 
     GF256.QR_CODE_FIELD = new GF256(0x011D);
     GF256.DATA_MATRIX_FIELD = new GF256(0x012D);
+    GF256.addOrSubtract = function(a, b) { return a ^ b; }
 
-    GF256.addOrSubtract = function(a, b) {
-        return a ^ b;
-    }
+    /** 13. decoder.js */
 
+    let Decoder = {};
 
-    /** decoder.js */
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
-
-    var Decoder = {};
     Decoder.rsDecoder = new ReedSolomonDecoder(GF256.QR_CODE_FIELD);
 
     Decoder.correctErrors = function(codewordBytes, numDataCodewords) {
@@ -1820,25 +1541,7 @@ let qrcode = {};
         //return DecodedBitStreamParser.decode(resultBytes, version, ecLevel);
     }
 
-    /** qrcode.js */
-
-
-    /*
-       Copyright 2011 Lazar Laszlo (lazarsoft@gmail.com, www.lazarsoft.info)
-       
-       Licensed under the Apache License, Version 2.0 (the "License");
-       you may not use this file except in compliance with the License.
-       You may obtain a copy of the License at
-    
-           http://www.apache.org/licenses/LICENSE-2.0
-    
-       Unless required by applicable law or agreed to in writing, software
-       distributed under the License is distributed on an "AS IS" BASIS,
-       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-       See the License for the specific language governing permissions and
-       limitations under the License.
-    */
-
+    /** 14. qrcode.js */
 
     // var qrcode = {};
     qrcode.imagedata = null;
@@ -1847,25 +1550,26 @@ let qrcode = {};
     qrcode.qrCodeSymbol = null;
     qrcode.debug = false;
     qrcode.maxImgSize = 1024 * 1024;
-
     qrcode.sizeOfDataLengthInfo = [
         [10, 9, 8, 8],
         [12, 11, 16, 10],
         [14, 13, 16, 12]
     ];
-
     qrcode.callback = null;
 
     qrcode.vidSuccess = function(stream) {
         qrcode.localstream = stream;
-        if (qrcode.webkit)
+        if (qrcode.webkit) {
             qrcode.video.src = window.webkitURL.createObjectURL(stream);
-        else
-        if (qrcode.moz) {
-            qrcode.video.mozSrcObject = stream;
-            qrcode.video.play();
-        } else
-            qrcode.video.src = stream;
+        } else {
+            if (qrcode.moz) {
+                qrcode.video.mozSrcObject = stream;
+                qrcode.video.play();
+            } else {
+                qrcode.video.src = stream;
+            }
+
+        }
 
         qrcode.gUM = true;
 
@@ -1877,10 +1581,7 @@ let qrcode = {};
         setTimeout(qrcode.captureToCanvas, 500);
     }
 
-    qrcode.vidError = function(error) {
-        qrcode.gUM = false;
-        return;
-    }
+    qrcode.vidError = function(error) { qrcode.gUM = false; return; }
 
     qrcode.captureToCanvas = function() {
         if (qrcode.gUM) {
@@ -2017,10 +1718,7 @@ let qrcode = {};
         }
     }
 
-    qrcode.isUrl = function(s) {
-        var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-        return regexp.test(s);
-    }
+    qrcode.isUrl = function(s) { return /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(s); }
 
     qrcode.decode_url = function(s) {
         var escaped = "";
@@ -2040,12 +1738,7 @@ let qrcode = {};
         return ret;
     }
 
-    qrcode.decode_utf8 = function(s) {
-        if (qrcode.isUrl(s))
-            return qrcode.decode_url(s);
-        else
-            return s;
-    }
+    qrcode.decode_utf8 = function(s) { return qrcode.isUrl(s) ? qrcode.decode_url(s) : s; }
 
     qrcode.process = function(ctx) {
 
@@ -2206,9 +1899,6 @@ let qrcode = {};
         return ret;
     }
 
-
-
-
     function URShift(number, bits) {
         if (number >= 0)
             return number >> bits;
@@ -2216,33 +1906,7 @@ let qrcode = {};
             return (number >> bits) + (2 << ~bits);
     }
 
-
-    /** findpat.js */
-
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 15. findpat.js */
 
     var MIN_SKIP = 3;
     var MAX_MODULES = 57;
@@ -2257,12 +1921,8 @@ let qrcode = {};
             return Math.sqrt((xDiff * xDiff + yDiff * yDiff));
         }
 
-        /// <summary> Returns the z component of the cross product between vectors BC and BA.</summary>
-        function crossProductZ(pointA, pointB, pointC) {
-            var bX = pointB.x;
-            var bY = pointB.y;
-            return ((pointC.x - bX) * (pointA.y - bY)) - ((pointC.y - bY) * (pointA.x - bX));
-        }
+        /** @brief Returns the z component of the cross product between vectors BC and BA. */
+        function crossProductZ(pointA, pointB, pointC) { return ((pointC.x - pointB.x) * (pointA.y - pointB.y)) - ((pointC.y - pointB.y) * (pointA.x - pointB.x)); }
 
 
         // Find distances between pattern centers
@@ -2301,28 +1961,17 @@ let qrcode = {};
         patterns[2] = pointC;
     }
 
-
     function FinderPattern(posX, posY, estimatedModuleSize) {
         this.x = posX;
         this.y = posY;
         this.count = 1;
         this.estimatedModuleSize = estimatedModuleSize;
 
-        this.__defineGetter__("EstimatedModuleSize", function() {
-            return this.estimatedModuleSize;
-        });
-        this.__defineGetter__("Count", function() {
-            return this.count;
-        });
-        this.__defineGetter__("X", function() {
-            return this.x;
-        });
-        this.__defineGetter__("Y", function() {
-            return this.y;
-        });
-        this.incrementCount = function() {
-            this.count++;
-        }
+        this.__defineGetter__("EstimatedModuleSize", function() { return this.estimatedModuleSize; });
+        this.__defineGetter__("Count", function() { return this.count; });
+        this.__defineGetter__("X", function() { return this.x; });
+        this.__defineGetter__("Y", function() { return this.y; });
+        this.incrementCount = function() { this.count++; }
         this.aboutEquals = function(moduleSize, i, j) {
             if (Math.abs(i - this.y) <= moduleSize && Math.abs(j - this.x) <= moduleSize) {
                 var moduleSizeDiff = Math.abs(moduleSize - this.estimatedModuleSize);
@@ -2330,22 +1979,15 @@ let qrcode = {};
             }
             return false;
         }
-
     }
 
     function FinderPatternInfo(patternCenters) {
         this.bottomLeft = patternCenters[0];
         this.topLeft = patternCenters[1];
         this.topRight = patternCenters[2];
-        this.__defineGetter__("BottomLeft", function() {
-            return this.bottomLeft;
-        });
-        this.__defineGetter__("TopLeft", function() {
-            return this.topLeft;
-        });
-        this.__defineGetter__("TopRight", function() {
-            return this.topRight;
-        });
+        this.__defineGetter__("BottomLeft", function() { return this.bottomLeft; });
+        this.__defineGetter__("TopLeft", function() { return this.topLeft; });
+        this.__defineGetter__("TopRight", function() { return this.topRight; });
     }
 
     function FinderPatternFinder() {
@@ -2356,11 +1998,7 @@ let qrcode = {};
         this.resultPointCallback = null;
 
         this.__defineGetter__("CrossCheckStateCount", function() {
-            this.crossCheckStateCount[0] = 0;
-            this.crossCheckStateCount[1] = 0;
-            this.crossCheckStateCount[2] = 0;
-            this.crossCheckStateCount[3] = 0;
-            this.crossCheckStateCount[4] = 0;
+            this.crossCheckStateCount[0] = this.crossCheckStateCount[1] = this.crossCheckStateCount[2] = this.crossCheckStateCount[3] = this.crossCheckStateCount[4] = 0;
             return this.crossCheckStateCount;
         });
 
@@ -2381,12 +2019,13 @@ let qrcode = {};
             // Allow less than 50% variance from 1-1-3-1-1 proportions
             return Math.abs(moduleSize - (stateCount[0] << INTEGER_MATH_SHIFT)) < maxVariance && Math.abs(moduleSize - (stateCount[1] << INTEGER_MATH_SHIFT)) < maxVariance && Math.abs(3 * moduleSize - (stateCount[2] << INTEGER_MATH_SHIFT)) < 3 * maxVariance && Math.abs(moduleSize - (stateCount[3] << INTEGER_MATH_SHIFT)) < maxVariance && Math.abs(moduleSize - (stateCount[4] << INTEGER_MATH_SHIFT)) < maxVariance;
         }
+
         this.centerFromEnd = function(stateCount, end) {
             return (end - stateCount[4] - stateCount[3]) - stateCount[2] / 2.0;
         }
+
         this.crossCheckVertical = function(startI, centerJ, maxCount, originalStateCountTotal) {
             var image = this.image;
-
             var maxI = qrcode.height;
             var stateCount = this.CrossCheckStateCount;
 
@@ -2448,6 +2087,7 @@ let qrcode = {};
 
             return this.foundPatternCross(stateCount) ? this.centerFromEnd(stateCount, i) : NaN;
         }
+
         this.crossCheckHorizontal = function(startJ, centerI, maxCount, originalStateCountTotal) {
             var image = this.image;
 
@@ -2509,6 +2149,7 @@ let qrcode = {};
 
             return this.foundPatternCross(stateCount) ? this.centerFromEnd(stateCount, j) : NaN;
         }
+
         this.handlePossibleCenter = function(stateCount, i, j) {
             var stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] + stateCount[4];
             var centerJ = this.centerFromEnd(stateCount, j); //float
@@ -2761,32 +2402,8 @@ let qrcode = {};
             return new FinderPatternInfo(patternInfo);
         };
     }
-    /** alignpat.js */
 
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 16. alignpat.js */
 
     function AlignmentPattern(posX, posY, estimatedModuleSize) {
         this.x = posX;
@@ -2794,21 +2411,11 @@ let qrcode = {};
         this.count = 1;
         this.estimatedModuleSize = estimatedModuleSize;
 
-        this.__defineGetter__("EstimatedModuleSize", function() {
-            return this.estimatedModuleSize;
-        });
-        this.__defineGetter__("Count", function() {
-            return this.count;
-        });
-        this.__defineGetter__("X", function() {
-            return Math.floor(this.x);
-        });
-        this.__defineGetter__("Y", function() {
-            return Math.floor(this.y);
-        });
-        this.incrementCount = function() {
-            this.count++;
-        }
+        this.__defineGetter__("EstimatedModuleSize", function() { return this.estimatedModuleSize; });
+        this.__defineGetter__("Count", function() { return this.count; });
+        this.__defineGetter__("X", function() { return Math.floor(this.x); });
+        this.__defineGetter__("Y", function() { return Math.floor(this.y); });
+        this.incrementCount = function() { this.count++; }
         this.aboutEquals = function(moduleSize, i, j) {
             if (Math.abs(i - this.y) <= moduleSize && Math.abs(j - this.x) <= moduleSize) {
                 var moduleSizeDiff = Math.abs(moduleSize - this.estimatedModuleSize);
@@ -2816,7 +2423,6 @@ let qrcode = {};
             }
             return false;
         }
-
     }
 
     function AlignmentPatternFinder(image, startX, startY, width, height, moduleSize, resultPointCallback) {
@@ -2995,32 +2601,8 @@ let qrcode = {};
         }
 
     }
-    /** databr.js */
 
-    /*
-      Ported to JavaScript by Lazar Laszlo 2011 
-      
-      lazarsoft@gmail.com, www.lazarsoft.info
-      
-    */
-
-    /*
-     *
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-
+    /** 17. databr.js */
 
     function QRCodeDataBlockReader(blocks, version, numErrorCorrectionCode) {
         this.blockPointer = 0;
@@ -3287,7 +2869,6 @@ let qrcode = {};
             return output;
         });
     }
-
 })();
 
 export default qrcode;

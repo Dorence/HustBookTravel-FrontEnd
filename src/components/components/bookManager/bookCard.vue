@@ -3,13 +3,11 @@
     <el-link :underline="false" class="booktravel-booklist-info" @click="routerTo">
       <el-image fit="scale-down" :src="img" lazy />
       <div>
-        <strong>{{bookName}}</strong>
-      </div>
-      <div>
+        <strong style="font-size: 120%;">{{bookName}}</strong>
+        <br />
         <strong>作者：</strong>
         {{author}}
-      </div>
-      <div>
+        <br />
         <strong>出版社：</strong>
         {{press}}
       </div>

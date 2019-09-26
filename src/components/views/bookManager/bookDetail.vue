@@ -11,15 +11,15 @@
               <strong style="font-size: 1.6rem;">书籍信息</strong>
               <span v-if="username && username.length">
                 <el-button
-                  v-if="bookstate === 0"
+                  v-if="bookstate === 0+999"
                   type="primary"
                   size="medium"
                   @click="dialogBorrowVisible = true"
                   style="float: right;"
                 >立即借阅</el-button>
-                <span v-else-if="bookstate === 1" style="color: #aaa;">已借出</span>
+                <span v-else-if="bookstate === 1" style="color: #777;">已借出</span>
                 <el-button
-                  v-else-if="bookstate === 2"
+                  v-else-if="bookstate === 2-2"
                   type="primary"
                   size="medium"
                   @click="dialogReturnVisible = true"
@@ -50,10 +50,10 @@
             </div>
             <div class="item">
               <span class="my-lable-red">#</span>
-              <span style="font-weight:bold;">是否有剩余：</span>
+              <span style="font-weight:bold;">已借出：</span>
               {{book.status ? "是" : "否"}}
             </div>
-            <div class="item my-bookdetail-quad-line">
+            <div class="item my-bookdetail-6-line">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">描述：</span>
               {{book.desc}}
@@ -109,46 +109,35 @@
 
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogBorrowVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitBorrow">确 定</el-button>
+            <el-button type="primary" @click="submitBorrow">确认借阅</el-button>
           </div>
         </el-dialog>
 
         <!-- return book -->
-        <!-- <el-dialog title="归还确认" :visible.sync="dialogReturnVisible">
+        <el-dialog title="归还确认" :visible.sync="dialogReturnVisible">
           <p>
-            <strong>姓名</strong>:&nbsp;小萌新
+            <strong>姓名</strong>
+            :&nbsp;{{username}}
             <br />
             <strong>所借书籍</strong>
-            :&nbsp;{{book.name}}
+            :&nbsp;{{book.bookName}}
+            <br />
+            <strong>借出地点</strong>
+            :&nbsp;{{book.location}}
           </p>
-          <el-form ref="formReturn" :model="formReturn" label-width="80px">
-            <el-form-item label="归还地点">
-              <el-select v-model="formReturn.location" placeholder="请选择归还地点">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <el-upload
-            list-type="picture-card"
-            action
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            :multiple="false"
-            :limit="1"
-            :show-file-list="false"
-            
+          <el-select
+            v-model="returnLoc"
+            clearable
+            placeholder="请选择还书地址"
+            @change="handleReturnChange"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过4M</div>
-          </el-upload>
-
+            <el-option v-for="it in returnLocations" :key="it" :label="it" :value="it"></el-option>
+          </el-select>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogReturnVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogReturnVisible = false">确 定</el-button>
+            <el-button type="primary" @click="submitReturn">确认还书</el-button>
           </div>
-        </el-dialog>-->
+        </el-dialog>
       </el-row>
 
       <el-row>
@@ -173,7 +162,7 @@
   </el-main>
 </template>
 <script>
-import { remoteAddr } from "@/config";
+import { remoteAddr, bookReturnLocations } from "@/config";
 import qrcode from "@/qrcode/vue-qrcode-small";
 
 export default {
@@ -184,9 +173,8 @@ export default {
       dialogReturnVisible: false,
       username: "",
 
-      formReturn: {
-        location: ""
-      },
+      returnLocations: bookReturnLocations,
+      returnLoc: null,
       borrowTips: [
         "只能上传jpg/png文件，且不超过4M",
         "二维码错误",
@@ -198,7 +186,7 @@ export default {
       comment: "",
       book: {},
       bookid: "",
-      bookstate: -1
+      bookstate: -1 // 0未借, 1别人借, 2自己借
     };
   },
   methods: {
@@ -278,6 +266,46 @@ export default {
         });
       }
       this.dialogBorrowVisible = false;
+    },
+
+    /** return events */
+    handleReturnChange(res) {
+      console.log("handleReturnChange", res, this.returnLoc);
+    },
+    submitReturn() {
+      console.log("loc", this.returnLoc);
+      this.dialogReturnVisible = false;
+      if (this.returnLoc && this.returnLoc.length) {
+        let d = new Date();
+        jQuery.ajax({
+          url: remoteAddr + "library/book/return",
+          type: "POST",
+          data: {
+            userID: this.$cookies.get("BT_userid"),
+            bookID: this.bookid,
+            place: this.returnLoc,
+            time: {
+              year: d.getFullYear(),
+              month: d.getMonth() + 1,
+              day: d.getDate(),
+              clock: d.getHours()
+            }
+          },
+          dataType: "json",
+          success: res => {
+            console.log("res", res);
+            if (res.code === 1) {
+              this.$message.success("操作成功");
+              this.bookstate = 0;
+            } else {
+              this.$message.error("获取失败:" + res.msg);
+            }
+          },
+          error: err => {
+            this.$message.error("网络开小差了");
+          }
+        });
+      }
     }
   },
   mounted() {
@@ -403,8 +431,8 @@ export default {
   width: 1rem;
 }
 
-.my-bookdetail-quad-line {
-  -webkit-line-clamp: 4;
+.my-bookdetail-6-line {
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   display: -webkit-box;
   overflow: hidden;

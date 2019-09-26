@@ -7,8 +7,8 @@
           :bookName="it.bookName"
           :desc="it.desc"
           :img="it.img"
-          :press="it.public"
-          :process="it.process"
+          :press="it.publish"
+          :process="it.process ? '是' : '否'"
           :bookid="it.bookID"
         />
       </el-col>
