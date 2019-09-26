@@ -19,14 +19,14 @@
           <el-menu-item index="5-2">下载APP</el-menu-item>
         </a>
       </el-submenu>
-      
+
       <el-menu-item
         v-if="userName && userName.length"
         index="6"
         @click="logout"
         style="float: right"
       >{{userName}}</el-menu-item>
-      <el-menu-item v-else index="6" @click="redirect('Auth')" style="float: right">登录/注册</el-menu-item>
+      <el-menu-item v-else index="6" @click="redirect('login')" style="float: right">登录/注册</el-menu-item>
     </el-menu>
   </el-header>
 </template>
@@ -37,13 +37,12 @@ export default {
     return {
       activeIndex: "1",
       userName: "",
-      title: this.$route.path === "/" ? "图书漂流" : "主页"
+      title: "主页"
     };
   },
   methods: {
     redirect(path) {
       this.$router.push({ name: path });
-      this.title = this.$route.path === "/" ? "图书漂流" : "主页";
     },
     logout() {
       this.$confirm("退出登录？", "提示", {
@@ -66,8 +65,13 @@ export default {
     },
     processRoute() {
       this.userName = this.$cookies.get("BT_username");
-      if (this.$route.path.indexOf("/book") >= 0) {
+
+      const path = this.$route.path;
+      this.title = path === "/" ? "图书漂流" : "主页";
+      if (path.indexOf("/book") >= 0) {
         this.activeIndex = "2";
+      } else if (path.indexOf("/auth") >= 0) {
+        this.activeIndex = "6";
       }
     }
   },
@@ -83,44 +87,6 @@ export default {
 </script>
 
 <style scoped>
-a {
-  text-decoration: none;
-  color: rgb(156, 156, 156);
-}
-
-.my-title {
-  white-space: nowrap;
-}
-
-.my-logo-text {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: rgb(53, 53, 53);
-  margin-right: 8rem;
-}
-
-.my-header-img {
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-}
-
-.my-notice {
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
-  font-size: 1.2rem;
-}
-
-.my-home-alert-img {
-  width: 100%;
-}
-
 .el-menu[role="menubar"] > .el-menu-item:first-child {
   font-size: 20px;
   color: #303133;

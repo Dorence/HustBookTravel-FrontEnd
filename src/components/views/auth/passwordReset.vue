@@ -1,6 +1,5 @@
 <template>
-  <div class="findCode">
-    <span class="find-name">重置密码</span>
+  <div>
     <el-form
       :model="ruleForm"
       status-icon
@@ -13,9 +12,14 @@
       <el-form-item label="手机号" prop="phone">
         <el-input v-model.number="ruleForm.phone"></el-input>
       </el-form-item>
-      <el-form-item label="验证码" prop="varcode">
-        <el-input v-model="ruleForm.varcode"></el-input>
-        <el-button type="text" @click="sendCaptcha" style="float: right;">获取短信验证码</el-button>
+      <el-form-item label="验证码" prop="vercode">
+        <el-input v-model="ruleForm.vercode"></el-input>
+        <el-button
+          type="text"
+          @click="sendCaptcha"
+          style="float: right;"
+          :disabled="captcha.d"
+        >{{captcha.t}}</el-button>
       </el-form-item>
       <el-form-item label="新密码" prop="password">
         <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
@@ -48,12 +52,18 @@ export default {
       }
     };
     return {
+      captcha: {
+        t: "获取短信验证码",
+        time: new Date().getTime(),
+        d: false
+      },
       ruleForm: {
         phone: "",
-        varcode: "",
+        vercode: "",
         password: "",
         checkPass: ""
       },
+      stdvercode:"",
       rules: {
         phone: [
           {
@@ -63,12 +73,12 @@ export default {
             message: "请输入11位手机号"
           }
         ],
-        varcode: [
+        vercode: [
           {
             required: true,
-            pattern: /^[0-9]{4}$/,
+            pattern: /^[0-9]{2,6}$/,
             trigger: "blur",
-            message: "请输入4位验证码"
+            message: "验证码错误"
           }
         ],
         password: [
@@ -87,28 +97,52 @@ export default {
   },
 
   methods: {
+    captchaTrigger() {
+      let dt = new Date().getTime();
+      if (dt > this.captcha.time && dt < this.captcha.time + 60 * 1000) {
+        this.captcha.d = true;
+        this.captcha.t =
+          Math.round((this.captcha.time + 60 * 1000 - dt) / 1000) +
+          "秒后重新发送";
+        setTimeout(() => {
+          this.captchaTrigger();
+        }, 1000);
+      } else {
+        this.captcha.d = false;
+        this.captcha.t = "获取短信验证码";
+      }
+    },
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         jQuery.post(remoteAddr + "passwordReset", this.ruleForm, res => {
           console.log(res);
-          if (res.code != "-1") {
+          if (res.code === 1) {
             this.$message({
               message: "重置成功",
               type: "success"
             });
             this.$router.push({ name: "homePage" });
           } else {
-            this.$message.error("重置成功");
+            this.$message.error("重置失败");
           }
         });
       });
     },
+
     sendCaptcha() {
-      return;
       if (!this.ruleForm.phone || !/^1[0-9]{10}$/.test(this.ruleForm.phone)) {
-        this.$message("手机号错误");
+        this.$message.error("手机号错误");
         console.log("error!!");
       } else {
+        this.captcha.time = new Date().getTime();
+        this.$cookies.set("BT_timeout", this.captcha.time, 60 * 1000);
+
+        this.captcha.d = true;
+        setTimeout(() => {
+          this.captchaTrigger();
+        }, 100);
+
         jQuery.post(
           remoteAddr + "sendM",
           { phone: this.ruleForm.phone },
@@ -119,8 +153,9 @@ export default {
                 message: "已发送验证码到您手机!",
                 type: "success"
               });
-              this.rules.varcode.pattern = new RegExp(
-                "^" + res.confCode[0] + "$"
+              this.stdvercode = res.confCode[0];
+              this.rules.vercode.pattern = new RegExp(
+                "^" + this.stdvercode + "$"
               );
             } else {
               this.$message({
@@ -132,37 +167,14 @@ export default {
         );
       }
     }
-  },
-
-  props: ["toggleComponent"]
+  }
 };
 </script>
 
 <style scoped>
-element.style {
-  margin-top: 2rem;
-  margin-bottom: 20rem;
-  width: 100%;
-}
 input {
   box-sizing: border-box;
   border: 0;
   outline: none;
-}
-.findCode {
-  width: 432px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
-  border-radius: 2px;
-  box-sizing: border-box;
-  margin: auto;
-}
-.find-name {
-  font-size: 40px;
-  color: rgb(0, 0, 0);
-  text-align: center;
-  display: block;
-  margin-top: 30px;
-  font-weight: bold；;
 }
 </style>

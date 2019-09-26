@@ -14,7 +14,12 @@
       </el-form-item>
       <el-form-item label="验证码" prop="vercode">
         <el-input v-model="ruleForm.vercode"></el-input>
-        <el-button type="text" @click="sendIDCode()" style="float: right;">获取短信验证码</el-button>
+        <el-button
+          type="text"
+          @click="sendCaptcha"
+          style="float: right;"
+          :disabled="captcha.d"
+        >{{captcha.t}}</el-button>
       </el-form-item>
       <el-form-item label="用户名" prop="nickname">
         <el-input v-model="ruleForm.nickname"></el-input>
@@ -44,7 +49,7 @@
     <div class="bottom">
       <span>
         没有账号？
-        <el-button type="text" @click="toggleComponent">登陆</el-button>
+        <el-button type="text" @click="redirect('login')">登陆</el-button>
       </span>
     </div>
   </div>
@@ -66,7 +71,12 @@ export default {
       }
     };
     return {
-      stdvervode:"",
+      stdvercode: "",
+      captcha: {
+        t: "获取短信验证码",
+        time: new Date().getTime(),
+        d: false
+      },
       ruleForm: {
         phone: "",
         vercode: "",
@@ -89,7 +99,7 @@ export default {
         vercode: [
           {
             required: true,
-            pattern: /^[0-9]{4}$/,
+            pattern: /^[0-9]{2,6}$/,
             trigger: "blur",
             message: "验证码错误"
           }
@@ -121,10 +131,26 @@ export default {
   },
 
   methods: {
+    captchaTrigger() {
+      let dt = new Date().getTime();
+      if (dt > this.captcha.time && dt < this.captcha.time + 60 * 1000) {
+        this.captcha.d = true;
+        this.captcha.t =
+          Math.round((this.captcha.time + 60 * 1000 - dt) / 1000) +
+          "秒后重新发送";
+        setTimeout(() => {
+          this.captchaTrigger();
+        }, 1000);
+      } else {
+        this.captcha.d = false;
+        this.captcha.t = "获取短信验证码";
+      }
+    },
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          jQuery.post(remoteAddr + "register", this.ruleForm, (res)=> {
+          jQuery.post(remoteAddr + "register", this.ruleForm, res => {
             console.log(res);
             if (res.code === 1) {
               this.$message({
@@ -133,10 +159,7 @@ export default {
               });
               this.$router.push({ name: "Auth" });
             } else {
-              this.$message({
-                message: "注册失败",
-                type: "warning"
-              });
+              this.$message.warning("注册失败");
             }
           });
         } else {
@@ -146,11 +169,19 @@ export default {
       });
     },
 
-    sendIDCode() {
+    sendCaptcha() {
       if (!this.ruleForm.phone || !/^1[0-9]{10}$/.test(this.ruleForm.phone)) {
-        this.$message("手机号错误");
+        this.$message.error("手机号错误");
         console.log("error!!");
       } else {
+        this.captcha.time = new Date().getTime();
+        this.$cookies.set("BT_timeout", this.captcha.time, 60 * 1000);
+
+        this.captcha.d = true;
+        setTimeout(() => {
+          this.captchaTrigger();
+        }, 100);
+
         jQuery.post(
           remoteAddr + "sendM",
           { phone: this.ruleForm.phone },
@@ -161,9 +192,9 @@ export default {
                 message: "已发送验证码到您手机!",
                 type: "success"
               });
-              this.stdvervode = res.confCode[0];
+              this.stdvercode = res.confCode[0];
               this.rules.vercode.pattern = new RegExp(
-                "^" + this.stdvervode + "$"
+                "^" + this.stdvercode + "$"
               );
             } else {
               this.$message({
@@ -173,11 +204,18 @@ export default {
             }
           }
         );
-
       }
+    },
+    redirect(path) {
+      this.$router.push({ name: path });
     }
   },
-
+  mounted() {
+    let t = Number(this.$cookies.get("BT_timeout"));
+    if (!isNaN(t)) {
+      this.captcha.time = t;
+    }
+  },
   props: ["toggleComponent"]
 };
 </script>

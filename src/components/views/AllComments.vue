@@ -131,12 +131,12 @@
           </el-col>
         </el-row>
 
-        <el-dialog :visible.sync="commentDialogVisible" width="70%">
+        <el-dialog :visible.sync="commentDialogVisible" width="75%">
           <div class="my-submit-form">
             <el-form
               class="my-right-form-inner"
               ref="form"
-              label-width="80px"
+              label-width="auto"
               :model="form"
               :rules="rules"
             >
@@ -147,9 +147,9 @@
                 <el-select v-model="form.name" placeholder="请选择书籍" style="width: 100%">
                   <el-option
                     v-for="item in bookList"
-                    :key="item.bookid"
+                    :key="item._id"
                     :label="item.bookName"
-                    :value="item.bookid"
+                    :value="item.bookID"
                   >
                     <span style="float: left">{{ item.bookName }}</span>
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ item.author }}</span>
@@ -207,8 +207,8 @@ export default {
       pagesize: 10, //每页条目数
 
       form: {
-        creator: "",
-        book: "",
+        creator: this.$cookies.get("BT_username"),
+        book: null,
         content: ""
       },
       rules: {
@@ -332,8 +332,7 @@ export default {
     jQuery
       .ajax({
         url: remoteAddr + "forum/checkAllPost",
-        type: "get",
-        data: {},
+        type: "GET",
         dataType: "json"
       })
       .then(res => {
@@ -341,24 +340,6 @@ export default {
         if (res.code === 1) {
           this.tableData = res.data;
           this.updateLike();
-
-          /* get all books */
-          jQuery.ajax({
-            url: remoteAddr + "library/checkAllBook",
-            type: "GET",
-            dataType: "json",
-            success: result => {
-              console.log("books res", result);
-              if (result.data.length) {
-                this.bookList = result.data;
-              } else {
-                this.$message.error("获取失败");
-              }
-            },
-            error: err => {
-              this.$message.error("网络开小差了");
-            }
-          });
         } else {
           this.$message.error("获取失败");
         }
@@ -367,6 +348,24 @@ export default {
         this.$message.error("网络开小差了");
         console.error(err);
       });
+
+    /* get all books */
+    jQuery.ajax({
+      url: remoteAddr + "library/checkAllBook",
+      type: "GET",
+      dataType: "json",
+      success: result => {
+        console.log("books res", result);
+        if (result.data.length) {
+          this.bookList = result.data;
+        } else {
+          this.$message.error("获取失败");
+        }
+      },
+      error: err => {
+        this.$message.error("网络开小差了");
+      }
+    });
   },
 
   filters: {
@@ -401,42 +400,6 @@ export default {
   color: #333;
   text-align: left;
   line-height: 60px;
-}
-
-.el-footer {
-  background-color: #ffffff;
-  color: #333;
-  text-align: center;
-  line-height: 60px;
-}
-
-.el-main {
-  background-color: #ffffff;
-  color: #333;
-  text-align: center;
-  line-height: 10px;
-}
-
-.el-aside {
-  background-color: #ffffff;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-
-body > .el-container {
-  margin-bottom: 40px;
-}
-
-.el-row {
-  margin-bottom: 20px;
-}
-
-.el-row:last-child {
-  margin-bottom: 0;
-}
-.el-col {
-  border-radius: 4px;
 }
 
 #outside {

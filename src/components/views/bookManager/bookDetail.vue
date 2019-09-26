@@ -11,15 +11,15 @@
               <strong style="font-size: 1.6rem;">书籍信息</strong>
               <span v-if="username && username.length">
                 <el-button
-                  v-if="bookstate === 0+999"
+                  v-if="bookstate === 0"
                   type="primary"
                   size="medium"
                   @click="dialogBorrowVisible = true"
                   style="float: right;"
                 >立即借阅</el-button>
-                <span v-else-if="bookstate === 1" style="color: #777;">已借出</span>
+                <span v-else-if="bookstate === 1" style="color: #333;float: right;">已借出</span>
                 <el-button
-                  v-else-if="bookstate === 2-2"
+                  v-else-if="bookstate === 2"
                   type="primary"
                   size="medium"
                   @click="dialogReturnVisible = true"
@@ -255,7 +255,10 @@ export default {
             console.log("res", res);
             if (res.code === 1) {
               this.$message.success("操作成功");
-              this.bookstate = 2;
+              this.bookstate = -1;
+              setTimeout(() => {
+                this.$router.go(0);
+              }, 500);
             } else {
               this.$message.error("获取失败:" + res.msg);
             }
@@ -273,7 +276,6 @@ export default {
       console.log("handleReturnChange", res, this.returnLoc);
     },
     submitReturn() {
-      console.log("loc", this.returnLoc);
       this.dialogReturnVisible = false;
       if (this.returnLoc && this.returnLoc.length) {
         let d = new Date();
@@ -283,20 +285,17 @@ export default {
           data: {
             userID: this.$cookies.get("BT_userid"),
             bookID: this.bookid,
-            place: this.returnLoc,
-            time: {
-              year: d.getFullYear(),
-              month: d.getMonth() + 1,
-              day: d.getDate(),
-              clock: d.getHours()
-            }
+            location: this.returnLoc
           },
           dataType: "json",
           success: res => {
             console.log("res", res);
             if (res.code === 1) {
               this.$message.success("操作成功");
-              this.bookstate = 0;
+              this.bookstate = -1;
+              setTimeout(() => {
+                this.$router.go(0);
+              }, 500);
             } else {
               this.$message.error("获取失败:" + res.msg);
             }
@@ -306,13 +305,38 @@ export default {
           }
         });
       }
+    },
+
+    /** other */
+    updateBookState() {
+      jQuery.ajax({
+        url: remoteAddr + "library/book/checkCondition",
+        type: "POST",
+        data: {
+          userID: this.$cookies.get("BT_userid"),
+          bookID: this.bookid
+        },
+        dataType: "json",
+        success: res => {
+          console.log("res", res);
+          if (res.code >= 0) {
+            this.bookstate = res.code;
+          } else {
+            this.$message.error("书籍信息获取失败:" + res.msg);
+          }
+        },
+        error: err => {
+          this.$message.error("网络开小差了");
+        }
+      });
     }
   },
   mounted() {
     // console.log(this.$route.query);
     this.bookid = this.$route.query.bookid;
     if (!this.bookid) {
-      this.$route.push({ name: "bookList" });
+      this.$router.push({ name: "bookList" });
+      return;
     }
 
     this.username = this.$cookies.get("BT_username");
@@ -328,26 +352,7 @@ export default {
           this.book = res.data;
 
           if (this.username && this.username.length) {
-            jQuery.ajax({
-              url: remoteAddr + "library/book/checkCondition",
-              type: "POST",
-              data: {
-                _id: this.$cookies.get("BT_userid"),
-                bookID: this.bookid
-              },
-              dataType: "json",
-              success: res => {
-                console.log("res", res);
-                if (res.code >= 0) {
-                  this.bookstate = res.code;
-                } else {
-                  this.$message.error("获取失败:" + res.msg);
-                }
-              },
-              error: err => {
-                this.$message.error("网络开小差了");
-              }
-            });
+            this.updateBookState();
           }
         } else {
           this.$message.error("获取失败:" + res.msg);

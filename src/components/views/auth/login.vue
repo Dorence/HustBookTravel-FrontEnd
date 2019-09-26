@@ -24,7 +24,7 @@
     <div class="bottom">
       <span>
         没有账号？
-        <el-button type="text" @click="toggleComponent">注册</el-button>
+        <el-button type="text" @click="redirect('register')">注册</el-button>
       </span>
     </div>
   </div>

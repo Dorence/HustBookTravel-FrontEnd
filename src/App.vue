@@ -1,6 +1,6 @@
 <template>
   <el-container class="booktravel-main" direction="vertical">
-    <navBar id="booktravel-nav" />
+    <navBar id="booktravel-nav" style="min-width: 610px;" />
     <el-main>
       <router-view class="main-router-view" />
       <fastMenu />

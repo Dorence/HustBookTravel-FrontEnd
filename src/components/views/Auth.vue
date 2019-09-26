@@ -1,8 +1,8 @@
 <template>
   <div class="login">
-    <span class="hust-name">华中科技大学</span>
-    <div class="tip">读书漂流</div>
-    <component :toggleComponent="toggleComponent" :is="typeName"></component>
+    <span class="hust-name">{{title}}</span>
+    <div class="tip">{{tip}}</div>
+    <router-view />
   </div>
 </template>
 
@@ -10,28 +10,41 @@
 export default {
   name: "Auth",
   data() {
-    return {
-      typeName: "Login"
-    };
+    return { title: "华中科技大学", tip: "图书漂流" };
   },
   methods: {
-    toggleComponent: function() {
-      this.typeName = this.typeName === "Login" ? "Register" : "Login";
+    route() {
+      let name = this.$cookies.get("BT_username");
+      name = name && name.length;
+      const path = this.$route.path;
+
+      if (path === "/auth/reset") {
+        this.title = "";
+        this.tip = "密码重置";
+      } else if (path === "/auth/register") {
+        if (name) {
+          this.$router.push({ name: "homePage" });
+        }
+        this.title = "图书漂流";
+        this.tip = "注册";
+      } else {
+        if (name) {
+          this.$router.push({ name: "homePage" });
+        }
+        this.title = "图书漂流";
+        this.tip = "登录";
+      }
     }
   },
-  components: {
-    Login,
-    Register
-  },
   mounted() {
-    let name = this.$cookies.get("BT_username");
-    if (name && name.length) {
-      this.$router.push({ name: "homePage" });
+    this.route();
+  },
+  watch: {
+    $route(to, from) {
+      this.route();
     }
   }
 };
-import Login from "@/components/components/auth/Login";
-import Register from "@/components/components/auth/Register";
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -61,7 +74,7 @@ input {
 .login {
   width: 432px;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
+  box-shadow: 0 2px 4px rgba(26, 26, 26, 0.4);
   border-radius: 5px;
   box-sizing: border-box;
   margin: auto;
