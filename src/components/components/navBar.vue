@@ -10,16 +10,16 @@
       <el-menu-item index="4" @click="redirect('VentWall')">意见反馈</el-menu-item>
       <el-submenu index="5">
         <template slot="title">EIC论坛</template>
-        <a href="http://47.106.111.48:4567">
-          <el-menu-item index="5-1">访问论坛</el-menu-item>
-        </a>
-        <a
-          href="https://raw.githubusercontent.com/568xiaoma/EIC_App_image/master/EIC%E8%AE%BA%E5%9D%9B%20.apk"
-        >
-          <el-menu-item index="5-2">下载APP</el-menu-item>
-        </a>
+        <el-menu-item index="5-1">
+          <el-link href="http://47.106.111.48:4567" :underline="false">访问论坛</el-link>
+        </el-menu-item>
+        <el-menu-item index="5-2">
+          <el-link
+            :underline="false"
+            href="https://raw.githubusercontent.com/568xiaoma/EIC_App_image/master/EIC%E8%AE%BA%E5%9D%9B%20.apk"
+          >下载APP</el-link>
+        </el-menu-item>
       </el-submenu>
-
       <el-menu-item
         v-if="userName && userName.length"
         index="6"
@@ -72,6 +72,8 @@ export default {
         this.activeIndex = "2";
       } else if (path.indexOf("/auth") >= 0) {
         this.activeIndex = "6";
+      } else if (path.indexOf("/comments") >= 0) {
+        this.activeIndex = "3";
       }
     }
   },

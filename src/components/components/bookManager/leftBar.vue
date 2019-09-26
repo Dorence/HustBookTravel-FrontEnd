@@ -13,10 +13,10 @@
         <el-menu-item index="1-4">管理类</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
-    <el-menu-item index="2">
+    <!-- <el-menu-item index="2">
       <i class="el-icon-menu"></i>
       <span slot="title">我的借阅</span>
-    </el-menu-item>
+    </el-menu-item> -->
   </el-menu>
 </template>
 <script>

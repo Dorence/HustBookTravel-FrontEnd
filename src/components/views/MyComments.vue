@@ -18,12 +18,12 @@
                 <el-table
                   ref="filterTable"
                   stripe
-                  :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                  :data="tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)"
                   :cell-style="{'vertical-align': 'top'}"
                   :header-row-style="{height: '40px'}"
                   :row-style="{height: '80px'}"
                 >
-                  <el-table-column label="最新" sortable width="auto" column-key="time">
+                  <el-table-column label="最新" sortable width="120" column-key="date">
                     <template slot-scope="scope">
                       <div>
                         <el-image
@@ -38,22 +38,22 @@
                         </el-image>
                         <span
                           style="color: #999; font-size: 85%;"
-                        >日期： {{scope.row.date.month}}-{{scope.row.date.day}}</span>
+                        >日期： {{scope.row.date.getMonth() + 1}}-{{scope.row.date.getDate()}}</span>
                       </div>
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="最热" width="auto" sortable column-key="hot">
+                  <el-table-column label="最热" width="auto" sortable column-key="like.length">
                     <template slot-scope="scope">
-                      <p style="line-height: 1.6rem;">
+                      <p v-if="b[scope.row.bookID] >= 0" style="line-height: 1.6rem;">
                         <strong>书名</strong>
-                        ：{{scope.row.book}}
+                        ：{{bookList[b[scope.row.bookID]].bookName}}
                         <br />
                         <strong>出版社</strong>
-                        ：{{scope.row.press}}
+                        ：{{bookList[b[scope.row.bookID]].publish}}
                         <br />
                         <strong>作者</strong>
-                        ：{{scope.row.author}}
+                        ：{{bookList[b[scope.row.bookID]].author}}
                         <br />
                         <strong>推荐人</strong>
                         ：{{scope.row.creator}}
@@ -61,7 +61,7 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column prop="category" width="auto" align="left">
+                  <!-- <el-table-column prop="category" width="auto" align="left">
                     <template slot-scope="scope">
                       <el-collapse v-model="activeNames" @change="handleChange">
                         <el-collapse-item title="推荐理由" name="1">
@@ -69,51 +69,41 @@
                         </el-collapse-item>
                       </el-collapse>
                     </template>
-                  </el-table-column>
+                  </el-table-column>-->
 
                   <el-table-column align="right">
                     <template slot="header">管理</template>
 
                     <template slot-scope="scope">
                       <el-container direction="vertical">
+                        <el-row style="width: 100%; text-align: left;">
+                          <h3>推荐理由/评论内容</h3>
+                          <p v-if="scope.row.content" style="display: flex; align-items: center;">
+                            <span class="booktravel-content-wrap">{{scope.row.content}}</span>
+                            <el-popover
+                              placement="left"
+                              width="600"
+                              trigger="click"
+                              :content="scope.row.content"
+                            >
+                              <el-link slot="reference" icon="el-icon-more" :underline="false"></el-link>
+                            </el-popover>
+                          </p>
+                          <p v-else style="color: #aaa;">无</p>
+                        </el-row>
+
                         <el-row style="display: flex; justify-content: space-between;">
-                          <el-button type="text" @click="dialogVisible1 = true">查看全部评论</el-button>
+                          <el-button
+                            type="primary"
+                            round
+                            @click="dialogVisible1 = true, viewComment = scope.row.index"
+                          >查看全部评论</el-button>
                           <el-button
                             type="primary"
                             :icon="'el-icon-star-' + (scope.row.mylike ? 'on' : 'off')"
-                            circle
+                            round
+                            @click="onSubmitLike(scope.row._id)"
                           >{{scope.row.like.length}}</el-button>
-                          <el-button type="primary" round @click="openReply(scope.row._id)">评论</el-button>
-
-                          <el-dialog :visible.sync="dialogVisible1" width="70%">
-                            <div v-if="scope.row.comments.length">
-                              <el-table
-                                ref="filterTable"
-                                :data="scope.row.comments.slice((currentPage-1) * pagesize, currentPage * pagesize)"
-                                :header-row-style="{height: '40px'}"
-                                :row-style="{height: '80px'}"
-                              >
-                                <el-table-column label="全部评论" width="auto">
-                                  <template slot-scope="inner">
-                                    <div>{{inner.row.content}} @ {{inner.row.discussor}}</div>
-                                  </template>
-                                </el-table-column>
-                              </el-table>
-                            </div>
-                            <div v-else>暂无</div>
-                            <span slot="footer" class="dialog-footer">
-                              <el-divider></el-divider>
-                              <div class="block">
-                                <el-pagination
-                                  @size-change="handleSizeChange"
-                                  @current-change="handleCurrentChange"
-                                  :current-page="currentPage"
-                                  layout="total, prev, pager, next, jumper"
-                                  :total="commentData.length"
-                                ></el-pagination>
-                              </div>
-                            </span>
-                          </el-dialog>
                         </el-row>
                       </el-container>
                     </template>
@@ -139,6 +129,40 @@
           ></el-pagination>
         </div>
       </el-footer>
+
+      <el-dialog v-if="viewComment >= 0" :visible.sync="dialogVisible1" width="70%">
+        <div v-if="tableData[viewComment].comments.length">
+          <el-table
+            ref="filterTable"
+            :data="tableData[viewComment].comments.slice((currentPage-1) * pagesize, currentPage * pagesize)"
+            :header-row-style="{height: '40px'}"
+            :row-style="{height: '80px'}"
+          >
+            <el-table-column label="全部评论" width="auto">
+              <template slot-scope="inner">
+                <div>
+                  <strong style="color: #777;">{{inner.row.replier}}</strong>
+                  <br />
+                  {{inner.row.content}}
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-else>暂无</div>
+        <span slot="footer" class="dialog-footer">
+          <el-divider></el-divider>
+          <div class="block">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              layout="total, prev, pager, next, jumper"
+              :total="tableData[viewComment].comments.length"
+            ></el-pagination>
+          </div>
+        </span>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>
@@ -146,6 +170,7 @@
 
 <script>
 import leftBar from "@/components/components/comment/leftBar";
+import { remoteAddr } from "@/config";
 
 export default {
   name: "MyComments",
@@ -158,6 +183,10 @@ export default {
         book: "",
         content: ""
       },
+
+      user: "",
+      viewComment: -1,
+
       currentPage: 1, //初始页
       pagesize: 10, //每页条目数
       rules: {
@@ -165,7 +194,9 @@ export default {
         content: [{ required: true, message: "推荐理由不能为空" }],
         creator: [{ required: true, message: "推荐人名不能为空" }]
       },
-      tableData: []
+      tableData: [],
+      bookList: [],
+      b: []
     };
   },
   methods: {
@@ -189,36 +220,39 @@ export default {
       }
     },
 
-
-    openReply(postId) {
-      this.$prompt("请输入评论内容", "提示", {
-        confirmButtonText: "发送",
-        cancelButtonText: "取消",
-        inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-        inputErrorMessage: "回复内容不能为空",
-        inputPlaceholder: "评论"
-      })
-        .then(({ value }) => {
-          console.log("reply", value);
-          if (value.length) {
-            jQuery.post(
-              remoteAddr + "forum/replyComment",
-              {
-                commentID: postId,
-                content: value,
-                replier: "user"
-              },
-              response => {
-                if (response && response.code === 1) {
-                  this.$message.success("评论成功！");
-                } else {
-                  this.$message.error("发送失败");
-                }
-              }
-            );
+    onSubmitLike(postid) {
+      setTimeout(() => {
+        jQuery.post(
+          remoteAddr + "forum/like",
+          {
+            postID: postid,
+            liker: this.user
+          },
+          res => {
+            if (res && res.code === 1) {
+              this.$message.success("点赞成功");
+            } else {
+              this.$message.error("点赞失败");
+            }
           }
-        })
-        .catch(console.error);
+        );
+      }, 200);
+    },
+    updateLike() {
+      let t = this.tableData;
+      for (let it of t) {
+        let b = false;
+        if (it.like && it.like.length) {
+          for (let i = 0; i < it.like.length; i++) {
+            if (this.user === it.like[i]) {
+              b = true;
+              break;
+            }
+          }
+        }
+        it.mylike = b;
+      }
+      return;
     },
 
     handleSizeChange: function(size) {
@@ -231,17 +265,28 @@ export default {
     }
   },
   mounted() {
+    this.user = this.$cookies.get("BT_userid");
+    if (!this.user || this.user.length === 0) {
+      this.$router.push({ name: "AllComments" });
+      return;
+    }
+
     jQuery
       .ajax({
-        url: "http://www.husteic.cn:3000/forum/checkPersonalPost",
-        type: "get",
-        data: {},
+        url: remoteAddr + "forum/checkPersonalPost",
+        type: "POST",
+        data: { userID: this.user },
         dataType: "json"
       })
       .then(res => {
         console.log(res);
         if (res.code === 1) {
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i].date = new Date(res.data[i].date);
+            res.data[i].index = i;
+          }
           this.tableData = res.data;
+          this.updateLike();
         } else {
           this.$message.error("加载失败");
         }
@@ -250,6 +295,30 @@ export default {
         console.error(err);
         this.$message.error("网络开小差了");
       });
+
+    /* get all books */
+    jQuery.ajax({
+      url: remoteAddr + "library/checkAllBook",
+      type: "GET",
+      dataType: "json",
+      success: result => {
+        console.log("res book", result);
+        if (result.data.length) {
+          this.bookList = result.data;
+          let k = {};
+          for (let i = 0; i < this.bookList.length; i++) {
+            k[this.bookList[i].bookID] = i;
+          }
+          this.b = k;
+          console.log(k);
+        } else {
+          this.$message.error("获取失败");
+        }
+      },
+      error: err => {
+        this.$message.error("网络开小差了");
+      }
+    });
   },
 
   filters: {

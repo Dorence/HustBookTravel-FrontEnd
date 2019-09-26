@@ -27,12 +27,12 @@ export default new Router({
         component: homePage
     },
     {
-        path: '/AllComments',
+        path: '/comments',
         name: 'AllComments',
         component: AllComments
     },
     {
-        path: '/MyComments',
+        path: '/comments/my',
         name: 'MyComments',
         component: MyComments
     },
