@@ -1,5 +1,5 @@
 <template>
-  <el-menu>
+  <el-menu :default-openeds="['1']">
     <el-submenu index="1">
       <template slot="title">
         <i class="el-icon-location"></i>

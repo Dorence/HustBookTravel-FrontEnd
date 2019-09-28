@@ -11,13 +11,13 @@ import VueResource from "vue-resource";
 import VueCookies from "vue-cookies";
 import VueRouter from "vue-router";
 
-let qiniu = require('qiniu-js')
+// let qiniu = require('qiniu-js')
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(VueResource);
 Vue.use(VueCookies);
-Vue.use(qiniu);
+// Vue.use(qiniu);
 
 new Vue({ el: "#app", router, components: { App }, template: "<App/>" });
 
