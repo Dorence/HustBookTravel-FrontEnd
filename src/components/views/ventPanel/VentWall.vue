@@ -20,7 +20,7 @@
               <div class="my-vent-wall-item-row-inner">{{item.content}}</div>
             </el-badge>
           </div>
-          <el-popover placement="bottom" width="15rem" transition="none" trigger="click">
+          <el-popover placement="bottom" width="16rem" transition="none" trigger="click">
             <div class="my-vent-comment-title-container">
               <div class="my-vent-comment-title">评论</div>
               <input
@@ -229,15 +229,20 @@ export default {
 }
 
 .my-vent-comment-title-input {
+  border: none;
   color: rgb(117, 117, 117);
+  padding: 1px 3px;
   width: 8.5rem;
-  border: 0;
-  margin-left: 0.5rem;
+}
+
+.my-vent-comment-title-input:focus {
+  border: 0.75px solid rgba(128, 128, 128, 0.3);
 }
 
 .my-vent-comment-title {
   color: #000000;
 }
+
 .my-vent-wall-outer {
   display: flex;
   flex-wrap: wrap;
@@ -251,6 +256,7 @@ export default {
   width: 4rem;
   margin-right: 5rem;
 }
+
 .my-vent-wall {
   display: flex;
   flex-wrap: wrap;
@@ -279,7 +285,7 @@ export default {
   border-radius: 0.5rem;
   height: 8rem;
   width: 15rem;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .my-vent-comment-item {

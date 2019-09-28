@@ -19,17 +19,13 @@
         <p class="notice-body">
           大家可以在线下找到我们站点勤工岗的同学进行咨询，
           <br />同时也可按照下面的联系方式，联系我们主办方。
-          <br />张鸿鹄——电话：17786284532&ensp;QQ：634865427
-          <br />如果有什么紧急问题也可以加入我们的活动群（点击右侧图标）
-          <el-popover placement="right" width="400" trigger="click">
-            <img :src="qrcodeURL" class="my-qrcode-image" />
-            <img :src="ImgURL" slot="reference" class="my-scan-image" />
+          <br />张鸿鹄 —— 电话：17786284532&ensp;QQ：634865427
+          <br />如果有什么紧急问题也可以加入我们的
+          <el-popover placement="right" width="300" trigger="hover">
+            <el-button type="text" slot="reference">活动群</el-button>
+            <el-image :src="qrcodeURL"/>
           </el-popover>
         </p>
-
-      <!-- <el-col :span="8">
-        <el-image :src="url" :fit="fit"></el-image>
-      </el-col>-->
     </el-row>
   </div>
 </template>
@@ -148,15 +144,23 @@ blockquote small {
 .booktravel-notice-p {
   white-space: pre-line;
 }
+
 .notice {
-  background-color: #67c23a;
-  padding-left: 35px
+  background-color: rgba(56, 142, 60, .9);
+  padding-left: 35px;
+  color: #f6f6f6;
 }
-.notice h2,
-.notice p {
-  color: #fafafa;
+
+.notice .el-button{
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  font-size: inherit;
+  padding: 2px 6px;
 }
-.my-scan-image {
-  height: 25px;
+.notice .el-button:hover,.notice .el-button:focus{
+  background-color: #f6f6f6;
+  color:rgba(56, 142, 60, .9);
 }
+
 </style>

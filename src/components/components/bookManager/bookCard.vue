@@ -51,8 +51,9 @@ export default {
 }
 
 .booktravel-booklist-info {
+  align-items: unset !important;
   margin: 0.5rem;
-  font-size: 0.72rem;
+  min-height: 260px;
 }
 
 .booktravel-booklist-info .booktravel-booklist-info-wrap {

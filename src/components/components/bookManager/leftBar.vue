@@ -1,37 +1,49 @@
 <template>
-  <el-menu default-active="1">
+  <el-menu>
     <el-submenu index="1">
       <template slot="title">
         <i class="el-icon-location"></i>
-        <span slot="title">全部分类</span>
+        <span slot="title">分类</span>
       </template>
-      <el-menu-item-group>
-        <el-menu-item index="1-0" @click="redirect('bookList')">全部</el-menu-item>
-        <el-menu-item index="1-1">人文类</el-menu-item>
-        <el-menu-item index="1-2">艺术类</el-menu-item>
-        <el-menu-item index="1-3">自然科学类</el-menu-item>
-        <el-menu-item index="1-4">管理类</el-menu-item>
+      <el-menu-item-group class="booktravel-bookleftbar-item">
+        <el-menu-item index="1-0" @click="emitTag('')">全部</el-menu-item>
+        <el-menu-item
+          v-for="(it, idx) in tagList"
+          v-bind:key="it"
+          :index="'1-' + (idx + 1)"
+          @click="emitTag(it)"
+        >{{it}}</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
     <!-- <el-menu-item index="2">
       <i class="el-icon-menu"></i>
       <span slot="title">我的借阅</span>
-    </el-menu-item> -->
+    </el-menu-item>-->
   </el-menu>
 </template>
 <script>
 export default {
-  name: "leftBar",
+  name: "bookLeftBar",
+  props: ["tagList"],
   data() {
     return {};
   },
-  methods:{
-    redirect(pathname) {
-      this.$router.push({ name: pathname });
+  methods: {
+    emitTag(tag) {
+      this.$emit("tagFilterChange", tag);
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
+.booktravel-bookleftbar-item .el-menu-item {
+  line-height: 25px;
+  height: unset;
+  padding: 2px 30px !important;
+}
+
+.booktravel-bookleftbar-item .el-menu-item-group__title {
+  padding: 0;
+}
 </style>
