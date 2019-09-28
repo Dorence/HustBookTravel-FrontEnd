@@ -115,7 +115,7 @@ export default {
 
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        jQuery.post(remoteAddr + "passwordReset", this.ruleForm, res => {
+        jQuery.post(remoteAddr + "auth/passwordReset", this.ruleForm, res => {
           console.log(res);
           if (res.code === 1) {
             this.$message({
@@ -144,7 +144,7 @@ export default {
         }, 100);
 
         jQuery.post(
-          remoteAddr + "sendM",
+          remoteAddr + "auth/sendM",
           { phone: this.ruleForm.phone },
           res => {
             // console.log(res);

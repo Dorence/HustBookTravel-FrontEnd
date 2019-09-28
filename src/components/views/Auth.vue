@@ -14,21 +14,21 @@ export default {
   },
   methods: {
     route() {
-      let name = this.$cookies.get("BT_username");
-      name = name && name.length;
+      let id = this.$cookies.get("BT_userid");
+      id = id && id.length;
       const path = this.$route.path;
 
       if (path === "/auth/reset") {
         this.title = "";
         this.tip = "密码重置";
       } else if (path === "/auth/register") {
-        if (name) {
+        if (id) {
           this.$router.push({ name: "homePage" });
         }
         this.title = "图书漂流";
         this.tip = "注册";
       } else {
-        if (name) {
+        if (id) {
           this.$router.push({ name: "homePage" });
         }
         this.title = "图书漂流";
@@ -47,7 +47,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 element.style {
   margin-top: 2rem;

@@ -56,6 +56,7 @@ export default {
   bottom: 2rem;
   position: fixed;
   right: 2rem;
+  z-index: 9999;
 }
 
 .booktravel-fastmenu-item {

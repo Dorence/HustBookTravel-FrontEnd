@@ -42,18 +42,20 @@ export default {
         phone: "",
         password: ""
       },
-      input: "",
       rules: {
         password: [{ required: true, trigger: "blur" }],
         phone: [{ required: true, len: 11, trigger: "blur" }]
       }
     };
   },
-
   methods: {
+    redirect(path) {
+      this.$router.push({ name: path });
+    },
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        jQuery.post(remoteAddr + "login", this.form, res => {
+        jQuery.post(remoteAddr + "auth/login", this.form, res => {
           console.log(res);
           if (res.code === 1) {
             this.$message.success("登陆成功");
@@ -61,7 +63,6 @@ export default {
             this.$cookies
               .set("BT_username", res.data.name, 7 * 24 * 3600)
               .set("BT_userid", res.data.userID, 7 * 24 * 3600);
-
             setTimeout(() => {
               this.redirect('homePage');
             }, 4);
@@ -71,15 +72,8 @@ export default {
           }
         });
       });
-    },
-    switchComponent: function() {
-      this.typeName = "FindCode";
-    },
-    redirect(path) {
-      this.$router.push({ name: path });
     }
-  },
-  props: ["toggleComponent"]
+  }
 };
 </script>
 

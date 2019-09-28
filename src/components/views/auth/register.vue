@@ -132,12 +132,13 @@ export default {
 
   methods: {
     captchaTrigger() {
-      let dt = new Date().getTime();
-      if (dt > this.captcha.time && dt < this.captcha.time + 60 * 1000) {
+      const newTime = new Date().getTime(),
+        oldTime = this.captcha.time,
+        resetTime = 60 * 1000;
+      if (newTime > oldTime && newTime < oldTime + resetTime) {
         this.captcha.d = true;
         this.captcha.t =
-          Math.round((this.captcha.time + 60 * 1000 - dt) / 1000) +
-          "秒后重新发送";
+          Math.round((oldTime + resetTime - newTime) / 1000) + "秒后重新发送";
         setTimeout(() => {
           this.captchaTrigger();
         }, 1000);
@@ -150,13 +151,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          jQuery.post(remoteAddr + "register", this.ruleForm, res => {
-            console.log(res);
+          jQuery.post(remoteAddr + "auth/register", this.ruleForm, res => {
+            // console.log(res);
             if (res.code === 1) {
-              this.$message({
-                message: "注册成功",
-                type: "success"
-              });
+              this.$message.success("注册成功");
               this.$router.push({ name: "Auth" });
             } else {
               this.$message.warning("注册失败");
@@ -172,7 +170,7 @@ export default {
     sendCaptcha() {
       if (!this.ruleForm.phone || !/^1[0-9]{10}$/.test(this.ruleForm.phone)) {
         this.$message.error("手机号错误");
-        console.log("error!!");
+        console.log("Error phone number.");
       } else {
         this.captcha.time = new Date().getTime();
         this.$cookies.set("BT_timeout", this.captcha.time, 60 * 1000);
@@ -183,7 +181,7 @@ export default {
         }, 100);
 
         jQuery.post(
-          remoteAddr + "sendM",
+          remoteAddr + "auth/sendM",
           { phone: this.ruleForm.phone },
           res => {
             // console.log(res);
@@ -197,10 +195,7 @@ export default {
                 "^" + this.stdvercode + "$"
               );
             } else {
-              this.$message({
-                message: "发送失败",
-                type: "warning"
-              });
+              this.$message.error("发送失败");
             }
           }
         );

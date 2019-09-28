@@ -28,7 +28,7 @@
                 style="width: 2.6rem;margin-left:1rem;"
                 class="my-vent-comment-title-input"
                 v-model="input.identity"
-                maxlength="3"
+                maxlength="5"
               />
               <input
                 placeholder="内容（10字）"
@@ -151,12 +151,11 @@ export default {
   mounted() {
     var that = this;
     jQuery.get(remoteAddr + "right/Opinion", function(res) {
-      console.log(res);
+      // console.log(res);
       that.propertys = res.data;
-      console.log(that.propertys);
     });
     jQuery.get(remoteAddr + "right/Opinion/getTags", function(res) {
-      console.log(res);
+      // console.log(res);
       that.tags = res.data;
     });
   }
@@ -174,7 +173,7 @@ export default {
 .my-vent-wall-item {
   animation: move 1.3s infinite alternate;
   border-radius: 30rem;
-  box-shadow: 1px 1px 5px rgba(0,0,0,.1);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   height: 3rem;
   margin: 1rem;
   margin-bottom: 1.5rem;

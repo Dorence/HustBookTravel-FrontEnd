@@ -1,5 +1,5 @@
 <template>
-  <el-menu default-active="1" :router="true">
+  <el-menu :router="true">
     <el-menu-item index="1" @click="redirect('AllComments')">
       <i class="el-icon-menu"></i>
       <span slot="title">全部帖子</span>
@@ -12,11 +12,11 @@
 </template>
 <script>
 export default {
-  name: "leftBar",
+  name: "commentLeftBar",
   data() {
     return {};
   },
-  methods:{
+  methods: {
     redirect(pathname) {
       this.$router.push({ name: pathname });
     }
