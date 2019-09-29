@@ -61,14 +61,14 @@
             <div class="item">
               <span class="my-lable-red">#</span>
               <span style="font-weight:bold;">分类：</span>
-              <div v-if="book && book.tag && book.tag.length">
+              <span v-if="book && book.tag && book.tag.length">
                 <el-tag
                   style="margin-right: 0.2rem;"
                   type="success"
                   v-for="it in book.tag"
                   v-bind:key="it"
                 >{{it}}</el-tag>
-              </div>
+              </span>
               <span v-else style="color: #aaa;">暂无</span>
             </div>
           </el-card>
@@ -93,11 +93,8 @@
             :limit="1"
             :show-file-list="true"
             :auto-upload="false"
-            :on-preview="handleBorrowPreview"
             :on-remove="handleBorrowRemove"
-            :on-success="handleBorrowSuccess"
             :on-error="handleBorrowError"
-            :on-progress="handleBorrowProgress"
             :on-change="handleBorrowChange"
             :before-upload="handleBorrowBeforeUpload"
             :before-remove="handleBorrowBeforeRemove"
@@ -140,7 +137,7 @@
         </el-dialog>
       </el-row>
 
-      <el-row>
+      <el-row v-if="0">
         <div class="booktravel-comment-subtitle">评论</div>
         <div v-if="book && book.comment && book.comment.length">
           <div class="booktravel-comment" v-for="it in book.comment" v-bind:key="it.index">
@@ -177,7 +174,7 @@ export default {
       returnLoc: null,
       borrowTips: [
         "只能上传jpg/png文件，且不超过4M",
-        "二维码错误",
+        "二维码错误(请保证二维码清晰且位于图片主要位置)",
         "二维码正确"
       ],
       borrowTipState: 0,
@@ -191,29 +188,20 @@ export default {
   },
   methods: {
     /** borrow events */
-    handleBorrowPreview(file) {
-      console.log("handlePictureCardPreview");
-    },
     handleBorrowRemove(file, filelist) {
       console.log("handleBorrowRemove", file, filelist);
       this.borrowTipState = 0;
     },
-    handleBorrowSuccess(res, file, filelist) {
-      console.log("handleBorrowSuccess", res, file, filelist);
-    },
     handleBorrowError(err, file, filelist) {
       console.log("handleBorrowError", err, file, filelist);
       this.borrowTipState = 0;
-    },
-    handleBorrowProgress(e, file, filelist) {
-      console.log("handleBorrowProgress", e, file, filelist);
     },
     handleBorrowChange(file, filelist) {
       console.log("handleBorrowChange", file, filelist);
       let that = this;
       qrcode.decode(file.url);
       qrcode.callback = function(msg) {
-        console.log("qrcode decode:", msg);
+        // console.log("qrcode decode:", msg);
         that.qrresult = msg;
         if (msg === that.bookid) {
           that.borrowTipState = 2;
@@ -252,7 +240,7 @@ export default {
           },
           dataType: "json",
           success: res => {
-            console.log("res", res);
+            // console.log("res", res);
             if (res.code === 1) {
               this.$message.success("操作成功");
               this.bookstate = -1;
@@ -289,7 +277,7 @@ export default {
           },
           dataType: "json",
           success: res => {
-            console.log("res", res);
+            // console.log("res", res);
             if (res.code === 1) {
               this.$message.success("操作成功");
               this.bookstate = -1;
@@ -318,7 +306,7 @@ export default {
         },
         dataType: "json",
         success: res => {
-          console.log("res", res);
+          // console.log("res", res);
           if (res.code >= 0) {
             this.bookstate = res.code;
           } else {
@@ -347,7 +335,7 @@ export default {
       data: { jry: this.bookid },
       dataType: "json",
       success: res => {
-        console.log("res", res);
+        // console.log("res", res);
         if (res.code === 1) {
           this.book = res.data;
 

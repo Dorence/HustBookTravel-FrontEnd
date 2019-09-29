@@ -1,7 +1,7 @@
 <template>
   <el-card class="booktravel-bookcard" shadow="hover" :body-style="{ padding: '2px' }">
     <el-link :underline="false" class="booktravel-booklist-info" @click="routerTo">
-      <el-image fit="scale-down" :src="img" lazy />
+      <el-image :src="img" fit="scale-down" lazy />
       <div>
         <strong style="font-size: 120%;">{{bookName}}</strong>
         <br />
@@ -30,13 +30,10 @@ export default {
   },
   methods: {
     routerTo() {
-      console.log("routerTo", this.bookid);
-      if (this.bookid || this.bookid === 0)
+      if (this.bookid && this.bookid.length)
         this.$router.push({
           name: "bookDetail",
-          query: {
-            bookid: this.bookid
-          }
+          query: { bookid: this.bookid }
         });
     }
   },
@@ -48,12 +45,12 @@ export default {
 .booktravel-bookcard {
   margin: 16px 4px;
   padding: 2px;
+  min-height: 360px;
 }
 
 .booktravel-booklist-info {
   align-items: unset !important;
   margin: 0.5rem;
-  min-height: 260px;
 }
 
 .booktravel-booklist-info .booktravel-booklist-info-wrap {
@@ -66,6 +63,7 @@ export default {
 
 .booktravel-booklist-info .el-image {
   width: 100%;
-  min-height: 120px;
+  min-height: 160px;
+  height: 196px;
 }
 </style>
