@@ -1,54 +1,46 @@
 <template>
-  <div class="my-vent-wall-outer">
-    <div class="my-vent-wall-title">
-      活动感受
-      <i class="el-icon-sunny" style="color:#F56C6C;font-size:4rem;margin-left:0.5rem;" />
-    </div>
-    <div class="my-vent-wall-line"></div>
-    <div class="my-vent-wall-subtitle">这个活动大家觉得怎么样呢，有什么想说的和大家分享吧</div>
-    <div class="my-vent-wall">
-      <div
-        class="my-vent-wall-item"
-        :style="{'background-color': item.color, 'box-shadow': '2px 2px 2px ' + item.color, height: item.size + 'rem', width: item.size + 'rem', 'font-size': item.size / 11 + 'rem'}"
-        v-for="item in propertys"
-        v-bind:key="item.index"
-      >
-        <div class="my-vent-wall-item-col">
-          <div class="my-vent-wall-item-row">
-            <el-badge :value="item.reply.length">
-              <div class="my-vent-wall-item-num">No.{{item.index.slice(-5)}}</div>
-              <div class="my-vent-wall-item-row-inner">{{item.content}}</div>
-            </el-badge>
-          </div>
-          <el-popover placement="bottom" width="16rem" transition="none" trigger="click">
-            <div class="my-vent-comment-title-container">
-              <div class="my-vent-comment-title">评论</div>
-              <input
-                placeholder="身份"
-                style="width: 2.6rem;margin-left:1rem;"
-                class="my-vent-comment-title-input"
-                v-model="input.identity"
-                maxlength="5"
-              />
-              <input
-                placeholder="内容（10字）"
-                class="my-vent-comment-title-input"
-                v-model="input.content"
-                maxlength="10"
-              />
-              <i class="el-icon-s-promotion" :style="'color:'+item.color" @click="send(item.index)"></i>
-            </div>
-            <div class="my-vent-comment">
-              <div
-                class="my-vent-comment-item"
-                :style="{color: item.color}"
-                v-for="it in item.reply"
-                v-bind:key="it.name"
-              >{{it.name+"："+it.content}}</div>
-            </div>
-            <i slot="reference" class="el-icon-arrow-down" style="color:white"></i>
-          </el-popover>
+  <div class="booktravel-ventwall">
+    <div
+      class="booktravel-ventwall-item"
+      :style="{'background-color': item.color, 'box-shadow': '2px 2px 2px ' + item.color, height: item.size + 'rem', width: item.size + 'rem', 'font-size': item.size / 11 + 'rem'}"
+      v-for="item in propertys"
+      v-bind:key="item.index"
+    >
+      <div class="booktravel-ventwall-item-col">
+        <div class="booktravel-ventwall-item-row">
+          <el-badge :value="item.reply.length">
+            <div class="booktravel-ventwall-item-num">No.{{item.index.slice(-4)}}</div>
+            <div class="booktravel-ventwall-item-content">{{item.content}}</div>
+          </el-badge>
         </div>
+        <el-popover placement="bottom" width="16rem" trigger="click">
+          <div class="my-vent-comment-title-container">
+            <div class="my-vent-comment-title">评论</div>
+            <input
+              placeholder="身份"
+              style="width: 2.6rem;margin-left:1rem;"
+              class="my-vent-comment-title-input"
+              v-model="input.identity"
+              maxlength="5"
+            />
+            <input
+              placeholder="内容（10字）"
+              class="my-vent-comment-title-input"
+              v-model="input.content"
+              maxlength="10"
+            />
+            <i class="el-icon-s-promotion" :style="{color: item.color}" @click="send(item.index)"></i>
+          </div>
+          <div class="my-vent-comment">
+            <div
+              class="my-vent-comment-item"
+              v-for="it in item.reply"
+              v-bind:key="it.name"
+              :style="{color: item.color}"
+            >{{it.name+"："+it.content}}</div>
+          </div>
+          <i slot="reference" class="el-icon-arrow-down" style="color:white"></i>
+        </el-popover>
       </div>
     </div>
   </div>
@@ -68,50 +60,14 @@ export default {
     };
   },
   methods: {
-    shallow(color, num) {
-      r = parseInt(color.slice(1, 3), 16);
-      g = parseInt(color.slice(3, 5), 16);
-      b = parseInt(color.slice(5, 7), 16);
-      if ((r + num > 255) | (r + num < 0)) {
-        if (r + num > 255) {
-          r = 255;
-        } else {
-          r = 0;
-        }
-      } else {
-        r = r + num;
-      }
-      if ((g + num > 255) | (g + num < 0)) {
-        if (g + num > 255) {
-          g = 255;
-        } else {
-          g = 0;
-        }
-      } else {
-        g = g + num;
-      }
-      if ((b + num > 255) | (b + num < 0)) {
-        if (b + num > 255) {
-          b = 255;
-        } else {
-          b = 0;
-        }
-      } else {
-        b = b + num;
-      }
-      return "#" + r.toString(16) + g.toString(16) + b.toString(16);
-    },
     send(index) {
+      this.$message.warning("暂未开放");
+      return;
+
       if (this.input.identity == "") {
-        this.$message({
-          message: "请输入身份内容",
-          type: "warning"
-        });
+        this.$message.error("请输入身份");
       } else if (this.input.content == "") {
-        this.$message({
-          message: "请输入内容",
-          type: "warning"
-        });
+        this.$message.error("请输入内容");
       } else {
         jQuery.post(
           remoteAddr + "right/Opinion/Reply",
@@ -126,10 +82,7 @@ export default {
             jQuery.get(remoteAddr + "right/Opinion", res => {
               console.log(res);
               this.propertys = res.data;
-              this.$message({
-                message: "发表成功",
-                type: "success"
-              });
+              this.$message.success("发表成功");
               this.input.identity = "";
               this.input.content = "";
             });
@@ -138,40 +91,50 @@ export default {
       }
     },
     findByTag(tag) {
-      var that = this;
-      jQuery.get(remoteAddr + "right/Opinion/getByTag", { tag: tag }, function(
-        res
-      ) {
-        console.log(res.data);
-        that.propertys = res.data[0].messages;
-        console.log(that.propertys);
-      });
+      /** @warn deprecated */
+      return;
+      jQuery
+        .ajax({
+          url: remoteAddr + "right/Opinion/getByTag",
+          type: "GET",
+          data: { tag: tag },
+          dataType: "json"
+        })
+        .then(res => {
+          this.propertys = res.data[0].messages;
+        });
     }
   },
   mounted() {
-    var that = this;
-    jQuery.get(remoteAddr + "right/Opinion", function(res) {
-      // console.log(res);
-      that.propertys = res.data;
+    jQuery.get(remoteAddr + "right/Opinion", res => {
+      this.propertys = res.data;
     });
-    jQuery.get(remoteAddr + "right/Opinion/getTags", function(res) {
-      // console.log(res);
-      that.tags = res.data;
-    });
+    // jQuery.get(remoteAddr + "right/Opinion/getTags", (res)=> {
+    //   this.tags = res.data;
+    // });
   }
 };
 </script>
 
 <style>
-.my-ventwall-tags {
-  display: flex;
-  flex-direction: row;
-  margin: 1rem;
-  width: 100%;
+@keyframes move {
+  to {
+    transform: translateY(1rem);
+  }
 }
 
-.my-vent-wall-item {
-  animation: move 1.3s infinite alternate;
+.booktravel-ventwall {
+  -webkit-animation: move 2s infinite alternate;
+  -moz-animation: move 2s infinite alternate;
+  -o-animation: move 2s infinite alternate;
+  animation: move 2s infinite alternate;
+
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.booktravel-ventwall-item {
   border-radius: 30rem;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   height: 3rem;
@@ -182,42 +145,40 @@ export default {
   transition: All 0.2s ease-in-out;
 }
 
-.my-vent-wall-item:hover,
-.my-vent-wall-item:focus {
+.booktravel-ventwall-item:hover,
+.booktravel-ventwall-item:focus {
   transform: scale(1.25);
 }
 
-.my-vent-wall-item-num {
-  color: rgba(51, 51, 51, 0.274);
-  margin: 0.2rem;
-}
-
-.my-vent-wall-item-col {
-  width: 100%;
-  height: 100%;
+.booktravel-ventwall-item-col {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.my-vent-wall-item-row {
-  width: 70%;
   height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  color: #ffffff;
+  width: 100%;
 }
 
-.my-vent-wall-item-row-inner {
+.booktravel-ventwall-item-row {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 70%;
+}
+
+.booktravel-ventwall-item-num {
+  color: rgba(64, 64, 64, 0.5);
+  margin: 0.2rem 0;
+}
+
+.booktravel-ventwall-item-content {
+  display: -webkit-box;
   font-weight: bold;
+  overflow: hidden;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
-  overflow: hidden; /*超出隐藏*/
-  display: -webkit-box; /*设置弹性盒模型*/
   white-space: pre-line;
 }
 
@@ -257,12 +218,6 @@ export default {
   margin-right: 5rem;
 }
 
-.my-vent-wall {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-}
-
 .my-vent-wall-title {
   display: flex;
   flex-direction: row;
@@ -296,14 +251,5 @@ export default {
   overflow: hidden;
   padding: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.411);
-}
-
-@keyframes move {
-  from {
-    top: 0rem;
-  }
-  to {
-    top: 1rem;
-  }
 }
 </style>

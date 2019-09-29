@@ -1,12 +1,16 @@
 <template>
-  <el-container class="my-ventpanel-main-contain-row">
-    <el-aside width="200px">
+  <el-container>
+    <el-aside width="150px">
       <LeftBar />
     </el-aside>
-    <el-main style="min-width: 600px">
-      <transition :name="direction">
-        <router-view />
-      </transition>
+    <el-main class="booktravel-ventwall-outer">
+      <div class="booktravel-ventwall-title">
+        活动感受
+        <i class="el-icon-sunny" style="color:#F56C6C;font-size:4rem;margin-left:0.5rem;" />
+      </div>
+      <el-divider></el-divider>
+      <div class="booktravel-ventwall-subtitle">这个活动大家觉得怎么样呢，有什么想说的和大家分享吧</div>
+      <router-view />
     </el-main>
   </el-container>
 </template>
@@ -17,59 +21,35 @@ export default {
   name: "ventPanel",
   components: { LeftBar },
   data() {
-    return { direction: "" };
-  },
-  watch: {
-    $route(to, from) {
-      const toDepth = to.path.split("/").length;
-      const fromDepth = from.path.split("/").length;
-      if (to.path == "/") {
-        this.direction = "slide-right";
-      } else if (from.path == "/") {
-        this.direction = "slide-left";
-      } else {
-        this.direction = toDepth < fromDepth ? "slide-right" : "slide-left";
-      }
-    }
+    return {};
   }
 };
 </script>
 
 <style>
-.my-ventpanel-main-contain-col {
-  display: flex;
-  /* margin-left: 3rem; */
-  flex-direction: column;
+.booktravel-ventwall-outer {
   align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-.my-ventpanel-main-contain-row {
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-.my-ventpanel-main-contain-row .el-aside {
-  min-height: 800px;
+  display: flex !important;
+  flex-direction: column;
+  min-width: 600px;
 }
 
-.appView {
-  position: relative;
-  /* width: 60rem; */
-  transition: transform 0.3s ease-out;
+.booktravel-ventwall-title {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  font-weight: bold;
+  justify-content: center;
 }
-.slide-left-enter {
-  transform: rotate(180deg) translateX(200%);
+
+.booktravel-ventwall-outer .el-divider {
+  margin: 4px 25%;
+  width: 50%;
 }
-.slide-left-leave-active {
-  transform: rotate(-180deg) translateX(200%);
-}
-.slide-right-enter {
-  transform: rotate(90deg) translateX(200%);
-}
-.slide-right-leave-active {
-  transform: rotate(-90deg) translateX(200%);
+
+.booktravel-ventwall-subtitle {
+  color: rgb(143, 143, 143);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 </style>

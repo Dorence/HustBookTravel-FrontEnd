@@ -1,9 +1,9 @@
 <template>
-  <el-menu>
+  <el-menu :default-openeds="['1']">
     <el-submenu index="1">
       <template slot="title">
         <i class="el-icon-location"></i>
-        <span slot="title">分类</span>
+        <span slot="title" style="color: #000;">分类</span>
       </template>
       <el-menu-item-group class="booktravel-bookleftbar-item">
         <el-menu-item index="1-0" @click="emitTag('')">全部</el-menu-item>
@@ -37,13 +37,18 @@ export default {
 </script>
 
 <style scoped>
+.el-menu {
+  min-height: 800px;
+}
+
+.booktravel-bookleftbar-item {
+  padding: 0 0 0 28px;
+}
+
 .booktravel-bookleftbar-item .el-menu-item {
   line-height: 25px;
   height: unset;
-  padding: 2px 30px !important;
-}
-
-.booktravel-bookleftbar-item .el-menu-item-group__title {
-  padding: 0;
+  padding: 2px 0 !important;
+  min-width: unset;
 }
 </style>

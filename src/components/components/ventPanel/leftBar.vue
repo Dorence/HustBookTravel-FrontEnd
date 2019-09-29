@@ -1,54 +1,37 @@
 <template>
-      <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo">
-
-        <el-menu-item @click="redirect('VentWall')">
-          <i class="el-icon-menu"></i>
-          <span slot="title" class="name">反馈墙</span>
-        </el-menu-item>
-        <el-menu-item @click="redirect('SubmitVent')">
-          <i class="el-icon-menu"></i>
-          <span slot="title" class="name">我要反馈</span>
-        </el-menu-item>
-        <!-- <el-menu-item @click="redirect('')">
-          <i class="el-icon-menu"></i>
-          <span slot="title">举报</span>
-        </el-menu-item> -->
-
-      </el-menu>
-
+  <el-menu class="booktravel-ventleftbar">
+    <el-menu-item index="1" @click="redirect('VentWall')">
+      <i class="el-icon-menu"></i>
+      <span slot="title">反馈墙</span>
+    </el-menu-item>
+    <el-menu-item index="2" @click="redirect('SubmitVent')">
+      <i class="el-icon-menu"></i>
+      <span slot="title">我要反馈</span>
+    </el-menu-item>
+  </el-menu>
 </template>
+
 <script>
 export default {
-  name: 'DepartmentPage',
+  name: "ventLeftBar",
   data() {
-      return {
-        
-      };
-    },
-  methods: {
-    redirect(pathname){
-      this.$router.push({ name: pathname })
-    }
+    return {};
   },
-}
+  methods: {
+    redirect(pathname) {
+      this.$router.push({ name: pathname });
+    }
+  }
+};
 </script>
 
-<style>
+<style scoped>
+.el-menu {
+  min-height: 800px;
+}
 
-.my-left-bar-title{
-  margin: 2rem;
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: rgb(36, 36, 36);
-}
-.my-left-bar{
-  width: 15rem;
-  margin-bottom: 2rem;
-}
-.name{
+.booktravel-ventleftbar .el-menu-item {
+  color: rgb(8, 8, 8);
   font-size: 1rem;
-  color: rgb(7, 7, 7);
 }
 </style>

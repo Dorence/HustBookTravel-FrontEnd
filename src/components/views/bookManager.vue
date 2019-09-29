@@ -1,9 +1,9 @@
 <template>
-  <el-container style="min-height: 800px">
-    <el-aside width="200px">
+  <el-container>
+    <el-aside width="150px">
       <leftBar :tagList="tagList" @tagFilterChange="handleTagFilter" />
     </el-aside>
-    <router-view class="sub-router-view" :tagFilter="tagFilter" @tagListChange="handleTagList" />
+    <router-view :tagFilter="tagFilter" @tagListChange="handleTagList" />
   </el-container>
 </template>
 
@@ -21,8 +21,8 @@ export default {
       this.tagList = t;
     },
     handleTagFilter(t) {
-      if(this.$route.path !== "/book"){
-        this.$router.push({name: "bookList"});
+      if (this.$route.path !== "/book") {
+        this.$router.push({ name: "bookList" });
       }
       this.tagFilter = t;
     }
@@ -30,17 +30,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.sub-router-view {
-  position: relative;
-  width: 100rem;
-}
-
-.el-aside {
-  padding: 2px 0;
-}
-
-.el-aside .el-menu {
-  min-height: 800px;
-}
-</style>
+<style></style>
