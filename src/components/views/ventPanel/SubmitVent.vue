@@ -1,7 +1,12 @@
 <template>
   <div class="booktravel-ventsubmit">
     <el-input placeholder="请输入内容" v-model="content" style="margin-top: 2rem;" clearable></el-input>
-    <el-button type="primary" @click="onSubmit" style="margin: 20px 0 20rem;" disabled>立即创建</el-button>
+    <el-button
+      type="primary"
+      @click="onSubmit"
+      style="margin: 20px 0 20rem;"
+      :disabled="!user || !user.length"
+    >立即创建</el-button>
   </div>
 </template>
 <script>

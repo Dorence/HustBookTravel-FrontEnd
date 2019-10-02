@@ -34,7 +34,7 @@ export default {
   name: "HomePage",
   data() {
     return {
-      qrcodeURL: "../../../static/qrcode.jpg",
+      qrcodeURL: require("../../../static/qrcode.jpg"),
       fdback: [
         {
           id: 0,

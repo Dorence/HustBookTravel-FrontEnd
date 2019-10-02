@@ -5,7 +5,7 @@
         <el-image
           class="booktravel-navbar-logo"
           fit="scale-down"
-          src="../../static/hust-minilogo.png"
+          :src="logoURL"
         />
         {{ title }}
       </el-menu-item>
@@ -39,6 +39,7 @@ export default {
   name: "navBar",
   data() {
     return {
+      logoURL: require("../../../static/hust-minilogo.png"),
       activeIndex: "1",
       userName: "",
       title: "主页"
