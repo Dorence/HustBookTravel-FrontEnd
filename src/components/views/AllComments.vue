@@ -294,8 +294,6 @@ export default {
         inputPlaceholder: "评论"
       })
         .then(({ value }) => {
-          that.$message.warning("暂未开放");
-          return;
           if (value.length) {
             jQuery.post(
               remoteAddr + "forum/discuss",
@@ -320,8 +318,6 @@ export default {
 
     /** 发帖 */
     onSubmit(formName) {
-      this.$message.warning("暂未开放");
-      return;
       this.$refs[formName].validate(valid => {
         if (valid) {
           // console.log("forum post", this.form);

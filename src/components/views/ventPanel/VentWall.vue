@@ -61,9 +61,6 @@ export default {
   },
   methods: {
     send(index) {
-      this.$message.warning("暂未开放");
-      return;
-
       if (this.input.identity == "") {
         this.$message.error("请输入身份");
       } else if (this.input.content == "") {

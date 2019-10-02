@@ -164,6 +164,7 @@ import qrcode from "@/qrcode/vue-qrcode-small";
 
 export default {
   name: "",
+  props: ["bookList"],
   data() {
     return {
       dialogBorrowVisible: false,
@@ -230,32 +231,32 @@ export default {
       this.$message.warning("只能上传一张图片，请删除前一张！");
     },
     submitBorrow() {
-      if (this.borrowTipState === 2 && this.qrresult === this.bookid) {
-        jQuery.ajax({
-          url: remoteAddr + "library/book/borrow",
-          type: "POST",
-          data: {
-            userID: this.$cookies.get("BT_userid"),
-            bookID: this.bookid
-          },
-          dataType: "json",
-          success: res => {
-            // console.log("res", res);
-            if (res.code === 1) {
-              this.$message.success("操作成功");
-              this.bookstate = -1;
-              setTimeout(() => {
-                this.$router.go(0);
-              }, 500);
-            } else {
-              this.$message.error("获取失败:" + res.msg);
-            }
-          },
-          error: err => {
-            this.$message.error("网络开小差了");
+      // if (this.borrowTipState === 2 && this.qrresult === this.bookid) {
+      jQuery.ajax({
+        url: remoteAddr + "library/book/borrow",
+        type: "POST",
+        data: {
+          userID: this.$cookies.get("BT_userid"),
+          bookID: this.bookid
+        },
+        dataType: "json",
+        success: res => {
+          // console.log("res", res);
+          if (res.code === 1) {
+            this.$message.success("操作成功");
+            this.bookstate = -1;
+            setTimeout(() => {
+              this.$router.go(0);
+            }, 500);
+          } else {
+            this.$message.error("获取失败:" + res.msg);
           }
-        });
-      }
+        },
+        error: err => {
+          this.$message.error("网络开小差了");
+        }
+      });
+      // }
       this.dialogBorrowVisible = false;
     },
 
@@ -317,39 +318,40 @@ export default {
           this.$message.error("网络开小差了");
         }
       });
+    },
+
+    updateBookData() {
+      for (let i of this.bookList) {
+        if (i.bookID === this.bookid) {
+          this.book = i;
+          if (this.username && this.username.length) {
+            this.updateBookState();
+          }
+        }
+      }
+      return;
     }
   },
   mounted() {
-    // console.log(this.$route.query);
     this.bookid = this.$route.query.bookid;
     if (!this.bookid) {
       this.$router.push({ name: "bookList" });
       return;
     }
-
     this.username = this.$cookies.get("BT_username");
-
-    jQuery.ajax({
-      url: remoteAddr + "library/admin/checkSingleBook",
-      type: "POST",
-      data: { jry: this.bookid },
-      dataType: "json",
-      success: res => {
-        // console.log("res", res);
-        if (res.code === 1) {
-          this.book = res.data;
-
-          if (this.username && this.username.length) {
-            this.updateBookState();
-          }
-        } else {
-          this.$message.error("获取失败:" + res.msg);
-        }
-      },
-      error: err => {
-        this.$message.error("网络开小差了");
+    this.updateBookData();
+  },
+  watch: {
+    bookList(b) {
+      this.bookList = b;
+      this.updateBookData();
+      if (Object.keys(this.book).length === 0) {
+        this.$message.error("找不到书籍！");
+        setTimeout(() => {
+          this.$router.push({ name: "bookList" });
+        }, 500);
       }
-    });
+    }
   }
 };
 </script>

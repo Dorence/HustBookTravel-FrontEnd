@@ -40,9 +40,6 @@ export default {
       this.inputValue = "";
     },
     onSubmit() {
-      this.$message.warning("暂未开放");
-      return;
-
       let that = this;
       if (this.content == "") {
         this.$message.error("请输入反馈内容");
