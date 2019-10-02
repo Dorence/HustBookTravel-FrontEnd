@@ -1,8 +1,12 @@
 <template>
-  <el-header>
+  <el-header class="booktravel-navbar">
     <el-menu mode="horizontal" :default-active="activeIndex">
       <el-menu-item index="1" @click="redirect('homePage')">
-        <img src="../../assets/hust-minilogo.png" />
+        <el-image
+          class="booktravel-navbar-logo"
+          fit="scale-down"
+          :src="logoURL"
+        />
         {{ title }}
       </el-menu-item>
       <el-menu-item index="2" @click="redirect('bookList')">书单</el-menu-item>
@@ -35,6 +39,7 @@ export default {
   name: "navBar",
   data() {
     return {
+      logoURL: require("../../../static/hust-minilogo.png"),
       activeIndex: "1",
       userName: "",
       title: "主页"
@@ -53,10 +58,7 @@ export default {
         .then(() => {
           this.$cookies.set("BT_username", "", 0).set("BT_userid", "", 0);
           this.userName = "";
-          this.$message({
-            type: "success",
-            message: "退出成功！"
-          });
+          this.$message.success("退出成功！");
           if (this.$route.path !== "/") {
             this.$router.push({ name: "homePage" });
           }
@@ -89,18 +91,23 @@ export default {
 </script>
 
 <style scoped>
-.el-menu[role="menubar"] > .el-menu-item:first-child {
-  font-size: 20px;
-  color: #303133;
-  line-height: 36px;
-  padding: 12px 18px;
-}
-
-.el-menu[role="menubar"] > .el-menu-item:first-child:hover {
-  color: #909399 !important;
-}
-
-.el-menu[role="menubar"] > .el-menu-item:first-child img {
+.booktravel-navbar .booktravel-navbar-logo {
   height: 36px;
+  width: 64px;
+}
+
+.booktravel-navbar .el-menu-item {
+  color: #666;
+}
+
+.booktravel-navbar .el-menu-item:first-child {
+  font-size: 20px;
+  color: #000;
+  line-height: 36px;
+  padding: 12px;
+}
+
+.booktravel-navbar .el-menu-item:first-child:hover {
+  color: #909399;
 }
 </style>

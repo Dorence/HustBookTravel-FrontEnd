@@ -47,7 +47,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: 'index.html',
-            favicon: 'src/assets/hust-minilogo.png',
+            favicon: "static/hust-minilogo.png",
             inject: true
         }),
         // copy custom static assets
