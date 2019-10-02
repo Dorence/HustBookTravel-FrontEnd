@@ -56,7 +56,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         jQuery.post(remoteAddr + "auth/login", this.form, res => {
-          console.log(res);
+          // console.log(res);
           if (res.code === 1) {
             this.$message.success("登陆成功");
             // write cookies
