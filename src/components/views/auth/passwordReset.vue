@@ -1,14 +1,6 @@
 <template>
   <div>
-    <el-form
-      :model="ruleForm"
-      status-icon
-      :rules="rules"
-      ref="ruleForm"
-      label-width="105px"
-      class="demo-ruleForm"
-      label-position="left"
-    >
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="90px" status-icon>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model.number="ruleForm.phone"></el-input>
       </el-form-item>
@@ -27,12 +19,17 @@
       <el-form-item label="确认密码" prop="checkPass">
         <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
       </el-form-item>
-      <el-button
-        type="primary"
-        @click="submitForm('ruleForm')"
-        style="margin-top: 2rem;margin-bottom: 2rem;width:100%;"
-      >重置密码</el-button>
+      <el-button class="booktravel-auth-submit" type="primary" @click="submitForm('ruleForm')">重置密码</el-button>
     </el-form>
+    <div class="bottom">
+      <el-button type="text" icon="el-icon-circle-check" @click="redirect('login')">登陆</el-button>
+      <el-button
+        type="text"
+        icon="el-icon-circle-plus-outline"
+        @click="redirect('register')"
+        style="float: right;"
+      >注册</el-button>
+    </div>
   </div>
 </template>
 
@@ -63,7 +60,7 @@ export default {
         password: "",
         checkPass: ""
       },
-      stdvercode:"",
+      stdvercode: "",
       rules: {
         phone: [
           {
@@ -95,7 +92,6 @@ export default {
       }
     };
   },
-
   methods: {
     captchaTrigger() {
       let dt = new Date().getTime();
@@ -118,11 +114,8 @@ export default {
         jQuery.post(remoteAddr + "auth/passwordReset", this.ruleForm, res => {
           console.log(res);
           if (res.code === 1) {
-            this.$message({
-              message: "重置成功",
-              type: "success"
-            });
-            this.$router.push({ name: "homePage" });
+            this.$message.success("重置成功");
+            this.redirect("homePage");
           } else {
             this.$message.error("重置失败");
           }
@@ -130,10 +123,10 @@ export default {
       });
     },
 
+    /** 发送验证码 */
     sendCaptcha() {
       if (!this.ruleForm.phone || !/^1[0-9]{10}$/.test(this.ruleForm.phone)) {
         this.$message.error("手机号错误");
-        console.log("error!!");
       } else {
         this.captcha.time = new Date().getTime();
         this.$cookies.set("BT_timeout", this.captcha.time, 60 * 1000);
@@ -158,23 +151,23 @@ export default {
                 "^" + this.stdvercode + "$"
               );
             } else {
-              this.$message({
-                message: "发送失败",
-                type: "warning"
-              });
+              this.$message.error("短信发送失败, " + res.msg);
             }
           }
         );
       }
+    },
+    redirect(path) {
+      this.$router.push({ name: path });
+    }
+  },
+  mounted() {
+    let t = Number(this.$cookies.get("BT_timeout"));
+    if (!isNaN(t)) {
+      this.captcha.time = t;
     }
   }
 };
 </script>
 
-<style scoped>
-input {
-  box-sizing: border-box;
-  border: 0;
-  outline: none;
-}
-</style>
+<style></style>

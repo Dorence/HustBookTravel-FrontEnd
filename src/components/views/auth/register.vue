@@ -1,14 +1,6 @@
 <template>
   <div>
-    <el-form
-      status-icon
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="105px"
-      class="demo-ruleForm"
-      label-position="left"
-    >
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="90px" status-icon>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="ruleForm.phone"></el-input>
       </el-form-item>
@@ -39,18 +31,16 @@
       <el-form-item label="住址" prop="address">
         <el-input v-model="ruleForm.address"></el-input>
       </el-form-item>
-
-      <el-button
-        type="primary"
-        @click="submitForm('ruleForm')"
-        style="margin-top: 2rem;margin-bottom: 2rem;width:100%;"
-      >注册</el-button>
+      <el-button class="booktravel-auth-submit" type="primary" @click="submitForm('ruleForm')">注册</el-button>
     </el-form>
     <div class="bottom">
-      <span>
-        没有账号？
-        <el-button type="text" @click="redirect('login')">登陆</el-button>
-      </span>
+      <el-button type="text" icon="el-icon-circle-check" @click="redirect('login')">登陆</el-button>
+      <el-button
+        type="text"
+        icon="el-icon-unlock"
+        @click="redirect('PasswordReset')"
+        style="float: right;"
+      >忘记密码</el-button>
     </div>
   </div>
 </template>
@@ -104,7 +94,15 @@ export default {
             message: "验证码错误"
           }
         ],
-        nickname: [{ required: true, min: 4, max: 16, trigger: "blur" }],
+        nickname: [
+          {
+            required: true,
+            min: 4,
+            max: 16,
+            trigger: "blur",
+            message: "请输入用户名(4-16位)"
+          }
+        ],
         password: [
           {
             required: true,
@@ -114,7 +112,12 @@ export default {
           }
         ],
         checkPass: [
-          { required: true, validator: validatePass, trigger: "blur" }
+          {
+            required: true,
+            validator: validatePass,
+            trigger: "blur",
+            message: "密码不相同"
+          }
         ],
         uid: [
           {
@@ -124,8 +127,24 @@ export default {
             message: "请输入正确的学号"
           }
         ],
-        major: [{ required: true, min: 3, max: 32, trigger: "blur" }],
-        address: [{ required: true, min: 5, max: 64, trigger: "blur" }]
+        major: [
+          {
+            required: true,
+            min: 3,
+            max: 32,
+            trigger: "blur",
+            message: "请输入合理的专业"
+          }
+        ],
+        address: [
+          {
+            required: true,
+            min: 5,
+            max: 64,
+            trigger: "blur",
+            message: "需5-64个字"
+          }
+        ]
       }
     };
   },
@@ -210,7 +229,8 @@ export default {
     if (!isNaN(t)) {
       this.captcha.time = t;
     }
-  },
-  props: ["toggleComponent"]
+  }
 };
 </script>
+
+<style></style>

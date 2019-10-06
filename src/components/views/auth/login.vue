@@ -1,35 +1,31 @@
 <template>
   <div>
     <el-form :model="form" :rules="rules" ref="form" label-width="auto" label-position="left">
-      <el-form-item label="账号" prop="phone">
+      <el-form-item label="账号">
         <el-input v-model="form.phone" placeholder="手机号"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
+      <el-form-item label="密码">
         <el-input
-          type="password"
           v-model="form.password"
-          placeholder="密码"
           autocomplete="off"
+          placeholder="密码"
+          type="password"
           show-password
         ></el-input>
       </el-form-item>
-
-      <el-button type="text" @click="redirect('PasswordReset')" style="margin-top: 10px;">忘记密码</el-button>
-      <el-button
-        type="primary"
-        @click="submitForm('form')"
-        style="margin: 1.6rem 0 .6rem 0; width:100%;"
-      >登陆</el-button>
+      <el-button class="booktravel-auth-submit" type="primary" @click="submitForm('form')">登陆</el-button>
     </el-form>
     <div class="bottom">
-      <span>
-        没有账号？
-        <el-button type="text" @click="redirect('register')">注册</el-button>
-      </span>
+      <el-button type="text" icon="el-icon-circle-plus-outline" @click="redirect('register')">注册</el-button>
+      <el-button
+        type="text"
+        icon="el-icon-unlock"
+        @click="redirect('PasswordReset')"
+        style="float: right;"
+      >忘记密码</el-button>
     </div>
   </div>
 </template>
-
 
 <script>
 import { remoteAddr } from "@/config";
@@ -43,8 +39,15 @@ export default {
         password: ""
       },
       rules: {
-        password: [{ required: true, trigger: "blur" }],
-        phone: [{ required: true, len: 11, trigger: "blur" }]
+        phone: [
+          {
+            required: true,
+            len: 11,
+            trigger: "blur",
+            message: "请输入11位手机号"
+          }
+        ],
+        password: [{ required: true, trigger: "blur", message: "请输入密码" }]
       }
     };
   },
@@ -63,9 +66,7 @@ export default {
             this.$cookies
               .set("BT_username", res.data.name, 7 * 24 * 3600)
               .set("BT_userid", res.data.userID, 7 * 24 * 3600);
-            setTimeout(() => {
-              this.redirect('homePage');
-            }, 4);
+            this.redirect("homePage");
           } else {
             this.$message.error("登陆失败:" + res.msg);
             this.$cookies.set("BT_username", "", 0).set("BT_userid", "", 0);
@@ -77,4 +78,4 @@ export default {
 };
 </script>
 
-
+<style></style>
